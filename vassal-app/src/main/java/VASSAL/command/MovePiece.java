@@ -5,7 +5,9 @@ import java.awt.Point;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
 import VASSAL.build.module.Map;
+import VASSAL.build.module.map.CompoundPieceCollection;
 import VASSAL.build.module.map.HighlightLastMoved;
+import VASSAL.build.module.map.PieceCollection;
 import VASSAL.counters.BoundsTracker;
 import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
@@ -106,18 +108,56 @@ public class MovePiece extends Command {
   }
 
   private void stackOrPlacePiece(GamePiece piece, Map newMap, Point newPosition) {
-    if (newMap.getStackMetrics().isStackingEnabled()
+    final boolean stackable = newMap.getStackMetrics().isStackingEnabled()
       && !(piece instanceof Stack)
-      && (piece.getParent() == null)
-      && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK))) {
+      && !Boolean.TRUE.equals(piece.getProperty(Properties.NO_STACK));
+
+    if (stackable && piece.getParent() == null) {
       final Stack s = new Stack();
       s.add(piece);
       GameModule.getGameModule().getGameState().addPiece(s);
       newMap.placeAt(s, newPosition);
+      return;
+    }
+
+    // A piece leaving a Stack goes into an empty Stack waiting at the destination rather than
+    // being left unstacked, e.g. its own Stack when undoing a move out of a location where it was alone
+    final Stack empty = stackable ? findEmptyStack(newMap, piece, newPosition) : null;
+    if (empty != null) {
+      newMap.getStackMetrics().merge(empty, piece);
     }
     else {
       newMap.placeAt(piece, newPosition);
     }
+  }
+
+  /**
+   * Find an empty Stack at a position that a piece can join. The Stack must already be bound to the
+   * piece's layer. If there are several, the one with the lowest id is chosen so that every client
+   * picks the same one.
+   */
+  private Stack findEmptyStack(Map map, GamePiece piece, Point pos) {
+    final PieceCollection pieces = map.getPieceCollection();
+    final int layer = pieces instanceof CompoundPieceCollection ?
+      ((CompoundPieceCollection) pieces).getLayerForPiece(piece) : Stack.LAYER_NOT_SET;
+    if (layer == Stack.LAYER_NOT_SET) {
+      return null;
+    }
+
+    Stack found = null;
+    for (final GamePiece p : map.getAllPieces()) {
+      if (p instanceof Stack && !(p instanceof Deck)) {
+        final Stack s = (Stack) p;
+        if (s.isEmpty()
+            && s.getId() != null
+            && s.getLayer() == layer
+            && s.getPosition().equals(pos)
+            && (found == null || s.getId().compareTo(found.getId()) < 0)) {
+          found = s;
+        }
+      }
+    }
+    return found;
   }
 
   @Override
