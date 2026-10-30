@@ -66,12 +66,19 @@
         <justification>javax.swing.JApplet no longer exists</justification>
     </difference>
 
+    <!-- 3.7.31 -->
+    <difference>
+        <className>VASSAL/build/module/DiceButton</className>
+        <differenceType>6001</differenceType>
+        <field>launch</field>
+        <justification>Field with same type and name exists in the superclass</justification>
+    </difference>
+
     <!-- 3.8.0 -->
     <difference>
         <className>VASSAL/build/module/GameState</className>
         <differenceType>6001</differenceType>
         <field>loadGameOld</field>
         <justification>Action is obsolete. Load Continuation moved to Tools menu</justification>
-    </difference>
 
 </differences>

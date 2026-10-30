@@ -25,6 +25,7 @@
       "bug_fixes": [
       ],
       "improvements": [
+        { "num": 15222, "desc": "Modify DiceButton to support legacy modules" }
       ],
       "other": [
       ]
