@@ -34,7 +34,7 @@ import VASSAL.script.expression.ExpressionException;
  *
  * This is for recoverable errors that occur during game play, as opposed to {@link IllegalBuildException},
  * which covers errors when building a module
- * @see ErrorDialog.dataWarning()
+ * @see VASSAL.tools.ErrorDialog#dataWarning
  * @author rodneykinney
  *
  */
@@ -193,6 +193,7 @@ public class BadDataReport {
   private String getAuditMessage() {
     return additionalInfo ? Resources.getString(AuditTrail.isEnabled() ? "BadDataReport.see_errorlog" : "BadDataReport.enable_pref") : "";
   }
+
   /**
    * Expanded Bad Data Report for PieceSlot
    * Display the name of the slot

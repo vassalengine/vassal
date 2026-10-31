@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -35,11 +35,11 @@ package	bsh;
 
 /**
     A specialized namespace	for Blocks (e.g. the body of a "for" statement).
-	The Block acts like a child namespace but only for typed variables 
-	declared within it (block local scope) or untyped variables explicitly set 
-	in it via setBlockVariable().  Otherwise variable assignment 
+	The Block acts like a child namespace but only for typed variables
+	declared within it (block local scope) or untyped variables explicitly set
+	in it via setBlockVariable().  Otherwise variable assignment
 	(including untyped variable usage) acts like it is part of the containing
-	block.  
+	block.
 	<p>
 */
 /*
@@ -49,9 +49,9 @@ package	bsh;
 	But this has changed a few times so I'd like to leave this abstraction for
 	now.
 */
-class BlockNameSpace extends NameSpace 
+class BlockNameSpace extends NameSpace
 {
-    public BlockNameSpace( NameSpace parent ) 
+    public BlockNameSpace( NameSpace parent )
 		throws EvalError
 	{
 		super( parent, parent.getName()+ "/BlockNameSpace" );
@@ -72,11 +72,11 @@ class BlockNameSpace extends NameSpace
 		removed, but it cannot.  When recurse is false we still need to set the
 		variable in our parent, not here.
 	*/
-    public void	setVariable( 
-		String name, Object value, boolean strictJava, boolean recurse ) 
-		throws UtilEvalError 
+    public void	setVariable(
+		String name, Object value, boolean strictJava, boolean recurse )
+		throws UtilEvalError
 	{
-		if ( weHaveVar( name ) ) 
+		if ( weHaveVar( name ) )
 			// set the var here in the block namespace
 			super.setVariable( name, value, strictJava, false );
 		else
@@ -88,10 +88,10 @@ class BlockNameSpace extends NameSpace
 		Set an untyped variable in the block namespace.
 		The BlockNameSpace would normally delegate this set to the parent.
 		Typed variables are naturally set locally.
-		This is used in try/catch block argument. 
+		This is used in try/catch block argument.
 	*/
-    public void	setBlockVariable( String name, Object value ) 
-		throws UtilEvalError 
+    public void	setBlockVariable( String name, Object value )
+		throws UtilEvalError
 	{
 		super.setVariable( name, value, false/*strict?*/, false );
 	}
@@ -101,7 +101,7 @@ class BlockNameSpace extends NameSpace
 		it block local scope or an untyped var was explicitly set here via
 		setBlockVariable().
 	*/
-	private boolean weHaveVar( String name ) 
+	private boolean weHaveVar( String name )
 	{
 		// super.variables.containsKey( name ) not any faster, I checked
 		try {
@@ -119,20 +119,20 @@ class BlockNameSpace extends NameSpace
 		reference.  Name.java is smart enough to handle this using
 		getBlockThis().
 		@see #getThis( Interpreter )
-    This getBlockThis( Interpreter declaringInterpreter ) 
+    This getBlockThis( Interpreter declaringInterpreter )
 	{
 		return super.getThis( declaringInterpreter );
 	}
 */
 
 	//
-	// Begin methods which simply delegate to our parent (enclosing scope) 
+	// Begin methods which simply delegate to our parent (enclosing scope)
 	//
 
 	/**
 		This method recurses to find the nearest non-BlockNameSpace parent.
 
-	public NameSpace getParent() 
+	public NameSpace getParent()
 	{
 		NameSpace parent = super.getParent();
 		if ( parent instanceof BlockNameSpace )
@@ -142,7 +142,7 @@ class BlockNameSpace extends NameSpace
 	}
 */
 	/** do we need this? */
-	private NameSpace getNonBlockParent() 
+	private NameSpace getNonBlockParent()
 	{
 		NameSpace parent = super.getParent();
 		if ( parent instanceof BlockNameSpace )
@@ -155,7 +155,7 @@ class BlockNameSpace extends NameSpace
 		Get a 'this' reference is our parent's 'this' for the object closure.
 		e.g. Normally a 'this' reference to a BlockNameSpace (e.g. if () { } )
 		resolves to the parent namespace (e.g. the namespace containing the
-		"if" statement). 
+		"if" statement).
 		@see #getBlockThis( Interpreter )
 	*/
     This getThis( Interpreter declaringInterpreter ) {
@@ -183,7 +183,7 @@ class BlockNameSpace extends NameSpace
 		getParent().importPackage( name );
 	}
 
-    public void	setMethod(String name, BshMethod method) 
+    public void	setMethod(String name, BshMethod method)
 		throws UtilEvalError
 	{
 		getParent().setMethod( name, method );

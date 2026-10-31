@@ -61,7 +61,6 @@ import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.MovementMarkable;
 import VASSAL.counters.NonRectangular;
 import VASSAL.counters.Obscurable;
-import VASSAL.counters.PieceDefiner;
 import VASSAL.counters.Pivot;
 import VASSAL.counters.PlaceMarker;
 import VASSAL.counters.PlaySound;
@@ -239,8 +238,7 @@ public class BasicCommandEncoder implements CommandEncoder, Buildable {
    * @param type the type of the Decorator ("Trait") to be created. Once created, the Decorator should
    *             return this value from its {@link Decorator#myGetType} method.
    * @param inner the inner trait/piece of the Decorator (the "innermost" member of a game piece will be a {@link BasicPiece}; each
-   *              successive Trait in the trait list presented in a piece's {@link PieceDefiner} dialog represents a sep "outward").
-   * @see Decorator, <a href="https://en.wikipedia.org/wiki/Decorator_pattern">Decorator Pattern</a>
+   *              successive Trait in the trait list presented in a piece's {@link VASSAL.counters.PieceDefiner} dialog represents a sep "outward").
    */
   public Decorator createDecorator(String type, GamePiece inner) {
     return decoratorFactories.getOrDefault(

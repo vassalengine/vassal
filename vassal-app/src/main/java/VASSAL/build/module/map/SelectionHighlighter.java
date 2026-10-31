@@ -139,6 +139,7 @@ public class SelectionHighlighter extends AbstractConfigurable implements Highli
   public Class<?>[] getAttributeTypes() {
     return new Class<?>[]{String.class, PropertyExpression.class, Boolean.class, Color.class, Integer.class, IconConfig.class, Integer.class, Integer.class};
   }
+
   public static class IconConfig implements ConfigurerFactory {
     @Override
     public Configurer getConfigurer(AutoConfigurable c, String key, String name) {

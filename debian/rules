@@ -8,7 +8,7 @@ PKG_TAG		:= $(shell dpkg-parsechangelog --show-field Version | \
 #PKG_TAG		:= $(shell git describe --tags --abbrev=4)
 
 JAVAC		:= javac
-JAVAC_FLAGS	:= -g --release 11 -d $(OUT_DIR) 
+JAVAC_FLAGS	:= -g --release 17 -d $(OUT_DIR)
 JAVA		:= java
 JAR		:= jar
 
@@ -23,7 +23,7 @@ APP_JSRCDIR	:= $(APP_SRCDIR)/java
 APP_SRC	    	:= $(shell find $(APP_JSRCDIR)/bsh          -name "*.java") \
 	           $(shell find $(APP_JSRCDIR)/org/netbeans -name "*.java") \
 		   $(shell find $(APP_JSRCDIR)/org/litesoft -name "*.java") \
-		   $(shell find $(APP_JSRCDIR)/VASSAL       -name "*.java")
+		   $(shell find $(APP_JSRCDIR)/VASSAL       -name "*.java" | grep -v vassal-app/src/main/java/VASSAL/tools/logging/PropertyNoCaseStartsWithCondition.java)
 APP_IMG		:= $(APP_SRCDIR)/resources/images
 APP_ICON	:= $(APP_SRCDIR)/resources/icons
 APP_HELP	:= $(APP_SRCDIR)/resources/help
@@ -32,7 +32,6 @@ APP_I18N	:= $(shell find $(APP_SRCDIR)/resources/VASSAL/i18n/ \
 APP_BSH		:= $(shell find $(APP_SRCDIR)/resources/VASSAL/script/\
 			-name "*.bsh")
 APP_MISC	:= $(APP_SRCDIR)/resources/grayscale.icc	\
-		   $(APP_SRCDIR)/resources/logback.xml		\
 		   $(APP_SRCDIR)/resources/removed		\
 		   $(APP_SRCDIR)/resources/vassal.vmoptions
 APP_SPLASH	:= $(APP_JSRCDIR)/org/netbeans/modules/wizard/defaultWizard.png
@@ -84,12 +83,12 @@ APP_JARS	:= /usr/share/java/asm.jar			\
 		   /usr/share/java/xml-apis-ext.jar		\
 		   /usr/share/java/xmlgraphics-commons.jar
 
+APP_NAME	:= org.vassalengine.vassal
 
 DOC_SRCDIR	:= vassal-doc/src/main
 DOC_USER	:= $(DOC_SRCDIR)/userguide/userguide.adoc
 DOC_DESIGN	:= $(DOC_SRCDIR)/designerguide/designerguide.adoc
 DOC_README	:= $(DOC_SRCDIR)/readme-referencemanual/README.adoc
-DOC_HISTORY	:= $(DOC_SRCDIR)/readme-referencemanual/versionHistory.adoc
 DOC_REF		:= $(shell find \
 			$(DOC_SRCDIR)/readme-referencemanual/ReferenceManual \
 			-name "*.adoc")
@@ -97,7 +96,6 @@ DOC_REF		:= $(shell find \
 DOC_TARGETS	:= $(DOC_USER:%.adoc=%.pdf)		\
 		   $(DOC_DESIGN:%.adoc=%.pdf)		\
 		   $(DOC_README:%.adoc=%.html)		\
-		   $(DOC_HISTORY:%.adoc=%.html)		\
 		   $(DOC_REF:%.adoc=%.html)
 
 
@@ -131,6 +129,7 @@ deprecated: .compile
 	cp -a $(APP_ICON)                        $(OUT_DIR)/
 	cp -a $(APP_HELP)                        $(OUT_DIR)/
 	cp -a $(APP_MISC)			 $(OUT_DIR)/
+	cp -a dist/logback-1.2.xml $(OUT_DIR)/logback.xml
 	cp -a git.properties                     $(OUT_DIR)/
 	cp -a deprecated			 $(OUT_DIR)/
 	cp -a $(APP_SPLASH)                      $(OUT_DIR)$(subst $(APP_JSRCDIR),,$(APP_SPLASH))
@@ -181,7 +180,7 @@ deprecated: .compile
 		LICENSE 				\
 		README.md 				\
 		$(OUT_DIR)/icons/scalable/VASSAL.svg 	\
-		debian/VASSAL.sh			\
+		dist/linux/VASSAL.sh			\
 		$(STAGE_DIR)
 	chmod a+x $(STAGE_DIR)/VASSAL.sh
 
@@ -203,18 +202,33 @@ deprecated: .compile
 		ln -fs ../../vassal/doc/ReferenceManual reference)
 
 	mkdir -p debian/tmp/usr/share/applications
-	cp debian/vassal.desktop \
-		debian/tmp/usr/share/applications/application-x-vassal.desktop
+	cp dist/linux/$(APP_NAME).desktop \
+		debian/tmp/usr/share/applications/$(APP_NAME).desktop
 
 	mkdir -p debian/tmp/usr/share/icons/hicolor/scalable/mimetypes
+	mkdir -p debian/tmp/usr/share/icons/hicolor/scalable/apps
 	cp $(STAGE_DIR)/VASSAL.svg \
-		debian/tmp/usr/share/icons/hicolor/scalable/mimetypes/application-x-vassal.svg
+		debian/tmp/usr/share/icons/hicolor/scalable/mimetypes/$(APP_NAME).svg
+
+	mkdir -p debian/tmp/usr/share/mime/packages
+	cp dist/linux/$(APP_NAME).mime.xml \
+		debian/tmp/usr/share/mime/packages/$(APP_NAME).xml
+
+	mkdir -p debian/tmp/usr/share/metainfo
+	cp dist/linux/$(APP_NAME).metainfo.xml \
+		debian/tmp/usr/share/metainfo/$(APP_NAME).metainfo.xml
+
+	cp $(STAGE_DIR)/VASSAL.svg \
+		debian/tmp/usr/share/icons/hicolor/scalable/apps/$(APP_NAME).svg
+
+	#cp dist/linux/vassal.sharedmimeinfo debian/vassal.sharedmimeinfo
 
 	touch .stage 
 
 .clean:
 	rm -rf debian/tmp
 	rm -rf debian/stage
+	rm -rf debian/vassal.sharedmimeinfo
 	rm -rf $(OUT_DIR)
 	rm -rf $(DOC_TARGETS)
 	rm -rf git.properties

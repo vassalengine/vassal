@@ -1,0 +1,68 @@
+%undefine       _disable_source_fetch
+%define         SHA256SUM0 @SHA256SUM@
+%define         app_name org.vassalengine.vassal
+
+Name:		vassal
+Summary:	A game engine for building and playing board games and card games
+Version:	@RPM_RELEASE@
+Release:	1
+Source0:	https://github.com/@REPOSITORY@/releases/download/@RELEASE@/VASSAL-@RELEASE@-linux.tar.bz2
+URL:		https://vassalengine.org/
+BuildArch:	noarch
+Requires:	(java-17 or java-18 or java-19 or java-20 or java-21 or java-22 or java-23 or java-24 or java-25 or java-26 or java-27)
+License:	LGPL-2.0+ AND Apache-2.0 AND BSD-3-Clause AND CPL-1.0 AND MIT AND EPL-1.0
+
+%description
+Vassal is a game engine for building and playing virtual
+adaptations of board and card games.  You can use Vassal to play
+locally, in real time over the Internet or by email.  Vassal
+runs on all platforms and is free, open-source software.
+
+%prep
+echo "%{SHA256SUM0}	%{SOURCE0}" | sha256sum -c -
+
+%setup -q -n VASSAL-@RELEASE@
+
+%build
+
+%install
+#make some install dirs
+install -d -m755 %{buildroot}%{_bindir}
+install -d -m755 %{buildroot}%{_datadir}/%{name}
+install -d -m755 %{buildroot}%{_mandir}/man6
+install -d -m755 %{buildroot}%{_datadir}/applications
+install -d -m755 %{buildroot}%{_datadir}/mime/packages
+install -d -m755 %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes
+install -d -m755 %{buildroot}%{_datadir}/icons/hicolor/scalable/apps
+install -d -m755 %{buildroot}%{_datadir}/metainfo
+
+#install package
+cp -a lib doc VASSAL.sh VASSAL.svg CHANGES LICENSE README.md %{buildroot}%{_datadir}/%{name}/
+(cd %{buildroot}%{_bindir} && ln -s ../share/%{name}/VASSAL.sh vassal)
+cp VASSAL.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/mimetypes/%{app_name}.svg
+cp VASSAL.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{app_name}.svg
+cp %{name}.6 %{buildroot}%{_mandir}/man6/%{name}.6
+cp %{app_name}.desktop %{buildroot}%{_datadir}/applications/%{app_name}.desktop
+cp %{app_name}.mime.xml %{buildroot}%{_datadir}/mime/packages/%{app_name}.xml
+cp %{app_name}.metainfo.xml %{buildroot}%{_datadir}/metainfo/%{app_name}.metainfo.xml
+
+%files
+%{_bindir}/*
+%{_datadir}/%{name}
+%{_datadir}/applications/%{app_name}.desktop
+%{_datadir}/mime/packages/%{app_name}.xml
+%{_datadir}/icons/hicolor/scalable/mimetypes/%{app_name}.svg
+%{_datadir}/icons/hicolor/scalable/apps/%{app_name}.svg
+%{_datadir}/metainfo/%{app_name}.metainfo.xml
+%{_mandir}/man6/vassal.6.gz
+
+%post
+update-mime-database /usr/share/mime &> /dev/null || :
+update-desktop-database &> /dev/null || :
+gtk-update-icon-cache /usr/share/icons/hicolor &> /dev/null || :
+
+%postun
+update-mime-database /usr/share/mime &> /dev/null || :
+update-desktop-database &> /dev/null || :
+gtk-update-icon-cache /usr/share/icons/hicolor &> /dev/null || :
+

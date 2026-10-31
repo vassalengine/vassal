@@ -47,7 +47,7 @@ JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 # numeric part of the version only
-VNUM:=3.7.19
+VNUM:=3.7.31
 # major-minor part of the version
 V_MAJ_MIN:=$(shell echo "$(VNUM)" | cut -f1,2 -d'.')
 
@@ -107,13 +107,21 @@ test:
 $(TMPDIR) $(JDOCDIR):
 	mkdir -p $@
 
+# -Dasciidoctor.attributes=optimize makes asciidoctor-pdf shrink the PDF guides
+# with Ghostscript (the user guide halves, 2.0 MB -> 1.0 MB). JRuby reaches gs
+# through Open3.capture3, and to set that child process up it reflects into
+# java.io.FileDescriptor and sun.nio.ch for the real OS file descriptors; Java
+# 17+ encapsulates both, so it spawns with invalid descriptors and the build
+# dies with "(EBADF) Bad file descriptor - /usr/bin/gs" -- nothing to do with
+# Ghostscript, which is never reached. The two --add-opens that fix it are in
+# .mvn/jvm.config, which cannot carry a comment of its own.
 $(LIBDIR)/Vengine.jar: version-set
 	$(MVN) deploy -DgitVersion=$(VERSION) -Dasciidoctor.attributes=optimize $(SKIPS)
 	mv $(LIBDIR)/$(JARNAME).jar $@
 
 $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 	echo -n jdk.crypto.ec, >$@
-	jdeps --ignore-missing-deps --print-module-deps --multi-release 11 $(LIBDIR)/*.jar | tr -d '\n' >>$@
+	jdeps --ignore-missing-deps --print-module-deps --multi-release 17 $(LIBDIR)/*.jar | tr -d '\n' >>$@
 
 #$(DISTDIR)/windows/VASSAL.ico:
 #	convert -bordercolor Transparent -border 1x1 src/icons/22x22/VASSAL.png $(TMPDIR)/VASSAL-24.png
@@ -199,7 +207,12 @@ $(TMPDIR)/linux-$(VERSION)-build/VASSAL-$(VERSION): $(LIBDIR)/Vengine.jar
 	cp -a $(DOCDIR) $@/doc
 	cp -a CHANGES LICENSE README.md $@
 	cp -a $(LIBDIR) $@/lib
-	cp $(DISTDIR)/VASSAL.sh $@
+	cp dist/linux/VASSAL.sh $@
+	cp dist/linux/org.vassalengine.vassal.desktop $@
+	cp dist/linux/org.vassalengine.vassal.metainfo.xml $@
+	cp dist/linux/org.vassalengine.vassal.mime.xml $@
+	cp dist/linux/vassal.6 $@
+	cp dist/linux/integration.sh $@
 	cp vassal-app/src/main/resources/icons/scalable/VASSAL.svg $@
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
@@ -280,7 +293,7 @@ release-macos: release-macos-universal
 
 release-macos-universal: $(TMPDIR)/VASSAL-$(VERSION)-macos-universal.dmg
 
-release-windows: release-windows-x86_64 release-windows-aarch64
+release-windows: release-windows-x86_64 
 
 release-windows-x86_32: $(TMPDIR)/VASSAL-$(VERSION)-windows-x86_32.exe
 

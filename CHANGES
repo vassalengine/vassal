@@ -1,15 +1,224 @@
-3.7.19 - ???
+3.7.31 - ???
 
+* 15245: Upgraded maven-enforcer-plugin to 3.7.0
+* 15233: Let JRuby spawn Ghostscript when building the PDF guides
+* 15231: Upgraded logback-classic to 1.6.6
+* 15222: Modify DiceButton to support legacy modules
+* 15221: Upgraded byte-buddy to 1.18.16
+* 15220: Upgraded maven-surefire-plugin to 3.6.1
+* 15202: Fix Load Log, Fast Forward and Append
+* 15217: Fix IndexOutOfBoundsException on undo after beginning a new logfile
+* 15216: Fix NPE in ADC2 importer when the module defines no players
+* 15212: Fix NPE when deleting a Toolbar Menu that has no toolbar
+* 15206: Upgraded batik to 1.20
+* 15198: Upgraded asm to 9.11.1
+* 15158: Change background of Quickstart message to match UI
+
+3.7.30 - 20 October 2026
+
+* 15193: Added Korean translations
+* 15184: Upgraded byte-buddy to 1.18.15
+* 15182: Updated Danish translations and added them for the Editor
+* 15177: Upgraded spotbugs-annotations to 4.10.5
+* 15176: Upgraded spotbugs-maven-plugin to 4.10.5.0
+* 15173: Upgraded commons-codec to 1.23.0
+* 15172: Upgraded httpclient5 to 5.6.5
+* 15164: Upgraded asm to 9.11
+* 15154: Upgraed logback-classic to 1.6.5
+* 15151: Quote path variable in MacOS launch script
+* 15129: Further optimize sum and count expressions
+
+3.7.29 - 3 October 2026
+
+* 15141: Fix NPE when rendering boards to non-map contexts
+
+3.7.28 - 2 October 2026
+
+* 15131: Upgraded maven-artifact 3.10.0
+* 15130: Upgraded apache-maven 3.10.0
+* 15123: Upgraded checkstyle to 14.3.0
+* 15122: Upgraded commons-lang3 to 3.21.0
+* 15114: Upgraded logback-classic to 1.6.4
+* 15111: Fixed typos in menu item text
+* 15106: Upgraded slf4j-api to 2.0.20
+* 15096: Upgraded byte-buddy to 1.18.14
+* 15094: Upgraded asciidoctorj-pdf to 2.3.27
+* 15085: Upgraded maven-deploy-plugin to 3.2.0
+* 15084: Upgraded maven-install-plugin to 3.2.0
+* 15083: Tile large Charts
+* 15080: Upgraded clirr-maven-plugin to 2.9
+* 15079: Upgraded exec-maven-plugin to 3.6.4
+* 15068: Upgraded spotbugs-maven-plugin to 4.10.4.1
+* 15065: Switched from obsolete mockito-inline to mockito-core
+* 15054: Fix Truncated text label on hidden pieces
+* 15050: Upgraded maven-surefire-plugin to 3.6.0
+* 15042: Update MacOS launch script to allow more options
+* 14547: Optimize sum and count expressions
+
+3.7.27 - 6 September 2026
+
+* 15046: Upgraded checkstyle to 14.1.0
+* 15045: Upgraded maven-compiler-plugin to 3.16.0
+* 15041: Updated bundled Java to 26.0.2.1+1 (Windows x86_64, MacOS),
+    26.0.2+13 (Windows aarch64), 21.0.12.1+1 (Windows x86_32)
+* 15038: Added server options to Linux launch script
+* 15037: Fixed VASSAL.sh script to quote file name
+* 15036: Added explanation of expressions to Concepts.adoc
+* 15035: Fixed typo in ExpressionRange.adoc
+* 15032: Use maximum compression for saves and logs
+* 15031: Upgraded jsoup to 1.23.2
+* 15017: Upgraded spotbugs-maven-plugin to 4.10.4.0
+* 15016: Upgraded spotbugs-annotations to 4.10.4
+* 15003: Upgraded byte-buddy to 1.18.12
+* 14998: Upgraded logback-classic to 1.6.3
+* 14994: Upgraded maven to 3.9.16
+* 14990: Upgraded swingx-all to 2.2
+* 14986: Upgraded junit-bom to 6.1.3
+* 14985: Upgraded httpclient5 to 5.6.4
+* 14936: Upgraded commons-codec to 1.22.1
+* 14533: Configure mnemonics for non-English yes/no buttons
+
+3.7.26 - 29 July 2026 
+
+* 14929: Correct Flatpak Maven dependency generation
+* 14928: Fix Requires in RPM spec file, which prevents installation
+* 14926: Upgraded logback-classic to 1.6.1
+
+3.7.25 - 28 July 2026
+
+* 14922: Upgraded checkstyle to 13.9.0
+* 14911: Upgraded logback-classic to 1.6.0
+* 14909: Upgraded maven-jar-plugin to 3.5.1
+* 14902: Fix regression leaking Global Option properties over network
+* 14895: Upgraded junit-bom to 6.1.2
+* 14894: Upgraded spotbugs-maven-plugin to 4.10.3.0
+* 14892: Upgraded spotbugs-annotations to 4.10.3
+* 14886: Compile targeting Java 17
+* 14875: Mock GameModule for DynamicPropertyTest
+* 14872: Complete Chinese translation for VASSAL_zh.properties
+* 14868: Upgraded byte-buddy to 1.18.11
+* 14858: Make button tooltips available on buttons in toolbar menus
+* 14854: Upgraded httpclient5 to 5.6.2
+* 13505: Better handling of duplicate Deck names by Game Refresher
+
+3.7.24 - 26 June 2026
+
+* 14837: Upgraded logback-classic to 1.5.36
+* 14821: Upgraded checkstyle to 13.6.0
+* 14816: Fix DefaultIcon registry key name in the Windows installer
+* 14815: Fixed NoClassDefFoundError from bug reporter dialog by switching to
+    newer, maintained swingx library
+* 14814: Accept HTTP 200 as a response for GitHub issue creation
+* 14810: Upgraded spotbugs-maven-plugin to 4.10.2.0
+* 14808: Upgraded spotbugs-annotations to 4.10.2
+* 14750: Report Internationalization setup inconsistencies as Bad Data
+* 14737: Send back cargo with the mat when moving between maps
+* 14656: Editor search matches Marker names as Property names
+* 14483: Skip empty Turn Lists in the Turn Counter
+
+3.7.23 - 8 June 2026
+
+* 14796: Upgraded byte-buddy to 1.18.10
+* 14794: Upgraded bundled Java to 26.0.1+8 (Windows x86_64, MacOS),
+    21.0.11+11 (Windows x86_32)
+* 14792: Only descend to Turn List sub-levels when the current list item is
+    active
+* 14791: Upgraded logback-classic to 1.5.34
+* 14789: Upgraded checkstyle to 13.5.0
+* 14788: Upgraded maven-dependency-plugin to 3.11.0
+* 14787: Upgraded maven-surefire-plugin to 3.5.5
+* 14780: Fix Linux VASSAL.sh in case of spaces in path
+* 14772: Upgraded maven-site-plugin to 3.22.0
+* 14771: Upgraded asm to 9.10.1
+* 14753: Upgraded junit-bom to 6.1.0
+* 14752: Upgraded maven-artifact to 3.9.16
+* 14751: Upgraded maven-enforcer-plugin to 3.6.3
+* 14744: Fix null check for i18n applyTranslation
+* 14736: Upgraded slf4j-api to 2.0.18
+* 14733: Default all of ListTurnTracker's items to the enabled state
+* 14729: Cancelling Load and Fast Forward cancels both the load and the fast
+    forward
+* 14719: Upgraded bundled Java to 26.0.1+10 (Windows aarch64)
+* 14710: Fix prerelease version numbers in org.vassalengine.vassal.metainfo.xml
+* 14709: Remove explicit Java API version from flatpak skeleton
+* 14650: Don't compute the initial value of dynamic properties in the editor
+* 14526: Locale Configurer displays dropdown with names of both current and
+    native locales
+* 14381: Update dice properties when replaying a log file
+
+3.7.22 - 3 May 2026
+
+* 14682: Upgraded checkstyle 13.4.1
+* 14681: Upgraded commons-codec to 1.22.0
+* 14675: Upgraded commons-io to 2.22.0
+* 14671: Upgraded httpclient5 to 5.6.1
+* 14670: Upgraded jsoup to 1.22.2
+* 14647: Upgraded maven-artifact to 3.9.15
+* 14660: Fix for showing obscured, rotated peek in mouse-over
+* 14612: Upgraded bundled Java to 26+35 (Windows x86_64, MacOS),
+    26+37 (Windows aarch64)
+* 14578: Stop removing unavailable modules from the Module Manager; provide
+    manual cleanup option
+* 14391: Reduce NullCommand nesting on the pausedCommands deque
+
+3.7.21 - 14 April 2026
+
+* 14600: Upgraded byte-buddy to 1.18.8
+* 14599: Fix use of deprecated logback attributes
+* 14598: Create Flatpak recipe on release
+* 14593: Upgraded bundled Java to 25.0.2+10 (Windows x86_64, MacOS),
+    25.0.2+12 (Windows aarch64), 21.0.10+10 (Windows x86)
+* 14591: Upgraded checkstyle to 13.4.0
+* 14590: Upgraded spotbugs-maven-plugin to 4.9.8.3
+* 14572: Fix NPE when searching in the editor
+* 14557: Check and report over-sized image dimensions
+* 14553: Upgraded maven-artifact to 3.9.14
+* 14549: Fix IndexOutOfBounds when reporting pre-defined scenario errors
+* 14542: Don't re-prompt for save file after canceling the FileChooser dialog
+* 14541: Upgraded maven-resoures-plugin 3.5.0
+* 14539: Escape key should cancel Load Continuation
+* 14538: Preserve the user directory preference after canceling from a file
+    load or save dialog
+* 14518: Upgraded miglayout-swing to 11.4.3
+* 14517: Upgraded maven-surefire-plugin to 3.5.5
+* 14503: Upgraded junit-bom to 6.0.3
+* 14502: Upgraded logback-classic to 1.5.32
+* 14488: Build an RPM package
+* 14485: Upgraded maven-dependency-plugin to 3.10.0
+* 14129: Added Simplified Chinese translation for Editor
+
+3.7.20 - 6 February 2026
+
+* 14478: Upgraded checkstyle to 13.2.0
+* 14475: Upgraded maven-compiler-plugin to 3.15.0
+* 14465: Upgraded commons-codec to 1.21.0
+* 14464: Upgraded logback-classic to 1.5.27
+* 14445: Upgraded byte-buddy to 1.18.4
+* 14433: Work around change in java.io.File API in Java 25
+* 14430: Upgraded junit-bom to 6.0.2
+* 14424: Upgraded license-maven-plugin to 2.7.1
+* 14421: Upgraded jsoup to 1.22.1
+* 14415: Upgraded httpclient5 5.6
+* 14414: Upgraded exec-maven-plugin to 3.6.3
+
+3.7.19 - 30 December 2025
+
+* 14406: Upgraded httpclient5 to 5.5.2
+* 14404: Upgraded maven-artifact to 3.9.12
+* 14402: Upgraded asm to 9.9.1
+* 14401: Upgraded checkstyle to 12.3.0
+* 14395: Upgraded logback-classic to 1.5.22
 * 14379: Upgraded maven-resoures-plugin 3.4.0
-* 14378: Upgraded checkstyle to 12.2.0
 * 14377: Upgraded maven-source-plugin to 3.4.0
 * 14373: Upgraded byte-buddy to 1.18.2
 * 14369: Upgraded spotbugs-maven-plugin to 4.9.8.2
-* 14362: Upgraded logback-classic to 1.5.21
 * 14361: Upgraded commons-lang3 to 3.20.0
 * 14359: Upgraded maven-jar-plugin to 3.5.0
+* 14347: Log more info for the piece not on map exception
 * 14341: Upgraded commons-io to 2.21.0
 * 14338: Upgraded commons-codec to 1.20.0
+* 14335: Mark as moved when moving a piece between mats within the same
+    location
 * 14330: Upgraded junit-bom to 6.0.1
 * 14327: Upgraded asciidoctorj-pdf to 2.3.23
 * 14323: Sanitize extracted image filenames for HTML viewer
@@ -17,13 +226,13 @@
 * 14307: Upgraded exec-maven-plugin to 3.6.2
 * 14301: Upgraded bundled Java to 25+36 (Windows x86_64, Mac), 25+37 (Windows
     aarch64)
+* 14291: Update info to guide users of unsupported macOS versions
 * 14281: Upgraded maven-pmd-plugin to 3.28.0
-* 14274: Upgraded asm to 9.9
 * 14273: Upgraded exec-maven-plugin to 3.6.1
 * 14265: Upgraded maven-enforcer-plugin to 3.6.2
 * 14264: Upgraded maven-dependency-plugin to 3.9.0
+* 14260: Reorder items on Player Tools menu to put all Loads together
 * 14254: Set-up release-on-tag workflow
-* 14252: Upgraded httpclient5 to 5.5.1
 * 14250: Don't report changes to scenario options when report text is empty
 
 3.7.18 - 23 September 2025
@@ -2886,7 +3095,7 @@ prefix names, stack movement.
 * Bug: Fixed some problems with non-docking Map Windows, including the Map
 Overview Window and toolbar.
 
-3.0.8 - 1 Ocbober 2007
+3.0.8 - 1 October 2007
 
 * Restored high-quality image scaling preference.
 
@@ -3044,11 +3253,78 @@ opponent's window
 * 'Area of Effect' trait highlights an area surrounding a game piece, for
   showing zones of control, etc.
 
+2.0
+
+* Any key combination (not just CTRL-) can now be used to manipulate
+  counters.
+* Dragging the mouse now selects all pieces in a region, which can be moved
+  as a group.
+* Trait to draw a movement trail for a piece
+* Pieces that can be moved using keyboard shortcuts
+* Pieces that pivot around a fixed point
+* Change offset and orientation of grid numbering
+* Fix positioning of rotated counters within a stack
+
+1.9
+
+* Create predefined setups accessible from the File menu
+* Multi-zoned grids define sub-regions of a board with their own grid
+* Keyboard command to reset a Layer to a particular level
+* Customize title of "Choose Boards" dialog
+* Use HTML to format Text Labels
+* Default "Mark Moved" icon
+* Scale thickness of highlight in overview map
+* New windows don't go off screen
+
 1.8 - 26 December 2004
+
+* Ability to lock rooms on the server, preventing new players from joining
+* Server now supports full international character sets
+* Create your own tutorials in Help
+* Transparent background for text labels.
+* Reduced memory usage for rotated images
+* Bug fix: undo delete counters
+* Bug fix: clone counters on maps with stacking-disabled
+* Bug fix: unable to disable "send deck to other deck" command
+* Bug fix: recenter map when right-clicking on shift-to-select piece
 
 1.7 - 27 September 2004
 
+* Define layers for ordering pieces on maps.
+* Toolbar wraps when buttons reach edge of screen
+* For gridless boards, Line of Sight Thread can define range in raw pixels.
+* Button to shift all pieces to be recentered on a map.
+* Specify auto-report format for changes to piece on a map-by-map basis
+
+1.6
+
+* Ability to group right-click menu items for game pieces into sub-menus.
+* Place Marker and Replace with Other traits can specify an offset and
+  optionally match rotation angle with the original piece.
+
+1.5
+
+* Fully configurable auto-report messages: Specify the exact format for
+  reporting movement of pieces on/between map windows, dice rolls,
+  keyboard/right-click commands on pieces, etc.
+* Symbolic dice: configure with any number of images and select one at
+  random to display in a dedicated window
+* Replace with Other trait now supports "circular" replacements: A -> B
+  and B -> A
+
 1.4.4 - 14 August 2004
+
+1.4
+
+* Improvements to Decks: Menu item that shuffles entire deck into anotheri
+  deck. Bug fixes: undo/redo, drawing
+* Non-standard dice: any distribution of numbers or select a random string
+  from a list
+* Set default zoom factor
+* Improvements to irregular grids for area-movement games
+* Counters with the Place Marker trait can specify text to automatically
+  echo to chat area
+* Internet Dice Button stores opponent's email address with the saved game.
 
 1.3.4.3 - 19 March 2004
 

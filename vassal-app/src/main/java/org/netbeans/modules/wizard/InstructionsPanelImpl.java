@@ -71,7 +71,7 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
             setFont (f);
         }
     }
-    
+
     /**
      * Get the wizard this panel is monitoring.
      * @return
@@ -91,7 +91,7 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
         super.addNotify();
         wizard.addWizardObserver (this);
     }
-    
+
     /**
      * Overridden to stop listening to the wizard when removed from a container
      */
@@ -99,19 +99,19 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
         wizard.removeWizardObserver (this);
         super.removeNotify();
     }
-    
+
     /**
      * Get the image to be displayed.  Note that unpredictable behavior
-     * may result if all images returned from this method are not the 
+     * may result if all images returned from this method are not the
      * same size.  Override to display a different wizard depending on the
      * step.
-     * 
+     *
      * @return
      */
     protected BufferedImage getImage() { //for unit test
         return img;
     }
-    
+
     public InstructionsPanelImpl(BufferedImage img, Wizard wizard) {
         if (img == null) {
             //In the event of classloader issues, also have a way to get
@@ -119,7 +119,7 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
             //apps
             img = (BufferedImage) UIManager.get ("wizard.sidebar.image"); //NOI18N
         }
-        
+
         String imgStr = System.getProperty("wizard.sidebar.image"); //NOI18N
         //image has not been loaded and user wishes to supply their own image
         if (img == null && imgStr != null) {
@@ -154,15 +154,15 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
         this.wizard = wizard;
     }
 
-    
+
     public boolean isOpaque() {
         return img != null;
     }
-    
+
     /**
      * Paints the background image for this component, or fills the
      * background with a color if no image present.
-     * 
+     *
      * @param g A Graphic2D to paint into
      * @param x The x coordinate of the area that should contain the image
      * @param y The y coordinate of the area that should contain the image
@@ -180,7 +180,7 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
             g.setColor (c);
         }
     }
-    
+
     String[] steps = new String[0];
     public final void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
@@ -211,20 +211,20 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
         int y = fm.getMaxAscent() + ins.top + MARGIN;
         int x = ins.left + MARGIN;
         int h = fm.getMaxAscent() + fm.getMaxDescent() + 3;
-        
+
         Font boldFont = f.deriveFont (Font.BOLD);
-        
+
         g.setFont (boldFont);
         g.drawString (NbBridge.getString ("org/netbeans/modules/wizard/Bundle", //NOI18N
                 InstructionsPanelImpl.class, "Steps"), x, y); //NOI18N
-        
+
         int underlineY = ins.top + MARGIN + fm.getAscent() + 3;
-        g.drawLine (x, underlineY, x + (getWidth() - (x + ins.left + MARGIN)), 
+        g.drawLine (x, underlineY, x + (getWidth() - (x + ins.left + MARGIN)),
                 underlineY);
-        
+
         int bottom = getComponentCount() == 0 ? getHeight() - getInsets().bottom :
             getHeight() - getInsets().bottom - getComponents()[0].getPreferredSize().height;
-        
+
         y += h + 10;
         int first = 0;
         int stop = steps.length;
@@ -279,11 +279,11 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
                 stop = last + 1;
             }
         }
-         */ 
-        
+         */
+
         g.setFont (getFont());
         g.setColor (getForeground());
-        
+
         for (int i=first; i < stop; i++) {
             boolean isUndetermined = Wizard.UNDETERMINED_STEP.equals(steps[i]);
             boolean canOnlyFinish = wizard.getForwardNavigationMode() ==
@@ -299,27 +299,27 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
                     curr = (i + 1) + ". " + (isUndetermined ?
                         NbBridge.getString("org/netbeans/modules/wizard/Bundle",  //NOI18N
                         InstructionsPanelImpl.class, "elipsis") :  //NOI18N
-                        steps[i].equals(elipsis) ? elipsis : 
+                        steps[i].equals(elipsis) ? elipsis :
                         wizard.getStepDescription(steps[i])); //NOI18N
                 }
             } else {
                 curr = elipsis;
             }
             if (curr != null) {
-                boolean selected = (steps[i].equals (currentStep) && !inSummaryPage) || 
+                boolean selected = (steps[i].equals (currentStep) && !inSummaryPage) ||
                         (inSummaryPage && i == steps.length - 1);
                 if (selected) {
                     g.setFont (boldFont);
                 }
-                
+
                 int width = fm.stringWidth(curr);
                 while (width > getWidth() - (ins.left + ins.right) && curr.length() > 5) {
-                    curr = curr.substring(0, curr.length() - 5) + 
+                    curr = curr.substring(0, curr.length() - 5) +
                             NbBridge.getString(
                                 "org/netbeans/modules/wizard/Bundle", //NOI18N
                                 InstructionsPanelImpl.class, "elipsis"); //NOI18N
                 }
-                
+
                 g.drawString (curr, x, y);
                 if (selected) {
                     g.setFont (f);
@@ -328,12 +328,12 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
             }
         }
     }
-    
+
     private int historicWidth = Integer.MIN_VALUE;
     public final Dimension getPreferredSize() {
-        Font f = getFont() != null ? getFont() : 
+        Font f = getFont() != null ? getFont() :
             UIManager.getFont("controlFont"); //NOI18N
-        
+
         Graphics g = getGraphics();
         if (g == null) {
             g = new BufferedImage (1, 1, BufferedImage.TYPE_INT_ARGB).getGraphics();
@@ -342,7 +342,7 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
         FontMetrics fm = g.getFontMetrics(f);
         Insets ins = getInsets();
         int h = fm.getHeight();
-        
+
         String[] steps = wizard.getAllSteps();
         int w = Integer.MIN_VALUE;
         for (int i=0; i < steps.length; i++) {
@@ -366,21 +366,21 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
         historicWidth = w;
         return new Dimension (w,  ins.top + ins.bottom + ((h + 3) * steps.length));
     }
-    
+
     private boolean inSummaryPage;
     public void setInSummaryPage (boolean val) {
         this.inSummaryPage = val;
         repaint();
     }
-    
+
     public final Dimension getMinimumSize() {
         return getPreferredSize();
     }
-    
+
     public void stepsChanged(Wizard wizard) {
         repaint();
     }
-    
+
     public void navigabilityChanged (Wizard wizard) {
         //do nothing
     }
@@ -388,7 +388,7 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
     public void selectionChanged(Wizard wizard) {
         repaint();
     }
-    
+
     public final void doLayout() {
         Component[] c = getComponents();
         Insets ins = getInsets();
@@ -402,11 +402,11 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
             y -= d.height;
         }
     }
-    
+
     public final AccessibleContext getAccessibleContext() {
         return new ACI (this);
     }
-    
+
     private static final class ACI extends AccessibleContext {
         private final Wizard wizard;
         private final InstructionsPanelImpl panel;
@@ -423,7 +423,7 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
                     "org/netbeans/modules/wizard/Bundle", //NOI18N
                     InstructionsPanelImpl.class, "ACSD_InstructionsPanel")); //NOI18N
         }
-        
+
         JEditorPane pane;
         public AccessibleText getAccessibleText() {
             if (pane == null) {
@@ -443,7 +443,7 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
             pane.validate();
             return pane.getAccessibleContext().getAccessibleText();
         }
-        
+
         public String getText() {
             StringBuffer sb = new StringBuffer();
             String[] s = wizard.getAllSteps();
@@ -453,7 +453,7 @@ public class InstructionsPanelImpl extends JComponent implements WizardObserver,
             }
             return sb.toString();
         }
-        
+
         public AccessibleRole getAccessibleRole() {
             return AccessibleRole.LIST;
         }

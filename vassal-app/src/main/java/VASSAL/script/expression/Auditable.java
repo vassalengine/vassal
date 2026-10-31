@@ -27,7 +27,7 @@ public interface Auditable {
    */
   default String getComponentTypeName() {
     return "";
-  };
+  }
 
   /**
    * Return the name of the trait or Component an Auditable is
@@ -35,5 +35,5 @@ public interface Auditable {
    */
   default String getComponentName() {
     return "";
-  };
+  }
 }

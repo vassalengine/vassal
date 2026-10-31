@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -40,9 +40,9 @@ import java.io.*;
 import java.util.Hashtable;
 
 /**
-	XThis is a dynamically loaded extension which extends This.java and adds 
-	support for the generalized interface proxy mechanism introduced in 
-	JDK1.3.  XThis allows bsh scripted objects to implement arbitrary 
+	XThis is a dynamically loaded extension which extends This.java and adds
+	support for the generalized interface proxy mechanism introduced in
+	JDK1.3.  XThis allows bsh scripted objects to implement arbitrary
 	interfaces (be arbitrary event listener types).
 
 	Note: This module relies on new features of JDK1.3 and will not compile
@@ -57,7 +57,7 @@ import java.util.Hashtable;
 	@see JThis	 See also JThis with explicit JFC support for compatability.
 	@see This	
 */
-public class XThis extends This 
+public class XThis extends This
 	{
 	/**
 		A cache of proxy interface handlers.
@@ -67,8 +67,8 @@ public class XThis extends This
 
 	InvocationHandler invocationHandler = new Handler();
 
-	public XThis( NameSpace namespace, Interpreter declaringInterp ) { 
-		super( namespace, declaringInterp ); 
+	public XThis( NameSpace namespace, Interpreter declaringInterp ) {
+		super( namespace, declaringInterp );
 	}
 
 	public String toString() {
@@ -78,7 +78,7 @@ public class XThis extends This
 	/**
 		Get dynamic proxy for interface, caching those it creates.
 	*/
-	public Object getInterface( Class clas ) 
+	public Object getInterface( Class clas )
 	{
 		return getInterface( new Class[] { clas } );
 	}
@@ -86,7 +86,7 @@ public class XThis extends This
 	/**
 		Get dynamic proxy for interface, caching those it creates.
 	*/
-	public Object getInterface( Class [] ca ) 
+	public Object getInterface( Class [] ca )
 	{
 		if ( interfaces == null )
 			interfaces = new Hashtable();
@@ -99,10 +99,10 @@ public class XThis extends This
 
 		Object interf = interfaces.get( hashKey );
 
-		if ( interf == null ) 
+		if ( interf == null )
 		{
 			ClassLoader classLoader = ca[0].getClassLoader(); // ?
-			interf = Proxy.newProxyInstance( 
+			interf = Proxy.newProxyInstance(
 				classLoader, ca, invocationHandler );
 			interfaces.put( hashKey, interf );
 		}
@@ -116,51 +116,51 @@ public class XThis extends This
 
 		Notes:
 		Inner class for the invocation handler seems to shield this unavailable
-		interface from JDK1.2 VM...  
+		interface from JDK1.2 VM...
 		
 		I don't understand this.  JThis works just fine even if those
 		classes aren't there (doesn't it?)  This class shouldn't be loaded
 		if an XThis isn't instantiated in NameSpace.java, should it?
 	*/
-	class Handler implements InvocationHandler, java.io.Serializable 
+	class Handler implements InvocationHandler, java.io.Serializable
 	{
-		public Object invoke( Object proxy, Method method, Object[] args ) 
+		public Object invoke( Object proxy, Method method, Object[] args )
 			throws Throwable
 		{
-			try { 
+			try {
 				return invokeImpl( proxy, method, args );
 			} catch ( TargetError te ) {
-				// Unwrap target exception.  If the interface declares that 
-				// it throws the ex it will be delivered.  If not it will be 
+				// Unwrap target exception.  If the interface declares that
+				// it throws the ex it will be delivered.  If not it will be
 				// wrapped in an UndeclaredThrowable
 				throw te.getTarget();
 			} catch ( EvalError ee ) {
 				// Ease debugging...
 				// XThis.this refers to the enclosing class instance
-				if ( Interpreter.DEBUG ) 
+				if ( Interpreter.DEBUG )
 					Interpreter.debug( "EvalError in scripted interface: "
 					+ XThis.this.toString() + ": "+ ee );
 				throw ee;
 			}
 		}
 
-		public Object invokeImpl( Object proxy, Method method, Object[] args ) 
-			throws EvalError 
+		public Object invokeImpl( Object proxy, Method method, Object[] args )
+			throws EvalError
 		{
 			String methodName = method.getName();
 			CallStack callstack = new CallStack( namespace );
 
 			/*
-				If equals() is not explicitly defined we must override the 
+				If equals() is not explicitly defined we must override the
 				default implemented by the This object protocol for scripted
-				object.  To support XThis equals() must test for equality with 
+				object.  To support XThis equals() must test for equality with
 				the generated proxy object, not the scripted bsh This object;
-				otherwise callers from outside in Java will not see a the 
+				otherwise callers from outside in Java will not see a the
 				proxy object as equal to itself.
 			*/
 			BshMethod equalsMethod = null;
 			try {
-				equalsMethod = namespace.getMethod( 
+				equalsMethod = namespace.getMethod(
 					"equals", new Class [] { Object.class } );
 			} catch ( UtilEvalError e ) {/*leave null*/ }
 			if ( methodName.equals("equals" ) && equalsMethod == null ) {
@@ -169,12 +169,12 @@ public class XThis extends This
 			}
 
 			/*
-				If toString() is not explicitly defined override the default 
+				If toString() is not explicitly defined override the default
 				to show the proxy interfaces.
 			*/
 			BshMethod toStringMethod = null;
 			try {
-				toStringMethod = 
+				toStringMethod =
 					namespace.getMethod( "toString", new Class [] { } );
 			} catch ( UtilEvalError e ) {/*leave null*/ }
 
@@ -182,16 +182,16 @@ public class XThis extends This
 			{
 				Class [] ints = proxy.getClass().getInterfaces();
 				// XThis.this refers to the enclosing class instance
-				StringBuffer sb = new StringBuffer( 
+				StringBuffer sb = new StringBuffer(
 					XThis.this.toString() + "\nimplements:" );
 				for(int i=0; i<ints.length; i++)
-					sb.append( " "+ ints[i].getName() 
+					sb.append( " "+ ints[i].getName()
 						+ ((ints.length > 1)?",":"") );
 				return sb.toString();
 			}
 
 			Class [] paramTypes = method.getParameterTypes();
-			return Primitive.unwrap( 
+			return Primitive.unwrap(
 				invokeMethod( methodName, Primitive.wrap(args, paramTypes) ) );
 		}
 	};

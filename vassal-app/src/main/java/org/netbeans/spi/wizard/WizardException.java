@@ -40,11 +40,11 @@ public final class WizardException extends Exception {
     public WizardException (String localizedMessage) {
         this (localizedMessage, Wizard.UNDETERMINED_STEP);
     }
-    
+
     public String getLocalizedMessage() {
         return localizedMessage;
     }
-    
+
     public String getStepToReturnTo() {
         return step;
     }

@@ -86,7 +86,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected BeanShellExpressionConfigurer configurer;
   protected EditablePiece target;
 
-  enum PropertyType { PIECE, GLOBAL, VASSAL, ALL };
+  enum PropertyType { PIECE, GLOBAL, VASSAL, ALL }
 
   public BeanShellFunctionMenu(EditablePiece target, BeanShellExpressionConfigurer configurer) {
     super();
@@ -558,6 +558,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     return propName;
   }
+
   /**
    * Added the property names from an Editable Piece into their
    * own menu
@@ -712,7 +713,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
    * a) An EditablePiece has been supplied as the target
    * OR
    * b) The calling BeanShellExpressionConfigurer is for a Property Match Expression (since PME get executed on Pieces)
-   * 
+   *
    * @return true if we show piece specific functions
    */
   protected boolean isPieceContext() {

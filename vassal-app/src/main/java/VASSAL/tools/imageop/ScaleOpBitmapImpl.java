@@ -117,6 +117,13 @@ public class ScaleOpBitmapImpl extends AbstractTiledOpImpl
       // sum of the tiles widths and heights match the image width and height.
       final Dimension sd = sop.getSize();
       size = new Dimension((int)(sd.width * scale), (int)(sd.height * scale));
+
+      if ((long)size.width * size.height > Integer.MAX_VALUE) {
+        final String message = "Dimensions (width=" + size.width + " height=" + size.height + ") are too large. " +
+                "Image=" + (sop instanceof SourceOp ? ((SourceOp) sop).getName() : "") +
+                " (" + sd.width + " x " + sd.height + ") scale=" + scale;
+        throw new RuntimeException(message);
+      }
     }
   }
 

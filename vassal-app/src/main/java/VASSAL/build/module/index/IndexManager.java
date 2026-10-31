@@ -129,6 +129,7 @@ public class IndexManager {
     final VassalMapPieceIndex index = getIndex(map);
     return index.getPieces(piece, range, forceAsPixels);
   }
+
   public List<GamePiece> getPieces(GamePiece piece, int range) {
     return getPieces(piece, range, false);
   }

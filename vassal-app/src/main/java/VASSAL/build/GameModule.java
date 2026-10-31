@@ -699,7 +699,7 @@ public class GameModule extends AbstractConfigurable
     final DataArchive darch = getDataArchive();
 
     final File f = new File(darch.getName());
-    if (!f.exists() || f.length() == 0) {
+    if (!f.isFile() || f.length() == 0) {
       // new module, no buildFile
       build(null);
     }
@@ -1860,7 +1860,9 @@ public class GameModule extends AbstractConfigurable
     if (c != null && !c.isNull()) {
       synchronized (loggingLock) {
         if (loggingPaused) {
-          pausedCommands.getFirst().append(c);
+          Command topCmd = pausedCommands.pop();
+          topCmd = topCmd.append(c);
+          pausedCommands.push(topCmd);
         }
         else {
           getServer().sendToOthers(c);

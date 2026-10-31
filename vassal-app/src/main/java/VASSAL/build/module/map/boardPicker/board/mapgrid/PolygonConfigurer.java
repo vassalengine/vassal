@@ -21,8 +21,10 @@ import java.awt.Polygon;
 
 public interface PolygonConfigurer {
   void updateCoord(String coordString);
+
   void updateCoord(int x, int y);
 
   void updateCoords(Polygon polygon);
+
   void updateCoords();
 }

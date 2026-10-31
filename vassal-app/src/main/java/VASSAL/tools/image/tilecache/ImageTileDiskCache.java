@@ -96,7 +96,7 @@ public class ImageTileDiskCache implements ImageTileSource, FileStore {
     double scale) throws ImageIOException {
 
     final File f = new File(tileNameFor(name, tileX, tileY, scale));
-    return f.exists() && f.isFile();
+    return f.isFile();
   }
 
   /** {@inheritDoc} */

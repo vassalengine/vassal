@@ -22,7 +22,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
- 
+
 public class UseTracker {
 
   private final Map<File, Integer> using = new HashMap<>();

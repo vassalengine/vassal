@@ -167,8 +167,7 @@ public class ImagePicker extends JPanel
     final FileChooser fc = gm.getEditorImageChooser();
     fc.setFileFilter(new ImageFileFilter());
 
-    if (fc.showOpenDialog(this) == FileChooser.APPROVE_OPTION
-         && fc.getSelectedFile().exists()) {
+    if (fc.showOpenDialog(this) == FileChooser.APPROVE_OPTION) {
       final String name = fc.getSelectedFile().getName();
       gm.getArchiveWriter().addImage(fc.getSelectedFile().getPath(), name);
       select.setModel(new DefaultComboBoxModel<>(

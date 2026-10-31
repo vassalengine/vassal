@@ -72,6 +72,7 @@ public class Hideable extends Decorator implements TranslatablePiece {
   protected BufferedImage cachedImage;
   protected double cachedZoom = -1d;
   protected String cachedState = "";
+  protected Rectangle cachedBounds = new Rectangle();
 
   @Override
   public void setProperty(Object key, Object val) {
@@ -208,19 +209,11 @@ public class Hideable extends Decorator implements TranslatablePiece {
     }
 
     if (invisibleToOthers()) {
-      final Graphics2D g2d = (Graphics2D) g;
-
-      if (bgColor != null) {
-        g.setColor(bgColor);
-        final AffineTransform t = AffineTransform.getScaleInstance(zoom, zoom);
-        t.translate(x / zoom, y / zoom);
-        g2d.fill(t.createTransformedShape(piece.getShape()));
-      }
 
       // Determine piece bounds at current zoom
       final Rectangle bounds = piece.getShape().getBounds();
-      final int w = (int) Math.ceil(bounds.width * zoom);
-      final int h = (int) Math.ceil(bounds.height * zoom);
+      final int w = (int) Math.round(bounds.width * zoom);
+      final int h = (int) Math.round(bounds.height * zoom);
 
       // If there's nothing visible at this zoom, skip
       if (w <= 0 || h <= 0) {
@@ -228,19 +221,19 @@ public class Hideable extends Decorator implements TranslatablePiece {
       }
 
       final String visibleState = (String) piece.getProperty(Properties.VISIBLE_STATE);
-      if (cachedImage == null || zoom != cachedZoom || ! cachedState.equals(visibleState)) {
+      if (cachedImage == null || zoom != cachedZoom || ! cachedState.equals(visibleState)
+              || ! bounds.equals(cachedBounds)) {
 
         // Create an in-memory cached image and draw piece fully opaque
         cachedImage = ImageUtils.createCompatibleTranslucentImage(w, h);
         cachedZoom = zoom;
         cachedState = visibleState;
+        cachedBounds = bounds;
 
         final Graphics2D cg = cachedImage.createGraphics();
         try {
-          cg.scale(zoom, zoom);
-          cg.translate(-bounds.x, -bounds.y);
-
-          piece.draw(cg, 0, 0, obs, 1.0); // Fully opaque
+          cg.translate((int)(-bounds.x * zoom), (int)(-bounds.y * zoom));
+          piece.draw(cg, 0, 0, obs, zoom); // Fully opaque
         }
         finally {
           cg.dispose();
@@ -248,11 +241,19 @@ public class Hideable extends Decorator implements TranslatablePiece {
       }
 
       // Apply the appropriate transparency to the overall image
+      final Graphics2D g2d = (Graphics2D) g;
       final Composite oldComp = g2d.getComposite();
       g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
 
-      final int drawX = x + (int) Math.round(bounds.x * zoom);
-      final int drawY = y + (int) Math.round(bounds.y * zoom);
+      if (bgColor != null) {
+        g2d.setColor(bgColor);
+        final AffineTransform t = AffineTransform.getTranslateInstance(x, y);
+        t.scale(zoom, zoom);
+        g2d.fill(t.createTransformedShape(piece.getShape()));
+      }
+
+      final int drawX = x + (int) (bounds.x * zoom);
+      final int drawY = y + (int) (bounds.y * zoom);
       g2d.drawImage(cachedImage, drawX, drawY, obs);
 
       g2d.setComposite(oldComp);

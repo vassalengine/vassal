@@ -231,7 +231,7 @@ public class MassKeyCommand extends AbstractToolbarItem
 
         Resources.getString("Editor.GlobalKeyCommand.pre_select"),          // Fast match target info
 
-        Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$          // Match properties        
+        Resources.getString("Editor.MassKey.match"), //$NON-NLS-1$          // Match properties
         Resources.getString("Editor.GlobalKeyCommand.deck_policy"),         // Apply to pieces in deck
         Resources.getString("Editor.MassKey.suppress"), //$NON-NLS-1$       // Suppress individual reports?
         Resources.getString("Editor.MassKey.suppress_sounds"), //NON-NLS    // Suppress sounds

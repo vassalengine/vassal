@@ -287,6 +287,7 @@ public class Restricted extends Decorator implements EditablePiece {
       return ID + new SequenceEncoder(';').append(config.getValueString()).append(byPlayer.booleanValue()).append(movementConfig.booleanValue()).append(descInput.getValueString()).getValue();
     }
   }
+
   /**
    * When a player changes sides to become an observer, relinquish ownership of all pieces
    * @author rodneykinney

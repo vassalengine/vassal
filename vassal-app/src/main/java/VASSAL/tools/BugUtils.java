@@ -42,7 +42,11 @@ public class BugUtils {
     // send the POST
     try (CloseableHttpClient client = HttpClients.createDefault()) {
       try (CloseableHttpResponse response = client.execute(httpPost)) {
-        if (response.getCode() != 201) {
+        final int responseCode = response.getCode();
+        // GitHub documents 201 as the expected success code, but starting
+        // in May 2026 we observed that 200 is sometimes returned, contra
+        // the documentation, so we check for both.
+        if (responseCode != 200 && responseCode != 201) {
           final String msg = "Bug report failed: " + response.getCode();
 
           String responseText = null;

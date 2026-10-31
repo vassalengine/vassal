@@ -13,11 +13,11 @@ import java.util.Map;
 
 /**
  * Result class for the methods in WizardPanel.
- * 
+ *
  * For immediate action, one of the two constantants PROCEED or REMAIN_ON_PAGE
  * should be returned.  Otherwise an instance of a subclass should be returned
  * that computes a Boolean result.
- * 
+ *
  * @author stanley@stanleyknutson.com
  */
 public abstract class WizardPanelNavResult extends DeferredWizardResult
@@ -38,19 +38,19 @@ public abstract class WizardPanelNavResult extends DeferredWizardResult
     public WizardPanelNavResult() {
         super (false, false);
     }
-    
+
     public boolean isDeferredComputation()
     {
         return true;
     }
-    
+
     /*
      * internal class for the constants only
      */
     private final static class WPNRimmediate extends WizardPanelNavResult
     {
         boolean value;
-        
+
         WPNRimmediate (boolean v)
         {
             value = v;
@@ -59,7 +59,7 @@ public abstract class WizardPanelNavResult extends DeferredWizardResult
         {
             return false;
         }
-        
+
         public boolean equals (Object o)
         {
             if (o instanceof WPNRimmediate && ((WPNRimmediate)o).value == value)
@@ -68,18 +68,18 @@ public abstract class WizardPanelNavResult extends DeferredWizardResult
             }
             return false;
         }
-        
+
         public int hashCode()
         {
             return value ? 1 : 2;
         }
-        
+
         public void start(Map settings, ResultProgressHandle progress)
         {
             // Should never get here, this is supposed to be immediate!
             throw new RuntimeException("Immediate result was called as deferral!");
         }
-        
+
     }
 }
 

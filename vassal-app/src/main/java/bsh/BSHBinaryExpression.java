@@ -7,7 +7,7 @@
  *                                                                           *
  *  The contents of this file are subject to the Sun Public License Version  *
  *  1.0 (the "License"); you may not use this file except in compliance with *
- *  the License. A copy of the License is available at http://www.sun.com    * 
+ *  the License. A copy of the License is available at http://www.sun.com    *
  *                                                                           *
  *  The Original Code is BeanShell. The Initial Developer of the Original    *
  *  Code is Pat Niemeyer. Portions created by Pat Niemeyer are Copyright     *
@@ -36,7 +36,7 @@ package bsh;
 /**
  * Implement binary expressions... Note: this is too complicated... need some
  * cleanup and simplification.
- * 
+ *
  * @see Primitive.binaryOperation
  */
 class BSHBinaryExpression extends SimpleNode implements ParserConstants {
@@ -131,20 +131,20 @@ class BSHBinaryExpression extends SimpleNode implements ParserConstants {
         catch (UtilEvalError e) {
           /* VASSAL - Try again, converting both sides to Strings, report the original error if it fails */
           try {
-            return Primitive.binaryOperation(lhs.toString(), rhs.toString(), kind); 
+            return Primitive.binaryOperation(lhs.toString(), rhs.toString(), kind);
           }
           catch (UtilEvalError e2) {
             throw e.toEvalError(this, callstack);
           }
         }
       }
-    }    
+    }
     /*
      * VASSAL Special cases
      * 1. If one side is an Integer and the other is the null String, replace
      *    the null String with a 0.
      * 2. If one side is a Primitive and the other side is a non-null String, convert the Primitive
-     *    to a String so that + will work. 
+     *    to a String so that + will work.
      */
     else {
       // lhs in an Integer and rhs is the null string
@@ -181,29 +181,29 @@ class BSHBinaryExpression extends SimpleNode implements ParserConstants {
         }
         catch (UtilEvalError e) {
           throw e.toEvalError(this, callstack);
-        } 
+        }
       }
     }
     /*
      * Doing the following makes it hard to use untyped vars... e.g. if ( arg ==
      * null ) ...what if arg is a primitive? The answer is that we should test
      * only if the var is typed...? need to get that info here...
-     * 
+     *
      * else { // Do we have a mixture of primitive values and non-primitives ?
      * // (primitiveValue = not null, not void)
-     * 
+     *
      * int primCount = 0; if ( isPrimitiveValue( lhs ) ) ++primCount; if (
      * isPrimitiveValue( rhs ) ) ++primCount;
-     * 
+     *
      * if ( primCount > 1 ) // both primitive types, should have been handled
      * above throw new InterpreterError("should not be here"); else if (
      * primCount == 1 ) // mixture of one and the other throw new
      * EvalError("Operator: '" + tokenImage[kind]
      * +"' inappropriate for object / primitive combination.", this, callstack
      * );
-     * 
+     *
      * // else fall through to handle both non-primitive types
-     * 
+     *
      * // end check for primitive and non-primitive mix }
      */
 
@@ -212,9 +212,9 @@ class BSHBinaryExpression extends SimpleNode implements ParserConstants {
      * NULL and VOID represented by their Primitive types)
      */
     // System.out.println("binary op arbitrary obj: {"+lhs+"}, {"+rhs+"}");
-    
+
     /*
-     * VASSAL - Handle Strings as a type of Primitive - allow comparison operators on Strings. 
+     * VASSAL - Handle Strings as a type of Primitive - allow comparison operators on Strings.
      */
     if (lhs instanceof String && rhs instanceof String) {
       try {
@@ -238,16 +238,16 @@ class BSHBinaryExpression extends SimpleNode implements ParserConstants {
           + "' inappropriate for objects", this, callstack);
     }
   }
-    
+
   /*
    * VASSAL - Convert Strings to a Primitive if possible
    */
   private Object convert(String obj) {
     if (obj.equals("true")) {
-      return new Primitive(true);      
+      return new Primitive(true);
     }
     else if (obj.equals("false")) {
-      return new Primitive(false);    
+      return new Primitive(false);
     }
     int i;
     try {

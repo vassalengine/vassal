@@ -1872,6 +1872,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       popMouseListener();
     }
   }
+
   /**
    * @param e MouseEvent
    */
@@ -1885,7 +1886,6 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
   @Override
   public void mouseExited(MouseEvent e) {
   }
-
 
   /**
    * Because MouseEvents are received in Component coordinates, it is
@@ -2573,8 +2573,10 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
    */
   public Point positionOf(GamePiece p) {
     if (p.getMap() != this) {
-      throw new IllegalArgumentException(
-        Resources.getString("Map.piece_not_on_map")); //$NON-NLS-1$
+      final String pieceMapName = p.getMap() != null ? p.getMap().mapName : "null"; //$NON-NLS-1$
+      final String message = Resources.getString("Map.piece_not_on_map") //$NON-NLS-1$
+        + String.format(": %s. Piece '%s' is on %s.", this.mapName, p.getName(), pieceMapName); //$NON-NLS-1$
+      throw new IllegalArgumentException(message);
     }
 
     final Point point = p.getPosition();

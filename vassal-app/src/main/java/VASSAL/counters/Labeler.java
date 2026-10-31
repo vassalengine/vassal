@@ -844,6 +844,7 @@ public class Labeler extends Decorator implements TranslatablePiece, Loopable {
     // Check State
     return Objects.equals(label, l.label);
   }
+
   /**
    * Return Property names exposed by this trait
    */

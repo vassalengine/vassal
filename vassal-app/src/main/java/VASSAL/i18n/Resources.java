@@ -74,14 +74,15 @@ public class Resources {
     new ArrayList<>(Arrays.asList(
       Locale.ENGLISH,
       Locale.forLanguageTag("zh"),  // Chinese //$NON-NLS-1$
+      Locale.forLanguageTag("da"),  // Danish  //$NON-NLS-1$
       Locale.forLanguageTag("nl"),  // Dutch   //$NON-NLS-1$
       Locale.FRENCH,
       Locale.GERMAN,
       Locale.ITALIAN,
       Locale.JAPANESE,
+      Locale.forLanguageTag("ko"),  // Korean  //$NON-NLS-1$
       Locale.forLanguageTag("pl"),  // Polish  //$NON-NLS-1$
-      Locale.forLanguageTag("es"),  // Spanish //$NON-NLS-1$
-      Locale.forLanguageTag("da")   // Danish  //$NON-NLS-1$
+      Locale.forLanguageTag("es")   // Spanish //$NON-NLS-1$
     ));
 
   protected Locale locale = Locale.getDefault();
@@ -113,7 +114,7 @@ public class Resources {
 
     final List<String> languages = new ArrayList<>();
     for (final Locale l : supportedLocales) {
-      languages.add(l.getLanguage());
+      languages.add(l.toLanguageTag());
     }
 
     final Prefs p = Prefs.getGlobalPrefs();
@@ -132,6 +133,8 @@ public class Resources {
         LOCALE_PREF_KEY,
         getInstanceString("Prefs.language"),
         languages.toArray(new String[0])) {
+      Locale current = null;
+
       @Override
       public Component getControls() {
         if (getBox() == null) {
@@ -142,7 +145,11 @@ public class Resources {
             @Override
             public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
               final JLabel l = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-              l.setText(new Locale((String) value).getDisplayLanguage());
+              if (current == null) {
+                current = new Locale(getValueString());
+              }
+              final Locale locale = new Locale((String)value);
+              l.setText((locale.getDisplayLanguage(current)) + " (" + locale.getDisplayLanguage(locale) + ")"); //NON-NLS
               return l;
             }
           });
@@ -368,8 +375,10 @@ public class Resources {
     editorBundle = null;
     vassalBundle = null;
     UIManager.put("OptionPane.yesButtonText", getInstanceString(YES)); //$NON-NLS-1$
+    UIManager.put("OptionPane.yesButtonMnemonic", Integer.toString(getInstanceString(YES).charAt(0))); //$NON-NLS-1$
     UIManager.put("OptionPane.cancelButtonText", getInstanceString(CANCEL)); //$NON-NLS-1$
     UIManager.put("OptionPane.noButtonText", getInstanceString(NO)); //$NON-NLS-1$
+    UIManager.put("OptionPane.noButtonMnemonic", Integer.toString(getInstanceString(NO).charAt(0))); //$NON-NLS-1$
     UIManager.put("OptionPane.okButtonText", getInstanceString(OK)); //$NON-NLS-1$
   }
 

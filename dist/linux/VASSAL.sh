@@ -48,7 +48,7 @@ if test ! -x "$java" ; then
 fi
 
 # --- Check for Java version -----------------------------------------
-if ! "$java" -cp $jar $ver_entry 2>/dev/null ; then
+if ! "$java" -cp "$jar" $ver_entry 2>/dev/null ; then
     cat <<-EOF
 	$0: Java installation too old to run VASSAL.  Please upgrade it
         with for example
@@ -120,10 +120,10 @@ while test $# -gt 0 ; do
                         ;;
         *)
             # If argument is a file ... 
-            if test -f $1 ; then
+            if test -f "$1" ; then
                 # ... then store full path name since VASSAL changes
                 # the current directory before opening target files.
-                f=$(realpath $1)
+                f=$(realpath "$1")
                 args+=("$f")
             else
                 args+=("$1")

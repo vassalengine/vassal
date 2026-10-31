@@ -1,6 +1,6 @@
 /*
  * NavButtonManager.java       created on Dec 9, 2006
- * 
+ *
  */
 
 package org.netbeans.api.wizard.displayer;
@@ -57,7 +57,7 @@ public class NavButtonManager implements ActionListener
     static final String NAME_CANCEL    = "cancel";
 
     static final String NAME_CLOSE     = "close";
-    
+
     /** Prefix for the name in deferredStatus */
     static final String DEFERRED_FAILED = "FAILED_";
 
@@ -275,7 +275,7 @@ public class NavButtonManager implements ActionListener
             deferredResultFinished(event);
             return;
         }
-        
+
         JButton button = (JButton) event.getSource();
 
         String name = button.getName();
@@ -323,14 +323,14 @@ public class NavButtonManager implements ActionListener
         {
             deferredStatus = DEFERRED_FAILED + deferredStatus;
         }
-        
+
     }
 
     void deferredResultFinished(Object o)
     {
         String name = deferredStatus;
         deferredStatus = null;
-        
+
         if (name.startsWith(DEFERRED_FAILED))
         {
             // Cancel clicked after a deferred failure
@@ -350,7 +350,7 @@ public class NavButtonManager implements ActionListener
             parent.navigateTo(currentStep);
             return;
         }
-        
+
         if (NAME_NEXT.equals(name))
         {
             processNextProceed(o);
@@ -416,7 +416,7 @@ public class NavButtonManager implements ActionListener
             return;
         }
         // ignore other results
-        
+
         String nextId = wizard.getNextStep();
         settings.push(nextId);
         parent.navigateTo(nextId);
@@ -461,7 +461,7 @@ public class NavButtonManager implements ActionListener
 
         String prevId = wizard.getPreviousStep();
         settings.popAndCalve();
-        // Remove the call 
+        // Remove the call
         // parent.abortDeferredResult();
         parent.navigateTo(prevId);
         parent.setInSummary(false);
@@ -491,7 +491,7 @@ public class NavButtonManager implements ActionListener
         processFinishProceed (proceed);
     }
 
-    
+
     protected void processFinishProceed(Object result)
     {
         Wizard wizard = parent.getWizard();
@@ -583,18 +583,18 @@ public class NavButtonManager implements ActionListener
         }
         Wizard wizard = parent.getWizard();
         MergeMap settings = parent.getSettings();
-        
+
         // System.err.println("ProcessCancel " + reallyCancel + " receiver " + parent.receiver);
         boolean closeWindow = false;
-        
-        if (reallyCancel && parent.cancel()) 
+
+        if (reallyCancel && parent.cancel())
         {
             // System.err.println("DO CANCEL");
             logger.fine("calling wizard cancel method on " + wizard);
             wizard.cancel (settings);
             return;
         }
-        
+
         closeWindow = reallyCancel ? wizard.cancel(settings) : parent.receiver == null;
 
         // if we have the event (allowFinish was not deferred) then be very sure to close the proper dialog
@@ -616,7 +616,7 @@ public class NavButtonManager implements ActionListener
     	closeHandler = l;
     	return old;
     }
-    
+
 
     protected void processClose(ActionEvent event) {
 	closeHandler.actionPerformed(event);
@@ -647,7 +647,7 @@ public class NavButtonManager implements ActionListener
         cancel.setName(NAME_CLOSE);
         deferredStatus = null;  // ?? should summary be different
     }
-    
+
     void setWindow(Window dlg)
     {
         this.window = dlg;

@@ -30,7 +30,7 @@ Online documentation is available on the https://vassalengine.org/wiki[wiki].
 
 * The https://vassalengine.org/wiki/Getting_Started[Getting Started Guide] has instructions on how to load and play games online using VASSAL
 * The <<ReferenceManual/index.adoc#toc,Reference Manual>> has detailed instructions on how to build modules for VASSAL, including how to use its Java programming interface
-* See the <<versionHistory.adoc#top,version history>> for a list of recent changes.
+* See the https://github.com/vassalengine/vassal/blob/master/CHANGES[change log] for a list of recent changes.
 
 '''''
 
