@@ -54,6 +54,17 @@ public class ExtensionTree extends ConfigureTree {
   }
 
   /**
+   * The extension editor shows the <em>whole</em> module tree and greys out what
+   * this extension does not own (see {@link #isEditable}), so unlike the module
+   * editor it must keep extension-contributed components visible — including the
+   * ones belonging to the extension being edited.
+   */
+  @Override
+  protected boolean isHiddenFromTree(Configurable c) {
+    return c instanceof VASSAL.build.module.Plugin;
+  }
+
+  /**
    * Allows ExtensionEditor to override and control what indexes are available during drag and drop
    */
   @Override
