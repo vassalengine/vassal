@@ -268,7 +268,16 @@ public class PropertyChangerConfigurer extends Configurer {
 
   @Override
   public String getValueString() {
-    final PropertyChanger propChanger = getPropertyChanger();
+    return encode(getPropertyChanger());
+  }
+
+  /**
+   * Encodes a property changer as this configurer stores it, without a configurer.
+   *
+   * @param propChanger the changer, or null for an empty encoding
+   * @return the encoded form
+   */
+  public static String encode(PropertyChanger propChanger) {
     final SequenceEncoder se = new SequenceEncoder(',');
     if (propChanger != null) {
       switch (typeToCode.get(propChanger.getClass())) {
@@ -303,26 +312,36 @@ public class PropertyChangerConfigurer extends Configurer {
 
   @Override
   public void setValue(String s) {
-    final PropertyChanger p;
+    setValue(decode(s, constraints, this));
+  }
+
+  /**
+   * Decodes a property changer from the form {@link #encode} writes, without a configurer.
+   *
+   * @param s the encoded form; null or empty means a plain setter
+   * @param constraints the constraints (normally the trait) the changer applies
+   * @return the changer
+   */
+  public static PropertyChanger decode(String s, Constraints constraints) {
+    return decode(s, constraints, null);
+  }
+
+  private static PropertyChanger decode(String s, Constraints constraints, PropertyChangerConfigurer owner) {
     if (s == null || s.length() == 0) {
       s = Character.toString(PLAIN_CODE);
     }
     final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
     switch (sd.nextChar(PLAIN_CODE)) {
     case PROMPT_CODE:
-      p = new PropertyPrompt(constraints, sd.nextToken(Resources.getString("Editor.PropertyChangeConfigurer.enter_new_value")));
-      break;
+      return new PropertyPrompt(constraints, sd.nextToken(Resources.getString("Editor.PropertyChangeConfigurer.enter_new_value")));
     case INCR_CODE:
-      p = new IncrementProperty(this, sd.nextToken("1"), constraints);
-      break;
+      return new IncrementProperty(owner, sd.nextToken("1"), constraints);
     case ENUM_CODE:
-      p = new EnumeratedPropertyPrompt(constraints, sd.nextToken(Resources.getString("Editor.PropertyChangeConfigurer.select_new_value")), sd.nextStringArray(0), constraints);
-      break;
+      return new EnumeratedPropertyPrompt(constraints, sd.nextToken(Resources.getString("Editor.PropertyChangeConfigurer.select_new_value")), sd.nextStringArray(0), constraints);
     case PLAIN_CODE:
     default:
-      p = new PropertySetter(sd.nextToken("new value"), constraints); //NON-NLS
+      return new PropertySetter(sd.nextToken("new value"), constraints); //NON-NLS
     }
-    setValue(p);
   }
 
   public interface Constraints extends PropertyPrompt.Constraints, IncrementProperty.Constraints, PropertySource {
