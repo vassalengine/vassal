@@ -312,6 +312,8 @@ public class ModuleManagerWindow extends JFrame {
           refreshModuleList(true);
         }
       }));
+    toolsMenu.addSeparator();
+    toolsMenu.add(mm.addKey("Main.browse_library"));
 
     // help menu
     final MenuProxy helpMenu =
@@ -340,6 +342,8 @@ public class ModuleManagerWindow extends JFrame {
     mm.addAction("Main.new_module", new Editor.NewModuleLaunchAction(this));
     mm.addAction("Main.import_module",
       new Editor.PromptImportLaunchAction(this));
+    mm.addAction("Main.browse_library",
+      new LibraryBrowser.PromptLaunchAction(this));
     mm.addAction("Prefs.edit_preferences",
       Prefs.getGlobalPrefs().getEditor().getEditAction());
     mm.addAction("General.quit", shutDownAction);
