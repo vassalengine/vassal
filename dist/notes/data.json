@@ -1,5 +1,5 @@
 {
-  "headline": "The VASSAL Team is happy to announce VASSAL {{version}}, which is a preview release.",
+  "headline": "The VASSAL Team is happy to announce VASSAL {{version}}.",
   "important": [
     "Starting with 3.7.25, Vassal requires Java 17 or newer. If you are using one of the MacOS or Windows packages, Java is bundled with Vassal and this will not affect you. If you are using Linux or another OS, please upgrade Java to at least Java 17.",
     "Modules saved in {{version_feature}} are not openable by earlier versions of Vassal. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
@@ -8,8 +8,8 @@
   "release_notes_url": "https://forum.vassalengine.org/t/vassal-3-8-release-notes/90445",
   "downloads": [
     { "display_name": "Linux", "suffix": "linux.tar.bz2" },
-    { "display_name": "Linux (Debian)", "suffix": "1_all.deb", "prefix": "vassal_"}, 
-    { "display_name": "Linux (RPM)", "suffix": "1.noarch.rpm", "prefix": "vassal-"}, 
+    { "display_name": "Linux (Debian)", "suffix": "1_all.deb", "prefix": "vassal_"},
+    { "display_name": "Linux (RPM)", "suffix": "1.noarch.rpm", "prefix": "vassal-"},
     { "display_name": "MacOS", "suffix": "macos-universal.dmg" },
     { "display_name": "Windows (64-bit x86)", "suffix": "windows-x86_64.exe" },
     { "display_name": "Windows (32-bit x86)", "suffix": "windows-x86_32.exe" },
@@ -18,16 +18,42 @@
   ],
   "changes": [
     {
-      "in": "3.8.0-beta4",
-      "since": "3.8.0-beta3 and 3.7.31",
+      "in": "3.8.0",
+      "since": "3.7.30",
       "new_features": [
+        { "num": 15121, "desc": "Compress the saved-game command log with XZ" },
+        { "num": 15097, "desc": "Make Charts zoomable" },
+        { "num": 14978, "desc": "Allow cannotMove to be set as a DynamicProperty" },
+        { "num": 14582, "desc": "Add oblique hex grid numbering" },
+        { "num": 14581, "desc": "Added animated symbolic dice button" },
+        { "num": 14556, "desc": "Support Multi-Location commands within Sub-Menus" },
+        { "num": 14342, "desc": "Add Movement Trail option to keep only last position per location" },
+        { "num": 13168, "desc": "Multi-Location Command includes the option to sort the order of the commands generated" },
+        { "num": 12944, "desc": "Add pieceCount to the map auto reporter" }
       ],
       "bug_fixes": [
+        { "num": 15233, "desc": "Let JRuby spawn Ghostscript when building the PDF guides" },
+        { "num": 15217, "desc": "Fix IndexOutOfBoundsException on undo after beginning a new logfile" },
+        { "num": 15216, "desc": "Fix NPE in ADC2 importer when the module defines no players" },
+        { "num": 15212, "desc": "Fix NPE when deleting a Toolbar Menu that has no toolbar" },
+        { "num": 15211, "desc": "Fix NPE in Deck reports for deck commands with no name" },
+        { "num": 15202, "desc": "Fix Load Log, Fast Forward and Append" },
+        { "num": 15158, "desc": "Change background of Quickstart message to match UI" }
       ],
       "improvements": [
-        { "num": 15222, "desc": "Modify DiceButton to support legacy modules" }
+        { "num": 15222, "desc": "Modify DiceButton to support legacy modules" },
+        { "num": 15060, "desc": "Stop writing obfuscated data in hex" },
+        { "num": 15049, "desc": "Make Zone use full qualified path for property container" },
+        { "num": 14583, "desc": "MoveCameraButton now uses preferred center instead of viewport center" }
       ],
       "other": [
+        { "num": 15245, "desc": "Upgraded maven-enforcer-plugin to 3.7.0"},
+        { "num": 15231, "desc": "Upgraded logback-classic to 1.6.6" },
+        { "num": 15221, "desc": "Upgraded byte-buddy to 1.18.16" },
+        { "num": 15220, "desc": "Upgraded maven-surefire-plugin to 3.6.1" },
+        { "num": 15206, "desc": "Upgraded batik to 1.20" },
+        { "num": 15198, "desc": "Upgraded asm to 9.11.1" },
+        { "num": 15099, "desc": "Removed the deprecated loadGameOld Action" }
       ]
     }
   ]

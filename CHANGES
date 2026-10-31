@@ -1,5 +1,19 @@
-3.8.0 - ???
+3.8.0 - 31 October 2026
 
+* 15245: Upgraded maven-enforcer-plugin to 3.7.0
+* 15233: Let JRuby spawn Ghostscript when building the PDF guides
+* 15231: Upgraded logback-classic to 1.6.6
+* 15222: Modify DiceButton to support legacy modules
+* 15221: Upgraded byte-buddy to 1.18.16
+* 15220: Upgraded maven-surefire-plugin to 3.6.1
+* 15211: Fix NPE in Deck reports for deck commands with no name
+* 15202: Fix Load Log, Fast Forward and Append
+* 15217: Fix IndexOutOfBoundsException on undo after beginning a new logfile
+* 15216: Fix NPE in ADC2 importer when the module defines no players
+* 15212: Fix NPE when deleting a Toolbar Menu that has no toolbar
+* 15206: Upgraded batik to 1.20
+* 15198: Upgraded asm to 9.11.1
+* 15158: Change background of Quickstart message to match UI
 * 15121: Compress the saved-game command log with XZ
 * 15099: Removed the deprecated loadGameOld Action
 * 15097: Make Charts zoomable
@@ -15,25 +29,6 @@
 * 13168: Multi-Location Command includes the option to sort the order of the
     commands generated
 * 12944: Add pieceCount to the map auto reporter
-* 12763: Added ModuleGameFileName property
-
-3.8.0-beta4 - ???
-
-3.7.31 - ???
-
-* 15245: Upgraded maven-enforcer-plugin to 3.7.0
-* 15233: Let JRuby spawn Ghostscript when building the PDF guides
-* 15231: Upgraded logback-classic to 1.6.6
-* 15222: Modify DiceButton to support legacy modules
-* 15221: Upgraded byte-buddy to 1.18.16
-* 15220: Upgraded maven-surefire-plugin to 3.6.1
-* 15202: Fix Load Log, Fast Forward and Append
-* 15217: Fix IndexOutOfBoundsException on undo after beginning a new logfile
-* 15216: Fix NPE in ADC2 importer when the module defines no players
-* 15212: Fix NPE when deleting a Toolbar Menu that has no toolbar
-* 15206: Upgraded batik to 1.20
-* 15198: Upgraded asm to 9.11.1
-* 15158: Change background of Quickstart message to match UI
 
 3.8.0-beta3 - 20 October 2026
 
@@ -141,7 +136,6 @@
 * 13168: Multi-Location Command includes the option to sort the order of the
     commands generated
 * 12944: Add pieceCount to the map auto reporter
-* 12763: Added ModuleGameFileName property
 
 3.7.26 - 29 July 2026 
 
