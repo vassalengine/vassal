@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.vassalengine</groupId>
         <artifactId>vassal-parent</artifactId>
-        <version>3.8.0-SNAPSHOT</version>
+        <version>3.8.0</version>
     </parent>
 
     <artifactId>vassal-app</artifactId>
@@ -18,7 +18,7 @@
         <main.basedir>${project.basedir}${file.separator}..</main.basedir>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
         <version.batik>1.20</version.batik>
-        <clirr.nofork.comparison.version>3.7.0</clirr.nofork.comparison.version>
+        <clirr.nofork.comparison.version>3.8.0</clirr.nofork.comparison.version>
         <argLine/>
     </properties>
 
