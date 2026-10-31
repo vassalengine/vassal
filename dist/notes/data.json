@@ -19,31 +19,6 @@
   ],
   "changes": [
     {
-      "in": "3.7.31",
-      "since": "3.7.30",
-      "new_features": [
-      ],
-      "bug_fixes": [
-        { "num": 15233, "desc": "Let JRuby spawn Ghostscript when building the PDF guides" },
-        { "num": 15217, "desc": "Fix IndexOutOfBoundsException on undo after beginning a new logfile" },
-        { "num": 15216, "desc": "Fix NPE in ADC2 importer when the module defines no players" },
-        { "num": 15212, "desc": "Fix NPE when deleting a Toolbar Menu that has no toolbar" },
-        { "num": 15202, "desc": "Fix Load Log, Fast Forward and Append" },
-        { "num": 15158, "desc": "Change background of Quickstart message to match UI" }
-      ],
-      "improvements": [
-        { "num": 15222, "desc": "Modify DiceButton to support legacy modules" }
-      ],
-      "other": [
-        { "num": 15245, "desc": "Upgraded maven-enforcer-plugin to 3.7.0"},
-        { "num": 15231, "desc": "Upgraded logback-classic to 1.6.6" },
-        { "num": 15221, "desc": "Upgraded byte-buddy to 1.18.16" },
-        { "num": 15220, "desc": "Upgraded maven-surefire-plugin to 3.6.1" },
-        { "num": 15206, "desc": "Upgraded batik to 1.20" },
-        { "num": 15198, "desc": "Upgraded asm to 9.11.1" }
-      ]
-    },
-    {
       "in": "3.7.30",
       "since": "3.7.29",
       "new_features": [
