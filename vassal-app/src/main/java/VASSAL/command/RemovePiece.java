@@ -17,11 +17,13 @@
  */
 package VASSAL.command;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.HighlightLastMoved;
+import VASSAL.counters.Deck;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.Stack;
@@ -65,6 +67,17 @@ public class RemovePiece extends Command {
 
     if (m != null) {
       r = parent == null ?  m.boundingBoxOf(target) : m.boundingBoxOf(parent);
+
+      // Pieces still in a Stack being removed (e.g. undoing the creation of a Stack around a
+      // piece that was not in one) stay on the map, rather than being lost along with the Stack
+      if (target instanceof Stack && !(target instanceof Deck)) {
+        final Point pos = target.getPosition();
+        for (final GamePiece child : ((Stack) target).asList()) {
+          child.setPosition(pos);
+          m.addPiece(child);
+        }
+      }
+
       m.removePiece(target);
       target.setMap(null);
     }
