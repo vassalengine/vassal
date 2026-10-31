@@ -44,12 +44,22 @@ public class FontConfigurer extends Configurer {
   }
 
   public FontConfigurer(String key, String name, Font val) {
-    this(key, name, val, new int[]{9, 10, 11, 12, 15, 18});
+    this(key, name, val, new int[]{9, 10, 11, 12, 13, 14, 15, 16, 18, 20});
   }
 
   public FontConfigurer(String key, String name, Font val, int[] sizes) {
     super(key, name, val);
     this.sizes = sizes;
+  }
+
+  // Super Constructor used by the replacement StrurturedFontSupervisor so it can
+  // Subclass and call directly through to the Configurer constructor.
+  public FontConfigurer(String key, String name, Font val, Integer[] sizes) {
+    super(key, name, val);
+    this.sizes = new int[sizes.length];
+    for (int i = 0; i < sizes.length; i++) {
+      this.sizes[i] = sizes[i];
+    }
   }
 
   @Override
@@ -59,7 +69,8 @@ public class FontConfigurer extends Configurer {
 
   @Override
   public void setValue(String s) {
-    setValue(decode(s));
+    final Font f = decode(s);
+    setValue(f);
   }
 
   @Override

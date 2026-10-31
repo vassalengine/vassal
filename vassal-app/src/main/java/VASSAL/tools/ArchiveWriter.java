@@ -174,6 +174,10 @@ public class ArchiveWriter extends DataArchive {
     addFile(path, soundDir + fileName);
   }
 
+  public void addFont(String path, String fileName) {
+    addFile(path, fontDir + fileName);
+  }
+
   public void removeImage(String name) {
     removeFile(imageDir + name);
     localImages = null;
