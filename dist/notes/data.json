@@ -1,7 +1,6 @@
 {
   "headline": "The Vassal Team is happy to announce Vassal {{version}}.",
   "important": [
-    "Vassal 3.8 requires Java 17 or newer. The MacOS and Windows packages are bundled with an appropriate version of Java; you need not install Java yourself. If you are using Linux or another OS, please upgrade Java to at least Java 17.",
     "Modules saved in {{version_feature}} are not openable by earlier versions of Vassal. We recommend keeping a backup copy of any pre-{{version_feature}} modules you plan to modify in {{version_feature}} until you've verified that everything works to your satisfaction.",
     "Things may be broken which worked previously. If you find a new bug, please report it."
   ],
