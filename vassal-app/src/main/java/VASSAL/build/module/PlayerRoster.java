@@ -898,6 +898,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     int autoRandomPass = 0;
     boolean promptOn = true;
     boolean noSides = false; // set when there are no sides left other than observer & solo/moderator sides; set by random choice failure
+    boolean randomFromDialog = false; // random was chosen in the switch dialog (rather than by the wizard or VassalRandomSide)
 
     final boolean alreadyConnected;
     final GameModule gm = GameModule.getGameModule();
@@ -1041,12 +1042,17 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         if (availableRealSides.isEmpty()) {
           // exit here if we were in no prompt mode (random choice) and no choices are available
           if (!promptOn) {
-            gm.warn(Resources.getString("PlayerRoster.no_player_sides"));
-            return null;
+            if (!randomFromDialog) {
+              gm.warn(Resources.getString("PlayerRoster.no_player_sides"));
+              return null;
+            }
+            // Random was chosen in the dialog, but no player side is left now: offer the dialog again and say why.
+            // (A side the player chose themselves that has been taken keeps the normal "is unavailable" message.)
+            promptOn = true;
+            noSides = true;
+            autoRandomPass = 0;
+            randomFromDialog = false;
           }
-          // dialog mode - warn that random choice is exhausted, but only if the side just lost was a random pick.
-          // A side the player chose themselves that has been taken keeps the normal "is unavailable" message.
-          noSides = autoRandomPass > 1;
         }
         else {
           // Prompt mode will offer random choice first time or to observer when there's more than one side to choose from
@@ -1080,6 +1086,16 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
         // a choice from the dialog replaces any earlier (failed) random choice
         autoRandomPass = translatedRandom.equals(newSide) ? 1 : 0;
+
+        if (autoRandomPass == 1) {
+          // Roll from the sides free now, not from the list made before the dialog opened: another player may
+          // have taken one meanwhile. Loop round once without the dialog to refresh the list, then roll.
+          randomFromDialog = true;
+          promptOn = false;
+          alreadyTaken.clear();
+          availableRealSides.clear();
+          continue;
+        }
       }
 
       // side must be returned in English
