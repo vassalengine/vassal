@@ -47,7 +47,7 @@ JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 # numeric part of the version only
-VNUM:=3.8.1
+VNUM:=3.9.0
 # major-minor part of the version
 V_MAJ_MIN:=$(shell echo "$(VNUM)" | cut -f1,2 -d'.')
 
