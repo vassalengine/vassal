@@ -917,6 +917,12 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
         clearControlProperty(VassalForceSide);
 
+        // VassalForceSide takes priority over VassalRandomSide, so a pending random request is used up too.
+        // Otherwise it would stay set and turn the next ordinary Retire into a random side change.
+        if (Boolean.parseBoolean((String) gm.getProperty(VassalRandomSide))) {
+          clearControlProperty(VassalRandomSide);
+        }
+
         if (translatedObserver.equals(newSide)) {
           return OBSERVER;
         }
@@ -1022,6 +1028,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         }
       }
 
+      noSides = false;
       if (alreadyConnected || !promptOn) {
         /*
         Determine if we can process a Random Side option (initial connection also performs this check independently)
@@ -1037,8 +1044,9 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
             gm.warn(Resources.getString("PlayerRoster.no_player_sides"));
             return null;
           }
-          // dialog mode - warn that random choice is exhausted
-          noSides = true; // promptOn is set false to direct random validation and re-try; on failure, revert to dialog with error warning.
+          // dialog mode - warn that random choice is exhausted, but only if the side just lost was a random pick.
+          // A side the player chose themselves that has been taken keeps the normal "is unavailable" message.
+          noSides = autoRandomPass > 1;
         }
         else {
           // Prompt mode will offer random choice first time or to observer when there's more than one side to choose from

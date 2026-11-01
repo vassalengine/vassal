@@ -129,6 +129,8 @@ The Switch Sides button includes a number of additional features not applicable 
 
 *Automatic Random Side Selection*. The Switch Sides button will select a random player side when a <<GlobalProperties.adoc#top,Global Property>> _VassalRandomSide_ is set to _true_. Vassal clears the property after each use. If no player sides are available, no side change is performed and a warning is displayed in the chat log.
 
+If _VassalForceSide_ and _VassalRandomSide_ are both set, _VassalForceSide_ takes priority and both properties are cleared.
+
 |===
 
 ==== <<GlobalOptions.adoc#top,Global Options>>
