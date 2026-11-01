@@ -1,5 +1,7 @@
 3.8.1 - ???
 
+* 15255: Fixed typo in VASSAL Reference Manual “Place Marker” text
+
 3.8.0 - 31 October 2026
 
 * 15245: Upgraded maven-enforcer-plugin to 3.7.0
