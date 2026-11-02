@@ -1,6 +1,7 @@
 3.8.1 - ???
 
 * 15255: Fixed typo in VASSAL Reference Manual “Place Marker” text
+* 15183: Do not use contractions in messages
 * 15081: Remove use of org.jdesktop.timing and use Swing timers instead
 
 3.8.0 - 31 October 2026

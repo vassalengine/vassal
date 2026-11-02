@@ -27,6 +27,7 @@
       "improvements": [
       ],
       "other": [
+        { "num": 15183, "desc": "Do not use contractions in messages" },
         { "num": 15081, "desc": "Remove use of org.jdesktop.timing and use Swing timers instead" }
       ]
     },
