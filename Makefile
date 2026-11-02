@@ -47,7 +47,7 @@ JDKDIR:=$(DISTDIR)/jdks
 JDOCDIR:=jdoc
 
 # numeric part of the version only
-VNUM:=3.8.0
+VNUM:=3.8.1
 # major-minor part of the version
 V_MAJ_MIN:=$(shell echo "$(VNUM)" | cut -f1,2 -d'.')
 
@@ -108,6 +108,14 @@ test:
 $(TMPDIR) $(JDOCDIR):
 	mkdir -p $@
 
+# -Dasciidoctor.attributes=optimize makes asciidoctor-pdf shrink the PDF guides
+# with Ghostscript (the user guide halves, 2.0 MB -> 1.0 MB). JRuby reaches gs
+# through Open3.capture3, and to set that child process up it reflects into
+# java.io.FileDescriptor and sun.nio.ch for the real OS file descriptors; Java
+# 17+ encapsulates both, so it spawns with invalid descriptors and the build
+# dies with "(EBADF) Bad file descriptor - /usr/bin/gs" -- nothing to do with
+# Ghostscript, which is never reached. The two --add-opens that fix it are in
+# .mvn/jvm.config, which cannot carry a comment of its own.
 $(LIBDIR)/Vengine.jar: version-set
 	$(MVN) deploy -DgitVersion=$(VERSION) -Dasciidoctor.attributes=optimize $(SKIPS)
 	mv $(LIBDIR)/$(JARNAME).jar $@

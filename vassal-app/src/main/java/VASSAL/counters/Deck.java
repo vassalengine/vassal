@@ -1694,7 +1694,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected Command reportCommand(FormattedString reportFormat, String commandName) {
     reportFormat.setProperty(DrawPile.DECK_NAME, getLocalizedDeckName());
     reportFormat.setProperty(DrawPile.COMMAND_NAME, commandName);
-    final String rep = reportFormat.getLocalizedText(this, commandName);
+    final String rep = reportFormat.getLocalizedText(this, "Editor.report_format");
     Command c = null;
     if (rep.length() > 0) {
       c = new Chatter.DisplayText(gameModule.getChatter(), "* " + rep); //$NON-NLS-1$
