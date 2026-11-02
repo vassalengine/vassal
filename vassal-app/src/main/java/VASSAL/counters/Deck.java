@@ -450,6 +450,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   protected void insertPieceAt(GamePiece p, int index, boolean suppressDeckCounts) {
     super.insertPieceAt(p, index, suppressDeckCounts);
+    // A selected piece entering a Deck must lose its selection, otherwise
+    // it can be tracked through a shuffle (e.g., when stepping through a log)
+    final KeyBuffer kb = KeyBuffer.getBuffer();
+    if (kb.contains(p)) {
+      kb.remove(p);
+    }
     if (!suppressDeckCounts) {
       updateCounts(p, true);
       fireNumCardsProperty();
