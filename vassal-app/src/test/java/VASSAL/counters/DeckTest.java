@@ -3,6 +3,7 @@ package VASSAL.counters;
 import VASSAL.build.GameModule;
 import VASSAL.build.MockModuleTest;
 import VASSAL.build.module.Map;
+import VASSAL.tools.FormattedString;
 import org.junit.jupiter.api.Test;
 
 import java.awt.Point;
@@ -503,5 +504,15 @@ public class DeckTest extends MockModuleTest {
     finally {
       kb.clear();
     }
+  }   
+   
+  @Test
+  public void reportCommandShouldAcceptUnnamedCommand() {
+    // prepare
+    final GameModule gameModule = mock(GameModule.class);
+    Deck d = new Deck(gameModule);
+
+    // run, assert: an unnamed Deck Send or Sort command has a null name
+    assertNull(d.reportCommand(new FormattedString(""), null));
   }
 }
