@@ -39,7 +39,47 @@
       "improvements": [
       ],
       "other": [
+        { "num": 15183, "desc": "Do not use contractions in messages" },
         { "num": 15081, "desc": "Remove use of org.jdesktop.timing and use Swing timers instead" }
+      ]
+    },
+    {
+      "in": "3.8.0",
+      "since": "3.7.30",
+      "new_features": [
+        { "num": 15121, "desc": "Compress the saved-game command log with XZ" },
+        { "num": 15097, "desc": "Make Charts zoomable" },
+        { "num": 14978, "desc": "Allow cannotMove to be set as a DynamicProperty" },
+        { "num": 14582, "desc": "Add oblique hex grid numbering" },
+        { "num": 14581, "desc": "Added animated symbolic dice button" },
+        { "num": 14556, "desc": "Support Multi-Location commands within Sub-Menus" },
+        { "num": 14342, "desc": "Add Movement Trail option to keep only last position per location" },
+        { "num": 13168, "desc": "Multi-Location Command includes the option to sort the order of the commands generated" },
+        { "num": 12944, "desc": "Add pieceCount to the map auto reporter" }
+      ],
+      "bug_fixes": [
+        { "num": 15233, "desc": "Let JRuby spawn Ghostscript when building the PDF guides" },
+        { "num": 15217, "desc": "Fix IndexOutOfBoundsException on undo after beginning a new logfile" },
+        { "num": 15216, "desc": "Fix NPE in ADC2 importer when the module defines no players" },
+        { "num": 15212, "desc": "Fix NPE when deleting a Toolbar Menu that has no toolbar" },
+        { "num": 15211, "desc": "Fix NPE in Deck reports for deck commands with no name" },
+        { "num": 15202, "desc": "Fix Load Log, Fast Forward and Append" },
+        { "num": 15158, "desc": "Change background of Quickstart message to match UI" }
+      ],
+      "improvements": [
+        { "num": 15222, "desc": "Modify DiceButton to support legacy modules" },
+        { "num": 15060, "desc": "Stop writing obfuscated data in hex" },
+        { "num": 15049, "desc": "Make Zone use full qualified path for property container" },
+        { "num": 14583, "desc": "MoveCameraButton now uses preferred center instead of viewport center" }
+      ],
+      "other": [
+        { "num": 15245, "desc": "Upgraded maven-enforcer-plugin to 3.7.0"},
+        { "num": 15231, "desc": "Upgraded logback-classic to 1.6.6" },
+        { "num": 15221, "desc": "Upgraded byte-buddy to 1.18.16" },
+        { "num": 15220, "desc": "Upgraded maven-surefire-plugin to 3.6.1" },
+        { "num": 15206, "desc": "Upgraded batik to 1.20" },
+        { "num": 15198, "desc": "Upgraded asm to 9.11.1" },
+        { "num": 15099, "desc": "Removed the deprecated loadGameOld Action" }
       ]
     }
   ]
