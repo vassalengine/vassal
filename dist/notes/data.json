@@ -22,7 +22,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 15255, "desc": "Fixed typo in Vassal Reference Manual “Place Marker” text" }
+        { "num": 15255, "desc": "Fixed typo in Vassal Reference Manual “Place Marker” text" },
+        { "num": 15228, "desc": "Deselect pieces when they are shuffled" }
       ],
       "improvements": [
       ],
