@@ -848,14 +848,14 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       fixGPID = new JCheckBox(Resources.getString("GameRefresher.fix_gpid"));
       panel.add(fixGPID, "gapx 20");
 
-      dynamicPropertyNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_dynamicProperty_descr"), true);
-      panel.add(dynamicPropertyNameCheck, "gapx 10");
       labelerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_labeler_descr"), true);
       panel.add(labelerNameCheck, "gapx 10");
       layerNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_layer_descr"), true);
       panel.add(layerNameCheck, "gapx 10");
       rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
       panel.add(rotateNameCheck, "gapx 10");
+      dynamicPropertyNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_dynamicProperty_descr"), true);
+      panel.add(dynamicPropertyNameCheck, "gapx 10");
 
       deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map", "gapx 10"), true);
       // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12902

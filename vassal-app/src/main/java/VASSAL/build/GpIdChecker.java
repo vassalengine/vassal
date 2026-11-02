@@ -365,10 +365,12 @@ public class GpIdChecker {
               }
             }
           }
-          else if (d instanceof DynamicProperty) {
+          // Exact class only: Set Global Property and Set Piece Property are subclasses
+          // of Dynamic Property but hold no value of their own to carry across.
+          else if (d.getClass() == DynamicProperty.class) {
             if (useDynamicPropertyName()) {
-              final String nameToFind = ((DynamicProperty)decoratorNewPc).getDynamicPropertyName();
-              if (((DynamicProperty) d).getDynamicPropertyName().equals(nameToFind)) {
+              final String nameToFind = ((DynamicProperty) decoratorNewPc).getKey();
+              if (nameToFind != null && nameToFind.equals(((DynamicProperty) d).getKey())) {
                 return d.myGetState();
               }
             }

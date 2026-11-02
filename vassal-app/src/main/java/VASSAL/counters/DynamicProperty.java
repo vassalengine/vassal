@@ -76,8 +76,6 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   protected String value = "";
 
-  protected String name = Resources.getString("Editor.DynamicProperty.trait_description");
-
   protected String key;
   protected boolean numeric;
   protected int minValue;
@@ -99,10 +97,6 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     setInner(p);
     keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands"), this);
     mySetType(type);
-  }
-
-  public String getDynamicPropertyName() {
-    return name;
   }
 
   @Override

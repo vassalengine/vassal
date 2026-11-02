@@ -78,6 +78,7 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
   private JCheckBox labelerNameCheck;
   private JCheckBox layerNameCheck;
   private JCheckBox rotateNameCheck;
+  private JCheckBox dynamicPropertyNameCheck;
   private JCheckBox testModeOn;
   private JCheckBox deletePieceNoMap;
   private JCheckBox refreshDecks;
@@ -164,6 +165,8 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
     panel.add(layerNameCheck, "gapx 10");
     rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
     panel.add(rotateNameCheck, "gapx 10");
+    dynamicPropertyNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_dynamicProperty_descr"), true);
+    panel.add(dynamicPropertyNameCheck, "gapx 10");
 
     deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map"), true);
     // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12902
@@ -252,6 +255,9 @@ public class RefreshPredefinedSetupsDialog extends JDialog {
       }
       if (rotateNameCheck.isSelected()) {
         options.add(GameRefresher.USE_ROTATE_NAME); //$NON-NLS-1$
+      }
+      if (dynamicPropertyNameCheck.isSelected()) {
+        options.add(GameRefresher.USE_DYNAMICPROPERTY_NAME); //$NON-NLS-1$
       }
     }
     if (testModeOn.isSelected()) {
