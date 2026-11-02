@@ -138,4 +138,41 @@ public class EmbellishmentTest extends DecoratorTest {
       assertEquals(before, layer.getState());
     }
   }
+
+  @Test
+  public void testAlwaysActiveLayerIgnoresActivateKey() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+
+      // An always-active Layer can't be toggled, so its activate key must cost nothing
+      final Embellishment layer = createLayer(false);
+      layer.alwaysActive = true;
+      final CountingPiece inner = new CountingPiece();
+      layer.setInner(inner);
+
+      final Command c = layer.keyEvent(NamedKeyStroke.of("activateLayer").getKeyStroke()); // NON-NLS
+
+      assertNull(c);
+      assertEquals(0, inner.stateCalls);
+    }
+  }
+
+  @Test
+  public void testHandledKeyTakesTwoSnapshots() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+
+      // A real change needs exactly two snapshots: before, and after to build the Command
+      final Embellishment layer = createLayer(false);
+      final CountingPiece inner = new CountingPiece();
+      layer.setInner(inner);
+
+      final Command c = layer.keyEvent(NamedKeyStroke.of("activateLayer").getKeyStroke()); // NON-NLS
+
+      assertNotNull(c);
+      assertEquals(2, inner.stateCalls);
+    }
+  }
 }

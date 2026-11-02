@@ -282,7 +282,8 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       }
     }
 
-    return tracker == null ? null : tracker.getChangeCommand();
+    // Nothing to send if no key matched, or the value didn't change (e.g. a Prompt was cancelled)
+    return tracker == null ? null : tracker.getChangeCommandIfChanged();
   }
 
   public String getCommandsList() {
