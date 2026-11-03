@@ -3,6 +3,7 @@
 * 15255: Fixed typo in VASSAL Reference Manual "Place Marker" text
 * 15228: Deselect pieces when they are shuffled
 * 15183: Do not use contractions in messages
+* 15162: Add search to Module Manager
 * 15081: Remove use of org.jdesktop.timing and use Swing timers instead
 
 3.8.0 - 31 October 2026
