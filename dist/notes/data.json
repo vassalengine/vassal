@@ -38,6 +38,7 @@
         { "num": 15228, "desc": "Deselect pieces when they are shuffled" }
       ],
       "improvements": [
+        { "num": 15162, "desc": "Add search to Module Manager" }
       ],
       "other": [
         { "num": 15183, "desc": "Do not use contractions in messages" },
