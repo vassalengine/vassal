@@ -158,6 +158,10 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     refreshAction = new AbstractAction(Resources.getString("GameRefresher.refresh_counters")) { //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
 
+      {
+        putValue(MNEMONIC_KEY, (int) Resources.getString("GameRefresher.refresh_counters.shortcut").charAt(0)); //NON-NLS
+      }
+
       @Override
       public void actionPerformed(ActionEvent e) {
 

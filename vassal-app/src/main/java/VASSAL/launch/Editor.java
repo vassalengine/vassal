@@ -107,6 +107,7 @@ public class Editor extends Launcher {
         Editor.class.getName(),
         new LaunchRequest(LaunchRequest.Mode.NEW)
       );
+      putValue(MNEMONIC_KEY, (int) Resources.getString("Main.new_module.shortcut").charAt(0)); //NON-NLS
     }
 
     @Override
@@ -136,6 +137,7 @@ public class Editor extends Launcher {
 
     public PromptImportLaunchAction(ModuleManagerWindow mm) {
       super(mm, null);
+      putValue(MNEMONIC_KEY, (int) Resources.getString("Main.import_module.shortcut").charAt(0)); //NON-NLS
     }
 
     @Override
@@ -265,7 +267,8 @@ public class Editor extends Launcher {
 
     public PromptLaunchAction(ModuleManagerWindow mm) {
       super(mm, null);
-      putValue(NAME, Resources.getString("Main.edit_module"));
+      putValue(NAME, Resources.getString("Main.edit_module")); // NON-NLS
+      putValue(MNEMONIC_KEY, (int) Resources.getString("Main.edit_module.shortcut").charAt(0)); //NON-NLS
     }
 
     @Override

@@ -104,6 +104,7 @@ public class ScenarioOptions implements GameComponent {
     go.addOption(keyConfig);
     keyConfig.addPropertyChangeListener(evt -> {
       l.setKeyStroke(keyConfig.getValueNamedKeyStroke());
+      getOpenAction().putValue(Action.ACCELERATOR_KEY, l.getKeyStroke());
       launch.setToolTipText(Resources.getString("Editor.ScenarioProperties.hotkey_tooltip", NamedHotKeyConfigurer.getString(l.getKeyStroke())));  //$NON-NLS-1$
     });
     keyConfig.fireUpdate();
@@ -170,6 +171,9 @@ public class ScenarioOptions implements GameComponent {
       SwingUtils.setDefaultButtons(dialog.getRootPane(), ok, cancel);
 
       openAction = new AbstractAction(Resources.getString("ScenarioOptions.menu_text")) {
+        {
+          putValue(MNEMONIC_KEY, (int) Resources.getString("ScenarioOptions.menu_text.shortcut").charAt(0)); //NON-NLS
+        }
         @Override
         public void actionPerformed(ActionEvent e) {
           open();
