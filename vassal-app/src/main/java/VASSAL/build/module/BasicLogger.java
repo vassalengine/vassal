@@ -601,7 +601,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     // correspondence of commands to undos. Find the command to undo
     // skipping over command/undo pairs. undoLevel counts unmatched pairs.
     int undoLevel = 0;
-    final Boolean isLastInputUndoCommand = lastInput instanceof UndoCommand;
+    final boolean isLastInputUndoCommand = lastInput instanceof UndoCommand;
     while (nextUndo-- > dontUndoPast) {
       if (lastInput == lastOutput && (isLastInputUndoCommand || undoLevel > 0)) {
         if (isLastInputUndoCommand && undoLevel > 0) {
@@ -661,7 +661,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public void log(Command c) {
     if (c != null && c.isLoggable()) {
       logOutput.add(c);
-      if (c.getUndoCommand() != null && !c.getUndoCommand().isNull()) {
+      if (!c.getUndoCommand().isNull()) {
         nextUndo = logOutput.size() - 1;
       }
     }
