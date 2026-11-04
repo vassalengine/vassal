@@ -17,9 +17,16 @@
 
 package VASSAL.counters;
 
+import VASSAL.build.module.Map;
 import VASSAL.tools.NamedKeyStroke;
+import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class ReturnToDeckTest extends DecoratorTest {
 
@@ -42,7 +49,35 @@ public class ReturnToDeckTest extends DecoratorTest {
 
   }
 
+  /**
+   * Regression test for issue 14081: Return to Deck must be disabled on a
+   * piece that is not on a map (i.e., in a palette), as Clone, Delete and
+   * Send To Location are. Otherwise the palette's own piece is put into the
+   * Deck, and every later piece from that palette shares its UniqueID.
+   */
+  @Test
+  public void disabledWhenNotOnMap() {
+    final ReturnToDeck trait = createCommandTrait();
+    assertFalse(trait.myGetKeyCommands()[0].isEnabled());
+    assertNull(trait.myKeyEvent(trait.returnKey.getKeyStroke()));
+  }
+
+  @Test
+  public void enabledWhenOnMap() {
+    final ReturnToDeck trait = createCommandTrait();
+    trait.setMap(mock(Map.class));
+    assertTrue(trait.myGetKeyCommands()[0].isEnabled());
+  }
+
   private ReturnToDeck createTrait() {
     return new ReturnToDeck();
+  }
+
+  private ReturnToDeck createCommandTrait() {
+    final ReturnToDeck trait = createTrait();
+    trait.setInner(new BasicPiece());
+    trait.returnCommand = "Return";
+    trait.returnKey = NamedKeyStroke.of('R', KeyEvent.CTRL_DOWN_MASK);
+    return trait;
   }
 }
