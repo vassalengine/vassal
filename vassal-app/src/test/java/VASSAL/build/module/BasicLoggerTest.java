@@ -77,6 +77,9 @@ public class BasicLoggerTest {
       GameState gameState = new GameState();
       staticGm.when(gm::getGameState).thenReturn(gameState);
 
+      Chatter chatter = new Chatter();
+      staticGm.when(gm::getChatter).thenReturn(chatter);
+
       // Capture the argument for the sendAndLog calls.
       ArgumentCaptor<Command> sendAndLogCaptor = ArgumentCaptor.forClass(Command.class);
 
@@ -112,7 +115,10 @@ public class BasicLoggerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      Chatter chatter = new Chatter();
+      staticGm.when(gm::getChatter).thenReturn(chatter);
       BasicLogger logger = new BasicLogger();
+      staticGm.when(gm::getBasicLogger).thenReturn(logger);
 
       ServerConnection server= new NodeClient("moduleName", "playerId", logger,  "host", 0, null);
       staticGm.when(gm::getServer).thenReturn(server);
@@ -156,11 +162,13 @@ public class BasicLoggerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
       BasicLogger logger = new BasicLogger();
-
+      staticGm.when(gm::getBasicLogger).thenReturn(logger);
       GameState gameState = new GameState();
       staticGm.when(gm::getGameState).thenReturn(gameState);
       ServerConnection server = new NodeClient("moduleName", "playerId", logger, "host", 0, null);
       staticGm.when(gm::getServer).thenReturn(server);
+      Chatter chatter = new Chatter();
+      staticGm.when(gm::getChatter).thenReturn(chatter);
 
       // Mock sendAndLog removing the send while retaining the logging portion.
       staticGm.when(()->gm.sendAndLog(any(Command.class))).thenAnswer(new Answer<Object>() {
@@ -220,11 +228,14 @@ public class BasicLoggerTest {
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
       BasicLogger logger = new BasicLogger();
+      staticGm.when(gm::getBasicLogger).thenReturn(logger);
 
       GameState gameState = new GameState();
       staticGm.when(gm::getGameState).thenReturn(gameState);
       ServerConnection server = new NodeClient("moduleName", "playerId", logger, "host", 0, null);
       staticGm.when(gm::getServer).thenReturn(server);
+      Chatter chatter = new Chatter();
+      staticGm.when(gm::getChatter).thenReturn(chatter);
 
       // Mock sendAndLog() bypassing the send while retaining the logging portion.
       // This adds the command to logOutput.
@@ -258,11 +269,15 @@ public class BasicLoggerTest {
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
       BasicLogger logger = new BasicLogger();
+      staticGm.when(gm::getBasicLogger).thenReturn(logger);
 
       GameState gameState = new GameState();
       staticGm.when(gm::getGameState).thenReturn(gameState);
       ServerConnection server = new NodeClient("moduleName", "playerId", logger, "host", 0, null);
       staticGm.when(gm::getServer).thenReturn(server);
+
+      Chatter chatter = new Chatter();
+      staticGm.when(gm::getChatter).thenReturn(chatter);
 
       // Mock sendAndLog() bypassing the send while retaining the logging portion.
       // This adds the command to logOutput.
