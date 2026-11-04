@@ -74,20 +74,20 @@ public class BasicLoggerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-      GameState gameState = new GameState();
+      final GameState gameState = new GameState();
       staticGm.when(gm::getGameState).thenReturn(gameState);
 
-      Chatter chatter = new Chatter();
+      final Chatter chatter = mock(Chatter.class);
       staticGm.when(gm::getChatter).thenReturn(chatter);
 
       // Capture the argument for the sendAndLog calls.
       ArgumentCaptor<Command> sendAndLogCaptor = ArgumentCaptor.forClass(Command.class);
 
-      BasicLogger logger = new BasicLogger();
+      final BasicLogger logger = new BasicLogger();
 
       char letter = 'A';
       for (int i=0; i<4; i++) {
-        final Command c = new Chatter.DisplayText(gm.getChatter(), Character.toString(letter));
+        final Command c = new Chatter.DisplayText(chatter, Character.toString(letter));
         letter++;
         logger.logInput.add(c);
       }
@@ -115,17 +115,17 @@ public class BasicLoggerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-      Chatter chatter = new Chatter();
+      final Chatter chatter = mock(Chatter.class);
       staticGm.when(gm::getChatter).thenReturn(chatter);
-      BasicLogger logger = new BasicLogger();
+      final BasicLogger logger = new BasicLogger();
       staticGm.when(gm::getBasicLogger).thenReturn(logger);
 
-      ServerConnection server= new NodeClient("moduleName", "playerId", logger,  "host", 0, null);
+      final ServerConnection server= new NodeClient("moduleName", "playerId", logger,  "host", 0, null);
       staticGm.when(gm::getServer).thenReturn(server);
 
       char letter = 'A';
       for (int i=0; i<4; i++) {
-        final Command c = new Chatter.DisplayText(gm.getChatter(), Character.toString(letter));
+        final Command c = new Chatter.DisplayText(chatter, Character.toString(letter));
         letter++;
         logger.log(c);
       }
@@ -141,7 +141,7 @@ public class BasicLoggerTest {
       assertEquals(8, logger.logOutput.size());
 
       // Regex pattern to match the last char within the square brackets.
-      Pattern p = Pattern.compile("\\[.*(.)]");
+      final Pattern p = Pattern.compile("\\[.*(.)]");
       // Verify that undo commands are in reverse order.
       // First half of list contains the commands, second half the undo commands.
       // For example: comparing [A] to [* UNDO: A] is considered a match.
@@ -161,13 +161,13 @@ public class BasicLoggerTest {
     try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
-      BasicLogger logger = new BasicLogger();
+      final BasicLogger logger = new BasicLogger();
       staticGm.when(gm::getBasicLogger).thenReturn(logger);
-      GameState gameState = new GameState();
+      final GameState gameState = new GameState();
       staticGm.when(gm::getGameState).thenReturn(gameState);
-      ServerConnection server = new NodeClient("moduleName", "playerId", logger, "host", 0, null);
+      final ServerConnection server = new NodeClient("moduleName", "playerId", logger, "host", 0, null);
       staticGm.when(gm::getServer).thenReturn(server);
-      Chatter chatter = new Chatter();
+      final Chatter chatter = mock(Chatter.class);
       staticGm.when(gm::getChatter).thenReturn(chatter);
 
       // Mock sendAndLog removing the send while retaining the logging portion.
@@ -180,7 +180,7 @@ public class BasicLoggerTest {
       });
 
       for (char letter = 'A'; letter <= 'C'; ++letter) {
-        Command c = new Chatter.DisplayText(gm.getChatter(), Character.toString(letter));
+        final Command c = new Chatter.DisplayText(chatter, Character.toString(letter));
         logger.logInput.add(c);
         Command undo = new BasicLogger.UndoCommand(true)
                 .append(c.getUndoCommand())
@@ -194,12 +194,12 @@ public class BasicLoggerTest {
       logger.undo();  // Undo Undo C
       logger.undo();  // Undo C
 
-      logger.log(new Chatter.DisplayText(gm.getChatter(),"User message"));
+      logger.log(new Chatter.DisplayText(chatter,"User message"));
       logger.undo();  // Undo User message
       logger.undo();  // Undo Undo B
       logger.undo();  // Undo B
 
-      Command b = new Chatter.DisplayText(gm.getChatter(), "B");
+      Command b = new Chatter.DisplayText(chatter, "B");
       Command undoB = new BasicLogger.UndoCommand(true)
               .append(b.getUndoCommand())
               .append((new BasicLogger.UndoCommand(false)));
@@ -227,14 +227,14 @@ public class BasicLoggerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      BasicLogger logger = new BasicLogger();
+      final BasicLogger logger = new BasicLogger();
       staticGm.when(gm::getBasicLogger).thenReturn(logger);
 
-      GameState gameState = new GameState();
+      final GameState gameState = new GameState();
       staticGm.when(gm::getGameState).thenReturn(gameState);
-      ServerConnection server = new NodeClient("moduleName", "playerId", logger, "host", 0, null);
+      final ServerConnection server = new NodeClient("moduleName", "playerId", logger, "host", 0, null);
       staticGm.when(gm::getServer).thenReturn(server);
-      Chatter chatter = new Chatter();
+      final Chatter chatter = mock(Chatter.class);
       staticGm.when(gm::getChatter).thenReturn(chatter);
 
       // Mock sendAndLog() bypassing the send while retaining the logging portion.
@@ -248,10 +248,10 @@ public class BasicLoggerTest {
       });
 
       // Simulate a simple log file with some display text and an undo.
-      logger.logInput.add(new Chatter.DisplayText(gm.getChatter(),"First message"));
+      logger.logInput.add(new Chatter.DisplayText(chatter,"First message"));
       logger.logInput.add(
               new BasicLogger.UndoCommand(true)
-                      .append(new Chatter.DisplayText(gm.getChatter(),"logged undo"))
+                      .append(new Chatter.DisplayText(chatter,"logged undo"))
                       .append((new BasicLogger.UndoCommand(false))));
       logger.step();
       logger.step();
@@ -268,15 +268,15 @@ public class BasicLoggerTest {
       final GameModule gm = mock(GameModule.class);
       staticGm.when(GameModule::getGameModule).thenReturn(gm);
 
-      BasicLogger logger = new BasicLogger();
+      final BasicLogger logger = new BasicLogger();
       staticGm.when(gm::getBasicLogger).thenReturn(logger);
 
-      GameState gameState = new GameState();
+      final GameState gameState = new GameState();
       staticGm.when(gm::getGameState).thenReturn(gameState);
-      ServerConnection server = new NodeClient("moduleName", "playerId", logger, "host", 0, null);
+      final ServerConnection server = new NodeClient("moduleName", "playerId", logger, "host", 0, null);
       staticGm.when(gm::getServer).thenReturn(server);
 
-      Chatter chatter = new Chatter();
+      final Chatter chatter = mock(Chatter.class);
       staticGm.when(gm::getChatter).thenReturn(chatter);
 
       // Mock sendAndLog() bypassing the send while retaining the logging portion.
@@ -290,14 +290,14 @@ public class BasicLoggerTest {
       });
 
       // Simulate a simple log file with some display text and an undo.
-      logger.logInput.add(new Chatter.DisplayText(gm.getChatter(),"OutputLog message"));
+      logger.logInput.add(new Chatter.DisplayText(chatter,"OutputLog message"));
       logger.logInput.add(
               new BasicLogger.UndoCommand(true)
-                      .append(new Chatter.DisplayText(gm.getChatter(),"logged undo"))
+                      .append(new Chatter.DisplayText(chatter,"logged undo"))
                       .append((new BasicLogger.UndoCommand(false))));
 
       // Inject a user action, prior to log playback, to offset input and output logs.
-      logger.logOutput.add(new Chatter.DisplayText(gm.getChatter(),"User Action"));
+      logger.logOutput.add(new Chatter.DisplayText(chatter,"User Action"));
 
       logger.step();
       logger.step();
