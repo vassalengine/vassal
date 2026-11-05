@@ -86,6 +86,13 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
   protected DynamicKeyCommand[] keyCommands;
   protected KeyCommand[] menuCommands;
 
+  /**
+   * @deprecated The key commands are parsed and encoded by {@link #decodeKeyCommands} and
+   * {@link #encodeKeyCommands} without a configurer, so that a game's pieces no longer carry a
+   * Swing configurer per instance. This field is no longer set and is always null; the editor has
+   * its own.
+   */
+  @Deprecated(since = "2026-09-29", forRemoval = true)
   protected DynamicKeyCommandListConfigurer keyCommandListConfig;
   protected String description = "";
 
@@ -95,7 +102,6 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   public DynamicProperty(String type, GamePiece p) {
     setInner(p);
-    keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, Resources.getString("Editor.DynamicProperty.commands"), this);
     mySetType(type);
   }
 
@@ -105,13 +111,59 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     sd.nextToken(); // Skip over command prefix
     key = sd.nextToken("name");
     decodeConstraints(sd.nextToken(""));
-    keyCommandListConfig.setValue(sd.nextToken(""));
-    keyCommands = keyCommandListConfig.getListValue().toArray(new DynamicKeyCommand[0]);
+    keyCommands = decodeKeyCommands(sd.nextToken(""), this);
     description = sd.nextToken("");
 
     menuCommands = Arrays.stream(keyCommands).filter(
       kc -> !StringUtils.isEmpty(kc.getName())
     ).toArray(KeyCommand[]::new);
+  }
+
+  /**
+   * Decodes a Dynamic Property's key commands from the form {@link #encodeKeyCommands} writes:
+   * a comma-separated list of {@code name:keystroke:property-changer} entries. This is what the
+   * {@link DynamicKeyCommandListConfigurer} reads and writes in the editor; here it is done
+   * without building one, since a game holds one of these per Dynamic Property per piece.
+   *
+   * @param s the encoded list
+   * @param target the trait the commands act on
+   * @return the commands, one per entry
+   */
+  public static DynamicKeyCommand[] decodeKeyCommands(String s, DynamicProperty target) {
+    if (s == null || s.isEmpty()) {
+      return new DynamicKeyCommand[0];
+    }
+    final List<DynamicKeyCommand> list = new ArrayList<>();
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(s, ',');
+    while (sd.hasMoreTokens()) {
+      final SequenceEncoder.Decoder entry = new SequenceEncoder.Decoder(sd.nextToken(), ':');
+      final String name = entry.nextToken("");
+      final NamedKeyStroke key = entry.nextNamedKeyStroke(null);
+      final PropertyChanger changer = PropertyChangerConfigurer.decode(entry.nextToken(""), target);
+      list.add(new DynamicKeyCommand(name, key, target, target, changer));
+    }
+    return list.toArray(new DynamicKeyCommand[0]);
+  }
+
+  /**
+   * Encodes a Dynamic Property's key commands as {@link #decodeKeyCommands} reads them.
+   *
+   * @param keyCommands the commands
+   * @return the encoded list, empty for none
+   */
+  public static String encodeKeyCommands(DynamicKeyCommand[] keyCommands) {
+    if (keyCommands == null || keyCommands.length == 0) {
+      return "";
+    }
+    final SequenceEncoder se = new SequenceEncoder(',');
+    for (final DynamicKeyCommand kc : keyCommands) {
+      se.append(new SequenceEncoder(':')
+        .append(kc.getName())
+        .append(kc.getNamedKeyStroke())
+        .append(PropertyChangerConfigurer.encode(kc.getPropChanger()))
+        .getValue());
+    }
+    return se.getValue();
   }
 
   protected void decodeConstraints(String s) {
@@ -252,7 +304,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     final SequenceEncoder se = new SequenceEncoder(';');
     se.append(key);
     se.append(encodeConstraints());
-    se.append(keyCommandListConfig.getValueString());
+    se.append(encodeKeyCommands(keyCommands));
     se.append(description);
     return ID + se.getValue();
   }
@@ -452,7 +504,7 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
     if (! (o instanceof DynamicProperty)) return false;
     final DynamicProperty c = (DynamicProperty) o;
     if (! Objects.equals(encodeConstraints(), c.encodeConstraints())) return false;
-    if (! Objects.equals(keyCommandListConfig.getValueString(), keyCommandListConfig.getValueString())) return false;
+    if (! Objects.equals(encodeKeyCommands(keyCommands), encodeKeyCommands(c.keyCommands))) return false;
     if (! Objects.equals(key, c.key)) return false;
     return Objects.equals(value, c.value);
   }

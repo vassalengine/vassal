@@ -23,7 +23,6 @@ import VASSAL.build.module.properties.PropertyChanger;
 import VASSAL.build.module.properties.PropertyChangerConfigurer;
 import VASSAL.build.module.properties.PropertySetter;
 import VASSAL.build.module.properties.PropertySource;
-import VASSAL.configure.DynamicKeyCommandListConfigurer;
 import VASSAL.tools.NamedKeyStroke;
 import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
@@ -68,7 +67,6 @@ public class DynamicPropertyTest extends DecoratorTest {
     trait2.key = "xyzzy";
     trait2.value = "plugh";
     trait2.description = "Plover";
-    trait2.keyCommandListConfig = new DynamicKeyCommandListConfigurer(null, "Commands", trait2);
     BasicPiece piece = createBasicPiece ();
     trait2.setInner (piece);
     PropertyChanger changer = new PropertySetter ("3", new PropertyChangerConfigurer.Constraints () {
@@ -116,7 +114,6 @@ public class DynamicPropertyTest extends DecoratorTest {
     List<DynamicProperty.DynamicKeyCommand> commands = new ArrayList<> ();
     commands.add(command);
     trait2.keyCommands = commands.toArray(new DynamicProperty.DynamicKeyCommand[0]);
-    trait2.keyCommandListConfig.getListValue().addAll(commands);
     serializeTest("Key Command", trait2); // NON-NLS
   }
 
