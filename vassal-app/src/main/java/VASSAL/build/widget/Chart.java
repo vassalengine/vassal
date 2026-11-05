@@ -17,21 +17,30 @@
  */
 package VASSAL.build.widget;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.geom.Path2D;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,21 +49,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLayer;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.plaf.LayerUI;
 
 import VASSAL.build.AutoConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.Widget;
 import VASSAL.build.module.documentation.HelpFile;
+import VASSAL.configure.ColorConfigurer;
 import VASSAL.configure.Configurer;
 import VASSAL.configure.ConfigurerFactory;
 import VASSAL.configure.LevelConfigurer;
 import VASSAL.configure.Levels;
 import VASSAL.configure.NamedHotKeyConfigurer;
 import VASSAL.configure.StringArrayConfigurer;
+import VASSAL.configure.VisibilityCondition;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.NamedKeyStrokeListener;
@@ -78,7 +95,14 @@ public class Chart extends Widget {
   public static final String ZOOM_IN_KEY = "zoomInKey"; //NON-NLS
   public static final String ZOOM_OUT_KEY = "zoomOutKey"; //NON-NLS
   public static final String ZOOM_START_KEY = "zoomStartKey"; //NON-NLS
-
+  public static final String ZOOM_BUTTONS = "zoomButtons"; //NON-NLS
+  public static final String ZOOM_BUTTON_OPACITY = "zoomButtonOpacity"; //NON-NLS
+  public static final String ZOOM_BUTTON_WIDTH = "zoomButtonWidth"; //NON-N
+  public static final String ZOOM_BUTTON_HEIGHT = "zoomButtonHeight"; //NON-N
+  public static final String ZOOM_BUTTON_BACKGROUND = "zoomButtonBackground"; //NON-N
+  public static final String ZOOM_BUTTON_FOREGROUND = "zoomButtonForeground"; //NON-N
+  
+  private JLayer<JScrollPane> layer;
   private JScrollPane scroll;
   private String fileName;
   private SourceOp srcOp;
@@ -200,12 +224,323 @@ public class Chart extends Widget {
     KeyEvent.VK_MINUS,
     InputEvent.CTRL_DOWN_MASK
   );
-
+  
   private NamedKeyStroke zoomStartKey = NamedKeyStroke.of(
     KeyEvent.VK_0,
     InputEvent.CTRL_DOWN_MASK
   );
 
+  private boolean zoomButtons = true;
+  private int zoomButtonOpacity = 32;
+  private int zoomButtonWidth = 20;
+  private int zoomButtonHeight = 20;
+  private Color zoomButtonBackground = new Color(128, 128, 128);
+  private Color zoomButtonForeground = new Color(212, 212, 212);
+  
+
+  /**
+   * Base class for zoom buttons
+   */
+  abstract class AbstractZoomButton extends JButton {
+    protected static int serialVersionUID = -1;
+    private int alpha = zoomButtonOpacity;
+    private Shape shape;
+    private final String text;
+    private final int yoff;
+    
+    public AbstractZoomButton(String          text,
+                              int             yoff,
+                              Dimension       size,
+                              NamedKeyStroke  keyStroke) {
+      this.text = text;
+      this.yoff = yoff;
+      
+      setPreferredSize(size);
+      setMaximumSize(size);
+      setMinimumSize(size);
+      setAlignmentX(CENTER_ALIGNMENT);
+      setOpaque(false);
+      setContentAreaFilled(false);
+      setBorderPainted(false);
+      setFocusPainted(false);
+      setForeground(zoomButtonForeground);
+      setBackground(zoomButtonBackground);
+
+      if (!keyStroke.isNamed()) {
+        setToolTipText("[" + NamedHotKeyConfigurer.getString(keyStroke) + "]");
+      }
+    }
+
+    public void setAlpha(int alpha) {
+      this.alpha = alpha;
+      repaint();
+    }
+
+    public abstract Shape getShape(int w, int h);
+
+    @Override
+    public boolean contains(int x, int y) {
+      if (shape == null) {
+        shape = getShape(getWidth(), getHeight());
+      }
+      return shape.contains(x, y);
+    }
+
+    protected Color getBG(boolean pressed,
+                          boolean rollover) {
+      final Color bg = getBackground();
+
+      if (pressed) {
+        final Color dbg = bg.darker();
+        return new Color(dbg.getRed(),
+                         dbg.getGreen(),
+                         dbg.getBlue(),
+                         Math.min(255, alpha + 30));
+      }
+
+      if (rollover) {
+        final Color lbg = bg.brighter();
+        return new Color(lbg.getRed(),
+                         lbg.getGreen(),
+                         lbg.getBlue(),
+                         Math.min(255, alpha + 20));
+      }
+
+      return new Color(bg.getRed(),
+                       bg.getGreen(),
+                       bg.getBlue(),
+                       alpha);
+    }
+      
+      
+      
+    @Override
+    protected void paintComponent(Graphics g) {
+      final Graphics2D g2 = (Graphics2D) g.create();
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                          RenderingHints.VALUE_ANTIALIAS_ON);
+
+      final int w = getWidth();
+      final int h = getHeight();
+      shape       = getShape(w, h);
+
+      final Color bgColor = getBG(getModel().isPressed(),
+                                  getModel().isRollover());
+
+      // Fill vector shape
+      g2.setColor(bgColor);
+      g2.fill(shape);
+
+      // White outline for contrast
+      final Color fg = getForeground();
+      g2.setColor(new Color(fg.getRed(), fg.getGreen(), fg.getBlue(),
+                            Math.min(255, alpha + 50)));
+      g2.setStroke(new BasicStroke(1.2f));
+      g2.draw(shape);
+
+      // Draw large centered text
+      g2.setColor(new Color(fg.getRed(), fg.getGreen(), fg.getBlue(),
+                            Math.min(255, alpha + 80)));
+      g2.setFont(new Font("SansSerif", Font.BOLD, 22));
+
+      final FontMetrics fm      = g2.getFontMetrics();
+      final int         width   = fm.stringWidth(text);
+      final int         ascent  = fm.getAscent();
+      final int         descent = fm.getDescent();
+      final int         x       = (w - width) / 2;
+      final int         y       = (h + (ascent - descent)) / 2 + yoff;
+
+      g2.drawString(text, x, y);
+      g2.dispose();
+    }
+  }
+
+  /**
+   * Zoom in button
+   */
+  public class ZoomInButton extends AbstractZoomButton {
+    protected static int serialVersionUID = -1;
+    public ZoomInButton(Dimension       size,
+                        NamedKeyStroke  keyStroke) {
+      super("+", 2, size, keyStroke);
+    }
+
+    @Override
+    public Shape getShape(int w, int h) {
+      final int gap = 1; 
+      // Half-circle top dome with flat, open bottom
+      final Path2D path = new Path2D.Float();
+      path.moveTo(0, h - gap);
+      path.lineTo(0, w / 2.0);
+      path.curveTo(0, 0, w, 0, w, w / 2.0);
+      path.lineTo(w, h - gap);
+      path.closePath();
+      return path;      
+    }
+  }
+  
+  /**
+   * Zoom out button
+   */
+  public class ZoomOutButton extends AbstractZoomButton {
+    protected static int serialVersionUID = -1;
+    public ZoomOutButton(Dimension       size,
+                         NamedKeyStroke  keyStroke) {
+      super("-", -2, size, keyStroke);
+    }
+
+    @Override
+    public Shape getShape(int w, int h) {
+      final int gap = 1;
+      final Path2D path = new Path2D.Float();
+      path.moveTo(0, gap);
+      path.lineTo(w, gap);
+      path.lineTo(w, h - (w / 2.0));
+      path.curveTo(w, h, 0, h, 0, h - (w / 2.0));
+      path.closePath();
+      return path;      
+    }
+  }
+  
+  /**
+   * Zoom reset button
+   */
+  public class ZoomResetButton extends AbstractZoomButton {
+    protected static int serialVersionUID = -1;
+    public ZoomResetButton(Dimension       size,
+                           NamedKeyStroke  keyStroke) {
+      super("=", 0, size, keyStroke);
+    }
+
+    @Override
+    public Shape getShape(int w, int h) {
+      final int gap = 1;
+      return new Rectangle2D.Float(0, gap, w, h - (2 * gap));    }
+  }
+  
+
+  
+  /**
+   * Panel with zoom buttons.
+   */
+  class OverlayControlPanel extends JPanel {
+    protected static int serialVersionUID = -1;
+    // private static final int TRANSPARENT = 64;
+    private static final int OPAQUE      = 192;
+    private int alpha = zoomButtonOpacity;
+
+    public OverlayControlPanel() {
+      setOpaque(false);
+      setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+      
+      final MouseAdapter hoverListener = new MouseAdapter() {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+          setAlpha(OPAQUE);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+          if (!getBounds().contains(e.getPoint())) {
+            setAlpha(zoomButtonOpacity);
+          }
+        }
+      };
+
+      addMouseListener(hoverListener);
+ 
+      final Dimension          btnSize   = new Dimension(zoomButtonWidth,
+                                                         zoomButtonHeight);
+      final AbstractZoomButton zoomIn    = new ZoomInButton(btnSize, zoomInKey);
+      final AbstractZoomButton zoomOut   = new ZoomOutButton(btnSize, zoomOutKey);
+      final AbstractZoomButton zoomReset = new ZoomResetButton(btnSize, zoomStartKey);
+
+      // Attach your zoom actions here
+      zoomIn.addActionListener(e -> zoom(+1));
+      zoomOut.addActionListener(e -> zoom(-1));
+      zoomReset.addActionListener(e -> zoom(0));
+      zoomIn.addMouseListener(hoverListener);
+      zoomOut.addMouseListener(hoverListener);
+      zoomReset.addMouseListener(hoverListener);
+
+      // Add buttons with spacing
+      add(zoomIn);
+      add(zoomReset);
+      add(zoomOut);
+
+      setAlpha(alpha);
+      setVisible(zoomButtons);
+    }
+
+    /**
+     * Sets the transparency of the zoom interface
+     */
+    private void setAlpha(int alpha) {
+      this.alpha = alpha;
+      for (final Component c : getComponents()) {
+        if (c instanceof AbstractZoomButton) {
+          ((AbstractZoomButton)c).setAlpha(alpha);
+        }
+      }
+      repaint();
+    }
+  }
+
+  /**
+   * LayerUI that puts the zoom buttons on the overlay at the
+   * bottom-right corner of the view.
+   */
+  static class OverlayLayerUI extends LayerUI<JScrollPane> {
+    protected static int serialVersionUID = -1;
+    private final JPanel overlay;
+    private static final int MARGIN = 8; // Distance to edge
+
+    public OverlayLayerUI(JPanel overlay) {
+      this.overlay = overlay;
+    }
+
+    @Override
+    public void installUI(JComponent c) {
+      super.installUI(c);
+      final JLayer<?> layer = (JLayer<?>) c;
+      layer.getGlassPane().setLayout(null);
+      layer.getGlassPane().add(overlay);
+      layer.getGlassPane().setVisible(true);
+    }
+
+    @Override
+    public void uninstallUI(JComponent c) {
+      final JLayer<?> layer = (JLayer<?>) c;
+      layer.getGlassPane().remove(overlay);
+      super.uninstallUI(c);
+    }
+
+    @Override
+    public void doLayout(JLayer<? extends JScrollPane> layer) {
+      super.doLayout(layer);
+
+      final JScrollPane scroll = layer.getView();
+      if (scroll == null) {
+        return;
+      }
+
+      final Dimension  size = overlay.getPreferredSize();
+      final JScrollBar vBar = scroll.getVerticalScrollBar();
+      final JScrollBar hBar = scroll.getHorizontalScrollBar();
+
+      final int        vW   = (vBar != null && vBar.isVisible()) ? vBar.getWidth() : 0;
+      final int        hH   = (hBar != null && hBar.isVisible()) ? hBar.getHeight() : 0;
+
+      final int x           = layer.getWidth() - size.width - MARGIN - vW;
+      final int y           = layer.getHeight() - size.height - MARGIN - hH;
+
+      overlay.setBounds(x, y, size.width, size.height);
+    }
+  }
+  
+  /**
+   * View of the image
+   */
   private class View extends JPanel {
     private static final long serialVersionUID = 1L;
 
@@ -281,7 +616,7 @@ public class Chart extends Widget {
 
   @Override
   public Component getComponent() {
-    if (scroll == null) {
+    if (layer == null) {
       view = new View();
       boundaries.setSize(srcOp != null ? srcOp.getSize() : new Dimension(0, 0));
 
@@ -290,6 +625,10 @@ public class Chart extends Widget {
       scroll = new AdjustableSpeedScrollPane(view);
       scroll.getViewport().setPreferredSize(vpref);
       scroll.getViewport().setAlignmentY(0.0F);
+
+      final OverlayControlPanel buttons = new OverlayControlPanel();
+      final OverlayLayerUI      layerui = new OverlayLayerUI(buttons);
+      layer                             = new JLayer<>(scroll, layerui);
 
       // Note, we filter on whether the event originated in this
       // window (actually it's parent).
@@ -342,7 +681,7 @@ public class Chart extends Widget {
       });
 
     }
-    return scroll;
+    return layer;
   }
 
   private void zoom(int direction) {
@@ -378,7 +717,7 @@ public class Chart extends Widget {
 
     cx = Math.round(cx - vr.width / 2.0);
     cy = Math.round(cy - vr.height / 2.0);
-
+    
     scroll.getViewport().setViewPosition(new Point((int) cx, (int) cy));
 
     view.repaint();
@@ -494,6 +833,42 @@ public class Chart extends Widget {
       }
       zoomStartKey = (NamedKeyStroke) val;
     }
+    else if (ZOOM_BUTTONS.equals(key)) {
+      if (val instanceof String) {
+        val = Boolean.valueOf((String)val);
+      }
+      zoomButtons = (Boolean)val;
+    }
+    else if (ZOOM_BUTTON_OPACITY.equals(key)) {
+      if (val instanceof String) {
+        val = Integer.valueOf((String)val);
+      }
+      zoomButtonOpacity = (Integer)val;
+    }
+    else if (ZOOM_BUTTON_WIDTH.equals(key)) {
+      if (val instanceof String) {
+        val = Integer.valueOf((String)val);
+      }
+      zoomButtonWidth = (Integer)val;
+    }
+    else if (ZOOM_BUTTON_HEIGHT.equals(key)) {
+      if (val instanceof String) {
+        val = Integer.valueOf((String)val);
+      }
+      zoomButtonHeight = (Integer)val;
+    }
+    else if (ZOOM_BUTTON_BACKGROUND.equals(key)) {
+      if (val instanceof String) {
+        val = ColorConfigurer.stringToColor((String)val);
+      }
+      zoomButtonBackground = (Color)val;
+    }
+    else if (ZOOM_BUTTON_FOREGROUND.equals(key)) {
+      if (val instanceof String) {
+        val = ColorConfigurer.stringToColor((String)val);
+      }
+      zoomButtonForeground = (Color)val;
+    }
   }
 
   @Override
@@ -501,6 +876,19 @@ public class Chart extends Widget {
     return new Class<?>[0];
   }
 
+  @Override
+  public VisibilityCondition getAttributeVisibility(String name) {
+    if (ZOOM_BUTTON_OPACITY.equals(name) ||
+        ZOOM_BUTTON_WIDTH.equals(name) ||
+        ZOOM_BUTTON_HEIGHT.equals(name) ||
+        ZOOM_BUTTON_BACKGROUND.equals(name) ||
+        ZOOM_BUTTON_FOREGROUND.equals(name) 
+        ) {
+      return () -> (zoomButtons);
+    }
+    return super.getAttributeVisibility(name);
+  }
+      
   /**
    * The Attributes of a Chart are:
    *
@@ -533,7 +921,30 @@ public class Chart extends Widget {
    * ZOOM_START_KEY
    * </code>
    * for zoom initial hotkey
-
+   * <code>
+   * ZOOM_BUTTONS
+   * </code>
+   * to enable zoom buttons drawn over image
+   * <code>
+   * ZOOM_BUTTON_OPACITY
+   * </code>
+   * to set zoom button opacity when not hovering over buttons
+   * <code>
+   * ZOOM_BUTTON_WIDTH
+   * </code>
+   * to set the width of each zoom button
+   * <code>
+   * ZOOM_BUTTON_HEIGHT
+   * </code>
+   * to set the height of each zoom buttons
+   * <code>
+   * ZOOM_BUTTON_BACKGROUND
+   * </code>
+   * to set background colour of zoom buttons
+   * <code>
+   * ZOOM_BUTTON_FOREGROUND
+   * </code>
+   * to set background colour of zoom buttons
    * </pre>
    */
   @Override
@@ -546,7 +957,13 @@ public class Chart extends Widget {
       ZOOM_LEVELS,
       ZOOM_IN_KEY,
       ZOOM_OUT_KEY,
-      ZOOM_START_KEY
+      ZOOM_START_KEY,
+      ZOOM_BUTTONS,
+      ZOOM_BUTTON_OPACITY,
+      ZOOM_BUTTON_WIDTH,
+      ZOOM_BUTTON_HEIGHT,
+      ZOOM_BUTTON_BACKGROUND,
+      ZOOM_BUTTON_FOREGROUND      
     };
   }
 
@@ -560,7 +977,13 @@ public class Chart extends Widget {
       Resources.getString("Editor.Zoom.preset"),
       Resources.getString("Editor.Zoom.in_key"),
       Resources.getString("Editor.Zoom.out_key"),
-      Resources.getString("Editor.Zoom.initial_key")
+      Resources.getString("Editor.Zoom.initial_key"),
+      Resources.getString("Editor.Zoom.buttons_enabled"),
+      Resources.getString("Editor.Zoom.button_opacity"),
+      Resources.getString("Editor.Zoom.button_width"),
+      Resources.getString("Editor.Zoom.button_height"),
+      Resources.getString("Editor.Zoom.button_background"),
+      Resources.getString("Editor.Zoom.button_foreground")
     };
   }
 
@@ -574,7 +997,13 @@ public class Chart extends Widget {
       LevelConfig.class,
       NamedKeyStroke.class,
       NamedKeyStroke.class,
-      NamedKeyStroke.class
+      NamedKeyStroke.class,
+      Boolean.class,
+      Integer.class,
+      Integer.class,
+      Integer.class,
+      Color.class,
+      Color.class
     };
   }
 
@@ -617,6 +1046,24 @@ public class Chart extends Widget {
     }
     else if (ZOOM_START_KEY.equals(name)) {
       return  NamedHotKeyConfigurer.encode(zoomStartKey);
+    }
+    else if (ZOOM_BUTTONS.equals(name)) {
+      return  Boolean.toString(zoomButtons);
+    }
+    else if (ZOOM_BUTTON_OPACITY.equals(name)) {
+      return  Integer.toString(zoomButtonOpacity);
+    }
+    else if (ZOOM_BUTTON_WIDTH.equals(name)) {
+      return  Integer.toString(zoomButtonWidth);
+    }
+    else if (ZOOM_BUTTON_HEIGHT.equals(name)) {
+      return  Integer.toString(zoomButtonHeight);
+    }
+    else if (ZOOM_BUTTON_BACKGROUND.equals(name)) {
+      return ColorConfigurer.colorToString(zoomButtonBackground);
+    }
+    else if (ZOOM_BUTTON_FOREGROUND.equals(name)) {
+      return ColorConfigurer.colorToString(zoomButtonForeground);
     }
 
     return null;
