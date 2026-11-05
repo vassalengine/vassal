@@ -81,6 +81,7 @@ import VASSAL.chat.peer2peer.P2PClientFactory;
 import VASSAL.chat.ui.ChatServerControls;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.command.CommandSerializer;
 import VASSAL.command.Logger;
 import VASSAL.command.NullCommand;
 import VASSAL.configure.AutoConfigurer;
@@ -156,6 +157,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.security.SecureRandom;
@@ -1539,6 +1542,18 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
+   * Reads a {@link Command} tree from its text form, as {@link #decode(String)} would from the same text held as a
+   * String, but streaming: only one command's own text is ever held at a time, so a saved game of any size can be
+   * read without first materialising its whole command log.
+   *
+   * @param in the text form
+   * @return the command tree, or null if the text decodes to nothing
+   */
+  public Command decode(Reader in) throws IOException {
+    return CommandSerializer.read(in, (String s) -> decode(s), this::decodeSubCommand, COMMAND_SEPARATOR);
+  }
+
+  /**
    * Deserializes a single anonymous subcommand String into a {@link Command}, by invoking #decode from each of our registered
    * command encoders in turn until one of them is able to successfully recognize and deserialize the command.
    * @param subCommand A single command, to be deserialized
@@ -1579,6 +1594,18 @@ public class GameModule extends AbstractConfigurable
       s = se.getValue();
     }
     return s;
+  }
+
+  /**
+   * Writes a {@link Command} tree in its text form, exactly as {@link #encode(Command)} would return it, but
+   * streaming: the text is never assembled in memory, so a game of any size can be saved without first building
+   * its whole command log as a String.
+   *
+   * @param c the command tree; nothing is written for null
+   * @param out the destination
+   */
+  public void encode(Command c, Writer out) throws IOException {
+    CommandSerializer.write(c, this::encodeSubCommand, COMMAND_SEPARATOR, out);
   }
 
   /**
