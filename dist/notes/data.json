@@ -29,6 +29,8 @@
         { "num": 15162, "desc": "Add search to Module Manager" }
       ],
       "other": [
+        { "num": 15269, "desc": "Upgraded byte-buddy to 1.18.17" },
+        { "num": 15264, "desc": "Upgraded checkstyle to 14.4.0" },
         { "num": 15183, "desc": "Do not use contractions in messages" },
         { "num": 15081, "desc": "Remove use of org.jdesktop.timing and use Swing timers instead" }
       ]
