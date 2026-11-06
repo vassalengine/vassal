@@ -1,5 +1,7 @@
 3.8.1 - ???
 
+* 15283: Snapshot piece state only when Dynamic Property / Layer handle the
+    keystroke
 * 15274: Fix for ObliqueHexGridNumbering
 * 15284: Upgraded jsoup to 1.24.1
 * 15269: Upgraded byte-buddy to 1.18.17

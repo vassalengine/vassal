@@ -27,6 +27,7 @@
         { "num": 15228, "desc": "Deselect pieces when they are shuffled" }
       ],
       "improvements": [
+        { "num": 15283, "desc": "Snapshot piece state only when Dynamic Property / Layer handle the keystroke" },
         { "num": 15162, "desc": "Add search to Module Manager" }
       ],
       "other": [
