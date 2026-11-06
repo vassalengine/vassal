@@ -41,18 +41,4 @@ public class ChangeTracker {
   public boolean isChanged() {
     return !oldState.equals(Decorator.getOutermost(piece).getState());
   }
-
-  /**
-   * Like {@link #getChangeCommand}, but returns null if the piece's state has not changed.
-   * <p>
-   * The new state is taken only once, so this costs one full-piece serialisation where
-   * {@code isChanged() ? getChangeCommand() : null} costs two, and it never produces a
-   * no-op {@link ChangePiece} to be logged and sent to the other players.
-   *
-   * @return a {@link ChangePiece} command, or null if the state is unchanged
-   */
-  public Command getChangeCommandIfChanged() {
-    final String newState = Decorator.getOutermost(piece).getState();
-    return oldState.equals(newState) ? null : new ChangePiece(piece.getId(), oldState, newState);
-  }
 }

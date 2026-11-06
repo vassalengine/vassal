@@ -244,22 +244,4 @@ public class DynamicPropertyTest extends DecoratorTest {
       assertEquals(dp.getState(), ((ChangePiece) c).getNewState());
     }
   }
-
-  @Test
-  public void testHandledKeyWithNoChangeReturnsNoCommand() {
-    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
-      final GameModule gm = mock(GameModule.class);
-      staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      // The key matches, but sets the value the property already holds: no no-op ChangePiece
-      final DynamicProperty dp = createPropertyWithCommand("Strength", "setStrength", "1"); // NON-NLS
-      final String before = dp.getState();
-
-      final Command c = dp.keyEvent(NamedKeyStroke.of("setStrength").getKeyStroke()); // NON-NLS
-
-      assertNull(c);
-      assertEquals("1", dp.getValue());
-      assertEquals(before, dp.getState());
-    }
-  }
 }

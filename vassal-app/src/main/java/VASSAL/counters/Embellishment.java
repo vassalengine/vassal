@@ -676,7 +676,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
    * @return true if this Layer would act on the keystroke in {@link #myKeyEvent}
    */
   private boolean handlesKeyStroke(KeyStroke stroke) {
-    if (activateKeyStroke.equals(stroke) && nValues > 0 && !alwaysActive) {
+    if (activateKeyStroke.equals(stroke)) {
       return true;
     }
     if (followProperty) {
@@ -733,7 +733,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       }
     }
     // end random layers
-    return tracker.getChangeCommandIfChanged();
+    return tracker.isChanged() ? tracker.getChangeCommand() : null;
   }
 
   protected void doIncrease() {
