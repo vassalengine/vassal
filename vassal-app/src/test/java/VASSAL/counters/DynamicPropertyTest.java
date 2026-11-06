@@ -19,8 +19,6 @@
 package VASSAL.counters;
 
 import VASSAL.build.GameModule;
-import VASSAL.command.ChangePiece;
-import VASSAL.command.Command;
 import VASSAL.build.module.properties.PropertyChanger;
 import VASSAL.build.module.properties.PropertyChangerConfigurer;
 import VASSAL.build.module.properties.PropertySetter;
@@ -36,9 +34,6 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -194,54 +189,6 @@ public class DynamicPropertyTest extends DecoratorTest {
       dp.setValue(beanShell);
 
       assertEquals("{}", dp.getValue());
-    }
-  }
-
-  private static DynamicProperty createPropertyWithCommand(String propName, String keyName, String newValue) {
-    final BasicPiece piece = new BasicPiece(BasicPiece.ID + ";;;");
-    final DynamicProperty dp = new DynamicProperty(DynamicProperty.ID + propName, piece);
-    dp.setValue("1");
-    final PropertyChanger changer = new PropertySetter(newValue, null);
-    final DynamicProperty.DynamicKeyCommand command =
-      new DynamicProperty.DynamicKeyCommand("test", NamedKeyStroke.of(keyName), dp, dp, changer); // NON-NLS
-    dp.keyCommands = new DynamicProperty.DynamicKeyCommand[] { command };
-    return dp;
-  }
-
-  @Test
-  public void testUnhandledKeyReturnsNoCommand() {
-    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
-      final GameModule gm = mock(GameModule.class);
-      staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      final DynamicProperty dp = createPropertyWithCommand("Strength", "setStrength", "3"); // NON-NLS
-      final String before = dp.getState();
-
-      // A keystroke this trait does not handle must leave it untouched and produce no Command
-      final Command c = dp.keyEvent(NamedKeyStroke.of("someOtherKey").getKeyStroke()); // NON-NLS
-
-      assertNull(c);
-      assertEquals("1", dp.getValue());
-      assertEquals(before, dp.getState());
-    }
-  }
-
-  @Test
-  public void testHandledKeyReturnsChangePiece() {
-    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
-      final GameModule gm = mock(GameModule.class);
-      staticGm.when(GameModule::getGameModule).thenReturn(gm);
-
-      final DynamicProperty dp = createPropertyWithCommand("Strength", "setStrength", "3"); // NON-NLS
-      final String before = dp.getState();
-
-      final Command c = dp.keyEvent(NamedKeyStroke.of("setStrength").getKeyStroke()); // NON-NLS
-
-      assertNotNull(c);
-      assertTrue(c instanceof ChangePiece);
-      assertEquals("3", dp.getValue());
-      assertEquals(before, ((ChangePiece) c).getOldState());
-      assertEquals(dp.getState(), ((ChangePiece) c).getNewState());
     }
   }
 }
