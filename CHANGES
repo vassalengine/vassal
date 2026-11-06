@@ -1,5 +1,6 @@
 3.8.1 - ???
 
+* 15274: Fix for ObliqueHexGridNumbering
 * 15284: Upgraded jsoup to 1.24.1
 * 15269: Upgraded byte-buddy to 1.18.17
 * 15264: Upgraded checkstyle to 14.4.0
