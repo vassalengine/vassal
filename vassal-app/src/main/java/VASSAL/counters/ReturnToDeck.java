@@ -99,9 +99,10 @@ public class ReturnToDeck extends Decorator implements TranslatablePiece {
       }
     }
 
-    // Disable Return To Deck on Mats carrying cargo
+    // Disable Return To Deck on pieces not on a map (i.e., in a palette),
+    // as Clone, Delete and Send To Location do, and on Mats carrying cargo
     final Mat mat = (Mat) getDecorator(getOutermost(this), Mat.class);
-    myCommand.setEnabled(mat == null || mat.getCargoCount() == 0);
+    myCommand.setEnabled(getMap() != null && (mat == null || mat.getCargoCount() == 0));
 
     return commands;
   }
