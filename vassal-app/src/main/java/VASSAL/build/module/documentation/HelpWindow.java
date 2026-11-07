@@ -25,6 +25,8 @@ import javax.swing.event.HyperlinkListener;
 
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.HTMLWindowHelper;
+import VASSAL.preferences.PositionOption;
+import VASSAL.preferences.Prefs;
 
 /**
  * A Window that displays HTML content, with navigation
@@ -38,7 +40,13 @@ public class HelpWindow extends JFrame implements HyperlinkListener {
     super(title);
     setDefaultCloseOperation(HIDE_ON_CLOSE);
     setJMenuBar(MenuManager.getInstance().getMenuBarFor(this));
+
+    // Persist and restore window bounds using the common layout engine
+    final PositionOption option = new PositionOption(PositionOption.key + "HelpWindow", this); //NON-NLS
+    Prefs.getGlobalPrefs().addOption(option);
+
     helper.setup(this, contents);
+
   }
 
   @Deprecated(since = "2021-12-01", forRemoval = true)
