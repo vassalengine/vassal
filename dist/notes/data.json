@@ -16,14 +16,15 @@
     { "display_name": "Other", "suffix": "other.zip" }
   ],
   "changes": [
-    {
+  {
       "in": "3.9.0-beta1",
-      "since": "3.8.0",
+      "since": "",
       "new_features": [
       ],
       "bug_fixes": [
       ],
       "improvements": [
+        { "num": 15116, "desc": "Flatten trait chain encoding" }
       ],
       "other": [
       ]

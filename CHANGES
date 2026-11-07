@@ -1,5 +1,7 @@
 3.9.0-beta1 - ???
 
+* 15116: Flatten trait chain encoding
+
 3.8.1 - ???
 
 * 15284: Upgraded jsoup to 1.24.1
