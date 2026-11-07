@@ -30,6 +30,7 @@ import org.apache.commons.lang3.SystemUtils;
 import VASSAL.Info;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.ExtensionsLoader;
+import VASSAL.build.module.GameState;
 import VASSAL.build.module.ModuleExtension;
 import VASSAL.build.module.WizardSupport;
 import VASSAL.build.module.metadata.AbstractMetaData;
@@ -89,8 +90,17 @@ public class Player extends Launcher {
       final GameModule m = GameModule.getGameModule();
       if (lr.game != null) {
         m.getPlayerWindow().setVisible(true);
+
+        final GameState gs = m.getGameState();
+
+        // Check the Save game for validity
+        if (!gs.isSaveMetaDataValid(lr.game)) {
+          m.warn(Resources.getString("GameState.cancel_load", lr.game.getName()));
+          return;
+        }
+
         m.setGameFile(lr.game.getName(), GameModule.GameFileMode.LOADED_GAME);
-        m.getGameState().loadGameInBackground(lr.game);
+        gs.loadGameInBackground(lr.game);
       }
       else {
         showWizardOrPlayerWindow(m);
