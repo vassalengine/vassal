@@ -205,7 +205,14 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
       }
     }
 
+    final GameModule g = GameModule.getGameModule();
     for (final Buildable b : getBuildables()) {
+      // A component grafted in by an extension lives in the module's tree so
+      // the game works, but it belongs to the extension and must not be written
+      // into the module's buildFile -- nor counted as a change against it.
+      if (g != null && g.isExtensionComponent(b)) {
+        continue;
+      }
       el.appendChild(b.getBuildElement(doc));
     }
     return el;

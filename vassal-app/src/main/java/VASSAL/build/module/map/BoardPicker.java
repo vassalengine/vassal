@@ -694,7 +694,15 @@ public class BoardPicker extends AbstractBuildable implements ActionListener, Ga
       setupEl.appendChild(doc.createTextNode(defaultSetup));
       el.appendChild(setupEl);
     }
+    // possibleBoards is this class's own list rather than getBuildables(), so the
+    // skip in AbstractBuildable.getBuildElement does not reach it: a board an
+    // extension adds has to be filtered out here, or the module would save it as
+    // its own. See GameModule.addExtensionComponent.
+    final GameModule g = GameModule.getGameModule();
     for (final Board b : possibleBoards) {
+      if (g != null && g.isExtensionComponent(b)) {
+        continue;
+      }
       el.appendChild(b.getBuildElement(doc));
     }
     return el;
