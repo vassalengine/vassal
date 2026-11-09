@@ -31,6 +31,7 @@
         { "num": 15162, "desc": "Add search to Module Manager" }
       ],
       "other": [
+        { "num": 15294, "desc": "Upgraded license-maven-plugin to 2.8.0" },
         { "num": 15284, "desc": "Upgraded jsoup to 1.24.1" },
         { "num": 15269, "desc": "Upgraded byte-buddy to 1.18.17" },
         { "num": 15264, "desc": "Upgraded checkstyle to 14.4.0" },
