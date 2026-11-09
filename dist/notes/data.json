@@ -35,13 +35,16 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15274, "desc": "Fix for ObliqueHexGridNumbering" },
         { "num": 15255, "desc": "Fixed typo in Vassal Reference Manual \"Place Marker\" text" },
         { "num": 15228, "desc": "Deselect pieces when they are shuffled" }
       ],
       "improvements": [
+        { "num": 15283, "desc": "Snapshot piece state only when Dynamic Property / Layer handle the keystroke" },
         { "num": 15162, "desc": "Add search to Module Manager" }
       ],
       "other": [
+        { "num": 15294, "desc": "Upgraded license-maven-plugin to 2.8.0" },
         { "num": 15284, "desc": "Upgraded jsoup to 1.24.1" },
         { "num": 15269, "desc": "Upgraded byte-buddy to 1.18.17" },
         { "num": 15264, "desc": "Upgraded checkstyle to 14.4.0" },
