@@ -36,6 +36,7 @@
       ],
       "bug_fixes": [
         { "num": 15274, "desc": "Fix for ObliqueHexGridNumbering" },
+        { "num": 15260, "desc": "Hide private windows when a game or log is loaded over a running game" },
         { "num": 15255, "desc": "Fixed typo in Vassal Reference Manual \"Place Marker\" text" },
         { "num": 15228, "desc": "Deselect pieces when they are shuffled" }
       ],

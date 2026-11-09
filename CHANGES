@@ -11,6 +11,7 @@
 * 15284: Upgraded jsoup to 1.24.1
 * 15269: Upgraded byte-buddy to 1.18.17
 * 15264: Upgraded checkstyle to 14.4.0
+* 15260: Hide private windows when a game or log is loaded over a running game
 * 15255: Fixed typo in VASSAL Reference Manual "Place Marker" text
 * 15228: Deselect pieces when they are shuffled
 * 15183: Do not use contractions in messages
