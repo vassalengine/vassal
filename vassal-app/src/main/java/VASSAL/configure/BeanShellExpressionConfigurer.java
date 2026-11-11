@@ -17,6 +17,7 @@
  */
 package VASSAL.configure;
 
+import VASSAL.build.GameModule;
 import VASSAL.counters.EditablePiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.i18n.Resources;
@@ -201,7 +202,6 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
   @Override
   public Component getControls() {
     if (p == null) {
-      // expressionPanel = new JPanel(new MigLayout("fillx,ins 0", "[][grow][][]")); //NON-NLS
       expressionPanel = new ConfigurerPanel(getName(), "[grow,fill]", "[][grow,fill]", "[grow, fill]"); // NON-NLS
       ((MigLayout) expressionPanel.getLayout()).setLayoutConstraints("ins 0,fill");
 
@@ -210,7 +210,7 @@ public class BeanShellExpressionConfigurer extends StringConfigurer {
       validator = new Validator();
       nameField = new JTextArea(1, 100);
 
-      nameField.setFont(new Font("monospaced", Font.PLAIN, 14));
+      nameField.setFont(GameModule.getGameModule().getFontOrganizer().getEditorFont(Font.PLAIN, 14));
       nameField.setLineWrap(true);
       nameField.setWrapStyleWord(true);
       nameField.setBorder(BorderFactory.createLineBorder(Color.gray));
