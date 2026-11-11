@@ -1,5 +1,6 @@
 3.8.1 - ???
 
+* 15302: Upgraded commons-lang3 to 3.22.0
 * 15294: Upgraded license-maven-plugin to 2.8.0
 * 15283: Snapshot piece state only when Dynamic Property / Layer handle the
     keystroke
