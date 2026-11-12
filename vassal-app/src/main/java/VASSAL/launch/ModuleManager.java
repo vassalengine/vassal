@@ -294,7 +294,9 @@ public class ModuleManager {
 
     SwingUtilities.invokeLater(this::launch);
 
-    // ModuleManagerWindow.getInstance() != null now, so listen on the socket
+    // Safe to listen on the socket now: launch() is already queued on the EDT
+    // and builds the window, and a request arriving here is handed to the EDT
+    // with invokeAndWait, so it cannot be served before launch() has run.
     final Thread socketListener = new Thread(
       new ModuleManagerSocketListener(serverSocket, obj -> execute(obj)),
       "socket listener"

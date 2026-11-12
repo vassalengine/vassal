@@ -182,11 +182,47 @@ public class ModuleManagerWindow extends JFrame {
     doubleClickInterval = dci instanceof Integer ? (Integer) dci : 200L;
   }
 
-  public static ModuleManagerWindow getInstance() {
+  private static ModuleManagerWindow instance;
+
+  /**
+   * The Module Manager window, built on first request.
+   *
+   * <p>It used to be a {@code static final} field, so the window was built
+   * while the class initialised. That made every failure in the constructor an
+   * {@link ExceptionInInitializerError}, which is a poor way to find out that
+   * anything went wrong:
+   *
+   * <ul>
+   *   <li>the class is left permanently erroneous, so the next
+   *       {@code getInstance()} throws {@code NoClassDefFoundError} rather than
+   *       the real problem, and nothing can recover;</li>
+   *   <li>the reported stack is the one that touched the class, not the one
+   *       that failed. #15297 arrived as four frames ending at
+   *       {@code ModuleManager.launch}, with the cause only in the attached
+   *       log, which is why it took a round trip to work out that a Windows
+   *       shell folder had made a {@code JFileChooser} throw.</li>
+   * </ul>
+   *
+   * <p>Building it here instead means such a failure is an ordinary exception,
+   * carrying its own stack and cause to the handler and the bug report, and a
+   * later call can try again. Nothing is created any earlier or later than
+   * before: {@code ModuleManager.launch()} is still the first caller, and it
+   * still runs on the EDT.
+   *
+   * <p>The method is synchronised because class initialisation used to provide
+   * that guarantee for free. In practice every caller reaches it on the EDT —
+   * requests from the socket listener are handed over with
+   * {@code SwingUtilities.invokeAndWait} — but the lock costs nothing and does
+   * not depend on that staying true.
+   *
+   * @return the Module Manager window
+   */
+  public static synchronized ModuleManagerWindow getInstance() {
+    if (instance == null) {
+      instance = new ModuleManagerWindow();
+    }
     return instance;
   }
-
-  private static final ModuleManagerWindow instance = new ModuleManagerWindow();
 
   public ModuleManagerWindow() {
     setTitle("VASSAL " + Info.getVersion()); //NON-NLS
