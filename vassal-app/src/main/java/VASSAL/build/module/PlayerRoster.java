@@ -65,7 +65,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 
 /**
  * Maintains a list of players involved in the current game
@@ -539,36 +538,13 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
 
   @Override
   public Component getControls() {
-    final List<String> availableSides = new ArrayList<>(sides);
-    final List<String> alreadyTaken = new ArrayList<>();
-    final List<String> availableRealSides = new ArrayList<>();
-
     final GameModule gm = GameModule.getGameModule();
 
-    for (final PlayerInfo p : players) {
-      alreadyTaken.add(p.getLocalizedSide());
-    }
+    // Sides offered when joining: those neither occupied nor hidden by their VassalHideSide_ property
+    final List<String> availableSides = getFreeSides();
 
-    // Scan module VassalHideSide_<side> properties to exclude side when true
-    // The properties are named for untranslated sides!
-    for (final String s : availableSides) { // search of sides
-      if (Boolean.parseBoolean((String) gm.getProperty(VASSAL_HIDE_SIDE + untranslateSide(s))) && !alreadyTaken.contains(s)) {
-        alreadyTaken.add(s);
-      }
-    }
-
-    availableSides.removeAll(alreadyTaken);
-
-    /*
-    Determine if we can offer a Random Side option
-    */
-    for (final String s : availableSides) {
-      if (!isSoloSide(untranslateSide(s))) {
-        availableRealSides.add(s);
-      }
-    }
-
-    if (availableRealSides.size() > 1) {
+    // Offer a random choice when there is more than one player side to choose from
+    if (getFreeRealSides(availableSides).size() > 1) {
       availableSides.add(0, translatedRandom);
     }
 
@@ -888,235 +864,256 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     }
   }
 
+  /**
+   * Choose the side for a player who is joining the game or switching sides.
+   *
+   * <p>Ways in, each handled separately:</p>
+   * <ul>
+   *   <li>Switching (newSide is empty), module property VassalForceSide set: go straight to that side.</li>
+   *   <li>Switching, module property VassalRandomSide true: take a random free player side.</li>
+   *   <li>Joining with "Choose Random Side" picked in the wizard: take a random free player side.</li>
+   *   <li>Joining with a named side picked in the wizard: take it if it is still free.</li>
+   *   <li>Otherwise: the side dialog ({@link #chooseSideFromDialog}).</li>
+   * </ul>
+   *
+   * @param newSide "" when switching sides in a game; otherwise the (translated) choice from the join wizard
+   * @return the chosen side in English, {@link #OBSERVER}, or null for no change / cancelled
+   */
   protected String promptForSide(String newSide) {
-    // availableSides and alreadyTaken are translated side names
-    final List<String> availableSides = new ArrayList<>(getSides());
-    final List<String> alreadyTaken = new ArrayList<>();
-    final List<String> availableRealSides = new ArrayList<>();
+    if (newSide == null) {
+      return OBSERVER;
+    }
 
-    final Random rn = GameModule.getGameModule().getRNG();
-    int autoRandomPass = 0;
-    boolean promptOn = true;
-    boolean noSides = false; // set when there are no sides left other than observer & solo/moderator sides; set by random choice failure
-    boolean randomFromDialog = false; // random was chosen in the switch dialog (rather than by the wizard or VassalRandomSide)
-
-    final boolean alreadyConnected;
-    final GameModule gm = GameModule.getGameModule();
-    String nextChoice;
-
-    if (newSide != null && newSide.isEmpty()) {
-      // In-game side changes enter here...
-
-      // Module will automatically connect to the side (in english) contained in VassalForceSide if valid
-      // The property is cleared after use.
-      // property VassalForceSide has priority; must be an available side in english
-      // The side choice is immune to its VassalHideSide_<side> property.
-      final String forceSide = StringUtils.defaultString((String) gm.getProperty(VASSAL_FORCE_SIDE));
-      if (!StringUtils.isEmpty(forceSide)) {
-        newSide = translateSide(forceSide);
-
-        // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
-        clearControlProperty(VASSAL_FORCE_SIDE);
-
-        // VassalForceSide takes priority over VassalRandomSide, so a pending random request is used up too.
-        // Otherwise it would stay set and turn the next ordinary Retire into a random side change.
-        if (Boolean.parseBoolean((String) gm.getProperty(VASSAL_RANDOM_SIDE))) {
-          clearControlProperty(VASSAL_RANDOM_SIDE);
-        }
-
-        if (translatedObserver.equals(newSide)) {
-          return OBSERVER;
-        }
-        else if (getAvailableSides().contains(newSide)) { // this check takes occupied sides into account
-          return untranslateSide(newSide); // side must be returned in English
-        }
-        else {
-          // Force side failed; return null for no action
-          gm.warn(Resources.getString("PlayerRoster.side_not_available", newSide));
-          return null;
-        }
+    if (newSide.isEmpty()) {
+      // Switching sides in a game
+      final String forceSide = getControlProperty(VASSAL_FORCE_SIDE);
+      if (!forceSide.isEmpty()) {
+        return takeForcedSide(forceSide);
       }
 
-      // Normal use...
-      alreadyConnected = true;
-
-      // Automatically processing random side choice ?
-      if (Boolean.parseBoolean((String) gm.getProperty(VASSAL_RANDOM_SIDE))) { // property reset after use
-        autoRandomPass = 1;
-        promptOn = false; // skip prompt if initial (external) selection is for random choice
+      if (Boolean.parseBoolean(getControlProperty(VASSAL_RANDOM_SIDE))) {
         clearControlProperty(VASSAL_RANDOM_SIDE);
+        return takeRandomSideOrWarn();
       }
-    }
-    else {
-      // entry for connecting to game...
-      if (newSide == null || translatedObserver.equals(newSide)) return OBSERVER; // Observer checked and returned translated here
-      alreadyConnected = false;
-      if (translatedRandom.equals(newSide)) {
-        autoRandomPass = 1;
-        promptOn = false; // skip prompt if initial (external) selection is for random choice
-      }
+
+      return chooseSideFromDialog("", true);
     }
 
-    while (newSide != null) { // Loops until a valid side is found or op is canceled (repeats side check to minimise race condition window)
-      // Refresh occupied slots from current game state
-      for (final PlayerInfo p : players) {
-        alreadyTaken.add(p.getLocalizedSide());
+    // Joining a game, with the choice made in the wizard
+    if (translatedObserver.equals(newSide)) {
+      return OBSERVER;
+    }
+    if (translatedRandom.equals(newSide)) {
+      return takeRandomSideOrWarn();
+    }
+    // Re-check that the side is still free: another player may have taken it while the wizard was open.
+    if (!getOccupiedSides().contains(newSide)) {
+      return untranslateSide(newSide);
+    }
+    return chooseSideFromDialog(newSide, false);
+  }
+
+  /** @return the value of a module control property, or "" when it is not set */
+  private String getControlProperty(String name) {
+    return StringUtils.defaultString((String) GameModule.getGameModule().getProperty(name));
+  }
+
+  /**
+   * Switch to the side named in VassalForceSide (in English). Both control properties are cleared, so the request
+   * cannot affect a later Retire. The side is taken even if hidden by its VassalHideSide_ property; if it is not a
+   * side, or is occupied, the player keeps their side and a warning is shown.
+   */
+  private String takeForcedSide(String forceSide) {
+    clearControlProperty(VASSAL_FORCE_SIDE);
+
+    // VassalForceSide takes priority over VassalRandomSide, so a pending random request is used up too.
+    // Otherwise it would stay set and turn the next ordinary Retire into a random side change.
+    if (Boolean.parseBoolean(getControlProperty(VASSAL_RANDOM_SIDE))) {
+      clearControlProperty(VASSAL_RANDOM_SIDE);
+    }
+
+    final String side = translateSide(forceSide);
+    if (translatedObserver.equals(side)) {
+      return OBSERVER;
+    }
+    if (getAvailableSides().contains(side)) { // takes occupied sides into account
+      return untranslateSide(side);
+    }
+    GameModule.getGameModule().warn(Resources.getString("PlayerRoster.side_not_available", side));
+    return null;
+  }
+
+  /** Take a random free player side; if there is none, warn and make no change. */
+  private String takeRandomSideOrWarn() {
+    final String side = pickRandomSide();
+    if (side == null) {
+      GameModule.getGameModule().warn(Resources.getString("PlayerRoster.no_player_sides"));
+      return null;
+    }
+    return announceRandomSide(side);
+  }
+
+  /**
+   * @return a random free player side (translated), chosen from the sides free at this moment, or null if there
+   * is none. Solitaire-type sides and hidden sides are never chosen.
+   */
+  private String pickRandomSide() {
+    final List<String> realSides = getFreeRealSides(getFreeSides());
+    if (realSides.isEmpty()) {
+      return null;
+    }
+    return realSides.get(GameModule.getGameModule().getRNG().nextInt(realSides.size()));
+  }
+
+  /** Tell the other players which side the random choice gave, and return it in English. */
+  private String announceRandomSide(String side) {
+    final GameModule gm = GameModule.getGameModule();
+    final Command c = new Chatter.DisplayText(gm.getChatter(),
+      Resources.getString("PlayerRoster.random_side", gm.getPrefs().getValue(GameModule.REAL_NAME), side));
+    c.execute();
+    gm.getServer().sendToOthers(c);
+    return untranslateSide(side);
+  }
+
+  /** @return translated names of the sides held by players */
+  private List<String> getOccupiedSides() {
+    final List<String> occupied = new ArrayList<>();
+    for (final PlayerInfo p : players) {
+      occupied.add(p.getLocalizedSide());
+    }
+    return occupied;
+  }
+
+  /** @return translated names of the sides that are neither occupied nor hidden by their VassalHideSide_ property */
+  private List<String> getFreeSides() {
+    final GameModule gm = GameModule.getGameModule();
+    final List<String> occupied = getOccupiedSides();
+    final List<String> free = new ArrayList<>();
+    for (final String s : sides) {
+      // The hide properties are named for untranslated sides
+      if (!occupied.contains(s) && !Boolean.parseBoolean((String) gm.getProperty(VASSAL_HIDE_SIDE + untranslateSide(s)))) {
+        free.add(s);
+      }
+    }
+    return free;
+  }
+
+  /** @return the sides in the list that are real player sides, i.e. not Solitaire, Solo, Referee or Moderator */
+  private List<String> getFreeRealSides(List<String> freeSides) {
+    final List<String> real = new ArrayList<>();
+    for (final String s : freeSides) {
+      if (!isSoloSide(untranslateSide(s))) {
+        real.add(s);
+      }
+    }
+    return real;
+  }
+
+  /**
+   * The default side offered in the switch dialog. VassalNextSide (in English), if it names a free side;
+   * otherwise the next free player side after the player's own, so that hot-seat players can cycle through
+   * the sides; otherwise the observer.
+   */
+  private String getHotSeatDefault(List<String> freeSides) {
+    final String nextSide = getControlProperty(VASSAL_NEXT_SIDE);
+    if (!nextSide.isEmpty() && freeSides.contains(translateSide(nextSide))) {
+      return translateSide(nextSide);
+    }
+
+    final String mySide = getMyLocalizedSide();
+    final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1;
+    int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0; // start at the "next" slot, or the beginning
+    for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // wrap-around search
+      final String s = sides.get(i);
+      if (freeSides.contains(s) && !isSoloSide(untranslateSide(s))) {
+        return s;
+      }
+    }
+    return translatedObserver;
+  }
+
+  /**
+   * Show the side dialog until the player picks a side that is still free, picks the observer, or cancels.
+   *
+   * <p>The list is rebuilt and the chosen side re-checked each time round, so two players choosing at the same
+   * moment cannot both get one side (the window is narrowed to network latency). If the chosen side has been
+   * taken meanwhile, the dialog is shown again saying so.</p>
+   *
+   * @param unavailable the (translated) side just found to be taken, or "" for none
+   * @param alreadyConnected true when switching sides in a game: offers the hot-seat default and, to observers,
+   *                         the random choice
+   */
+  private String chooseSideFromDialog(String unavailable, boolean alreadyConnected) {
+    final GameModule gm = GameModule.getGameModule();
+    boolean randomExhausted = false; // random was chosen in the dialog but no player side was left
+
+    while (true) {
+      final List<String> freeSides = getFreeSides();
+      final List<String> options = new ArrayList<>(freeSides);
+
+      String defaultChoice = translatedObserver;
+      if (alreadyConnected) {
+        if (!randomExhausted) {
+          defaultChoice = getHotSeatDefault(freeSides);
+        }
+        // Random choice is offered to observers, when there is more than one player side to choose from
+        final String mySide = getMySide();
+        if ((mySide == null || mySide.equals(OBSERVER)) && getFreeRealSides(freeSides).size() > 1) {
+          options.add(0, translatedRandom);
+        }
       }
 
-      /*
-       The while loop ensures that the selected side is re-checked here and only returned if the side is still available.
-       This prevents players switching to the same side if they enter the switch-side dialogue (below) at the same time,
-       narrowing the race condition window to network latency.
-       The random side check picks up selection by the initial connection dialog which will proceed to the common
-       random side selection routine further down.
-      */
-      if (!newSide.isEmpty() && autoRandomPass != 1 && !alreadyTaken.contains(newSide)) {
-        // side is returned in English for sharing in the game.
-        newSide = untranslateSide(newSide);
-        if (autoRandomPass > 0) {
-          // in this case, a random side must have been chosen...
-          final Command c = new Chatter.DisplayText(gm.getChatter(), Resources.getString("PlayerRoster.random_side", gm.getPrefs().getValue(GameModule.REAL_NAME), translateSide(newSide)));
-          c.execute();
-          gm.getServer().sendToOthers(c);
-        }
-        break;
+      if (!Objects.equals(getMySide(), OBSERVER)) {
+        options.add(0, translatedObserver);
       }
-      else {
-        // Set up to attempt to obtain side to join...
-        availableSides.clear();
-        availableSides.addAll(sides);
-
-        // Scan module VassalHideSide_<side> properties to exclude side when true
-        // The properties are named for untranslated sides!
-        for (final String s : availableSides) { // search of sides
-          if (Boolean.parseBoolean((String) gm.getProperty(VASSAL_HIDE_SIDE + untranslateSide(s))) && !alreadyTaken.contains(s)) alreadyTaken.add(s);
-        }
-      }
-
-      availableSides.removeAll(alreadyTaken);
-      nextChoice = translatedObserver; // default for dropdown
-
-      // When player is already connected, offer a hot-seat... first connections will default to observer
-      if (alreadyConnected && autoRandomPass == 0) {
-
-        // Module controlled hot-seat: set from VassalNextSide (a Module Global Property)
-        // Reserved property VassalNextSide may override hotseat default; must be an available side in english
-        // sits within the loop in case property changes between iterations (due to other player activity)
-        if (!StringUtils.isEmpty((String) gm.getProperty(VASSAL_NEXT_SIDE))) {
-          nextChoice = translateSide((String) gm.getProperty(VASSAL_NEXT_SIDE));
-          if (!availableSides.contains(nextChoice)) {
-            nextChoice = translatedObserver; // invalid value - revert to default
-          }
-        }
-
-        if (nextChoice.equals(translatedObserver)) {
-          // Module has not specified a valid hotseat option, so we'll try and determine one...
-          // If a "real" player side is available, we want to offer "the next one" as the default, rather than observer.
-          // Thus hotseat players can easily cycle through the player positions as they will appear successively as the default.
-          // Common names for Solitaire players (Solitaire, Solo, Referee) do not count as "real" player sides, and will be skipped.
-          // If we have no "next" side available to offer, we stay with the observer side as our default offering.
-
-          final String mySide = getMyLocalizedSide(); // Get our own side, so we can find the "next" one
-          final int myidx = (mySide != null) ? sides.indexOf(mySide) : -1; // See if we have a current non-observe side.
-          int i = (myidx >= 0) ? ((myidx + 1) % sides.size()) : 0;   // If we do, start looking in the "next" slot, otherwise start at beginning.
-          for (int tries = 0; i != myidx && tries < sides.size(); i = (i + 1) % sides.size(), tries++) { // Wrap-around search of sides
-            final String s = sides.get(i);
-            if (!alreadyTaken.contains(s) && !isSoloSide(untranslateSide(s))) {
-              nextChoice = sides.get(i); // Found an available slot that's not our current one and not a "solo" slot.
-              break;
-            }
-          }
-        }
-      }
-
-      noSides = false;
-      if (alreadyConnected || !promptOn) {
-        /*
-        Determine if we can process a Random Side option (initial connection also performs this check independently)
-        Only offered to observer but still worked out for prompt bypass modes
-         */
-        for (final String s : availableSides) {
-          if (!isSoloSide(untranslateSide(s))) availableRealSides.add(s);
-        }
-
-        if (availableRealSides.isEmpty()) {
-          // exit here if we were in no prompt mode (random choice) and no choices are available
-          if (!promptOn) {
-            if (!randomFromDialog) {
-              gm.warn(Resources.getString("PlayerRoster.no_player_sides"));
-              return null;
-            }
-            // Random was chosen in the dialog, but no player side is left now: offer the dialog again and say why.
-            // (A side the player chose themselves that has been taken keeps the normal "is unavailable" message.)
-            promptOn = true;
-            noSides = true;
-            autoRandomPass = 0;
-            randomFromDialog = false;
-          }
-        }
-        else {
-          // Prompt mode will offer random choice first time or to observer when there's more than one side to choose from
-          if (promptOn && (getMySide() == null || getMySide().equals(OBSERVER)) && availableRealSides.size() > 1) {
-            availableSides.add(0, translatedRandom);
-          }
-        }
-      }
-
-      if (promptOn) {
-
-        if (!Objects.equals(getMySide(), OBSERVER)) {
-          availableSides.add(0, translatedObserver);
-        }
-        else {
-          if (availableSides.isEmpty()) {
-            JOptionPane.showMessageDialog(gm.getPlayerWindow(), Resources.getString("PlayerRoster.no_sides"), Resources.getString("PlayerRoster.choose_side"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
-            return null;
-          }
-        }
-
-        newSide = (String) JOptionPane.showInputDialog(
-                gm.getPlayerWindow(),
-                newSide.isEmpty() ? Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()) : noSides ? Resources.getString("PlayerRoster.switch_sides3", getMyLocalizedSide()) : Resources.getString("PlayerRoster.switch_sides2", newSide, getMyLocalizedSide()), //$NON-NLS-1$
-                Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                availableSides.toArray(new String[0]),
-                nextChoice // Offer calculated most likely "next side" as the default
-        );
-
-        // a choice from the dialog replaces any earlier (failed) random choice
-        autoRandomPass = translatedRandom.equals(newSide) ? 1 : 0;
-
-        if (autoRandomPass == 1) {
-          // Roll from the sides free now, not from the list made before the dialog opened: another player may
-          // have taken one meanwhile. Loop round once without the dialog to refresh the list, then roll.
-          randomFromDialog = true;
-          promptOn = false;
-          alreadyTaken.clear();
-          availableRealSides.clear();
-          continue;
-        }
-      }
-
-      // side must be returned in English
-      if (newSide == null) { // dialog cancelled
+      else if (options.isEmpty()) {
+        JOptionPane.showMessageDialog(gm.getPlayerWindow(), Resources.getString("PlayerRoster.no_sides"), Resources.getString("PlayerRoster.choose_side"), JOptionPane.ERROR_MESSAGE); //$NON-NLS-1$
         return null;
       }
-      else if (translatedObserver.equals(newSide)) { // Observer returns here, other returns are checked once more.
-        return OBSERVER;
+
+      final String message;
+      if (randomExhausted) {
+        message = Resources.getString("PlayerRoster.switch_sides3", getMyLocalizedSide()); //$NON-NLS-1$
+      }
+      else if (unavailable.isEmpty()) {
+        message = Resources.getString("PlayerRoster.switch_sides", getMyLocalizedSide()); //$NON-NLS-1$
       }
       else {
-        // autoRandomPass - occurs on entry or when random is chosen from the dialog. Dialog will be offered again if the side is taken.
-        if (autoRandomPass > 0 && !availableRealSides.isEmpty()) {
-          newSide = availableRealSides.get((rn.nextInt(availableRealSides.size())));
-          autoRandomPass++;
-        }
-        // prepare to loop again for exit check
-        alreadyTaken.clear();
-        availableRealSides.clear();
+        message = Resources.getString("PlayerRoster.switch_sides2", unavailable, getMyLocalizedSide()); //$NON-NLS-1$
       }
+
+      final String choice = (String) JOptionPane.showInputDialog(
+        gm.getPlayerWindow(),
+        message,
+        Resources.getString("PlayerRoster.choose_side"), //$NON-NLS-1$
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        options.toArray(new String[0]),
+        defaultChoice
+      );
+
+      if (choice == null) { // cancelled
+        return null;
+      }
+      if (translatedObserver.equals(choice)) {
+        return OBSERVER;
+      }
+      if (translatedRandom.equals(choice)) {
+        // Roll from the sides free now, not from the list shown: another player may have taken one meanwhile
+        final String side = pickRandomSide();
+        if (side != null) {
+          return announceRandomSide(side);
+        }
+        randomExhausted = true; // show the dialog again, saying why
+        unavailable = choice;
+        continue;
+      }
+      if (!getOccupiedSides().contains(choice)) {
+        return untranslateSide(choice);
+      }
+      randomExhausted = false; // the chosen side has been taken meanwhile: show the dialog again, saying so
+      unavailable = choice;
     }
-    return newSide;
   }
 
   public static class PlayerInfo {
