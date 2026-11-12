@@ -32,6 +32,7 @@
         { "num": 15162, "desc": "Add search to Module Manager" }
       ],
       "other": [
+        { "num": 15317, "desc": "Upgraded exec-maven-plugin to 3.7.0" },
         { "num": 15302, "desc": "Upgraded commons-lang3 to 3.22.0" },
         { "num": 15294, "desc": "Upgraded license-maven-plugin to 2.8.0" },
         { "num": 15284, "desc": "Upgraded jsoup to 1.24.1" },
