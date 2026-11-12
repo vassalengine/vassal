@@ -143,6 +143,7 @@ public class TraitConfigPanel extends JPanel {
   public void add(JLabel label, JPanel panel) {
     add(label, panel, "");
   }
+
   /**
    * Add a label based on an i18Key and an existing JPanel containing controls
    * @param i18nKey i18n Key

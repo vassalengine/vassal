@@ -42,6 +42,6 @@ public interface GpIdSupport {
    * Accessors to check and update the next GpId if necessary.
    */
   int getNextGpId();
-  void setNextGpId(int id);
 
+  void setNextGpId(int id);
 }

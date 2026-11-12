@@ -526,20 +526,27 @@ public abstract class GridEditor extends JDialog implements MouseListener, KeyLi
    */
   public interface EditableGrid {
     double getDx();
+
     double getDy();
+
     Point getOrigin();
 
     void setDx(double dx);
+
     void setDy(double dy);
+
     void setOrigin(Point p);
 
     boolean isSideways();
+
     void setSideways(boolean sideways);
 
     GridContainer getContainer();
+
     GridNumbering getGridNumbering();
 
     boolean isVisible();
+
     void setVisible(boolean b);
 
     String getGridName();

@@ -765,8 +765,32 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
     return commands;
   }
 
+  /**
+   * @param stroke keystroke being processed
+   * @return true if this Layer would act on the keystroke in {@link #myKeyEvent}
+   */
+  private boolean handlesKeyStroke(KeyStroke stroke) {
+    if (activateKeyStroke.equals(stroke) && nValues > 0 && !alwaysActive) {
+      return true;
+    }
+    if (followProperty) {
+      return false;
+    }
+    return increaseKeyStroke.equals(stroke)
+      || decreaseKeyStroke.equals(stroke)
+      || (resetKey != null && resetKey.equals(stroke))
+      || (rndKey != null && rndKey.equals(stroke));
+  }
+
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
+
+    // Only snapshot the piece state if this Layer actually handles the keystroke.
+    // A ChangeTracker serializes the state of the whole piece, which is expensive
+    // on pieces with many traits, and every keystroke passes through every trait.
+    if (!handlesKeyStroke(stroke)) {
+      return null;
+    }
 
     final ChangeTracker tracker = new ChangeTracker(this);
 
@@ -803,7 +827,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       }
     }
     // end random layers
-    return tracker.isChanged() ? tracker.getChangeCommand() : null;
+    return tracker.getChangeCommandIfChanged();
   }
 
   protected void doIncrease() {

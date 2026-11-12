@@ -86,7 +86,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
   protected BeanShellExpressionConfigurer configurer;
   protected EditablePiece target;
 
-  enum PropertyType { PIECE, GLOBAL, VASSAL, ALL };
+  enum PropertyType { PIECE, GLOBAL, VASSAL, ALL }
 
   public BeanShellFunctionMenu(EditablePiece target, BeanShellExpressionConfigurer configurer) {
     super();
@@ -558,6 +558,7 @@ public class BeanShellFunctionMenu extends JPopupMenu {
 
     return propName;
   }
+
   /**
    * Added the property names from an Editable Piece into their
    * own menu

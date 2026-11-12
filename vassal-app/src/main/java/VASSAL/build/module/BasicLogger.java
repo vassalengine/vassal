@@ -38,7 +38,6 @@ import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogFileFilter;
-import VASSAL.tools.io.ObfuscatingOutputStream;
 import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
@@ -432,9 +431,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         @Override
         public void actionPerformed(ActionEvent event) {
           pane.setValue(JOptionPane.YES_OPTION);
-          javax.swing.SwingUtilities.invokeLater(() -> {
-            beginOutput();
-          });
+          beginOutput();
         }
       });
       no.addActionListener(new ActionListener() {
@@ -481,7 +478,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       final String logString = GameModule.getGameModule().encode(log);
 
       try (ZipWriter zw = new ZipWriter(outputFile)) {
-        try (OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(zw.write(GameState.SAVEFILE_ZIP_ENTRY)))) {
+        try (OutputStream out = GameState.compressSavedGame(new BufferedOutputStream(zw.write(GameState.SAVEFILE_ZIP_ENTRY)))) {
           out.write(logString.getBytes(StandardCharsets.UTF_8));
         }
         metadata.save(zw);
@@ -558,6 +555,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     final GameModule gm = GameModule.getGameModule();
 
     logOutput.clear();
+    nextUndo = -1;
     beginningState = gm.getGameState().getRestoreCommand();
     if (beginningState == null) {
       return;
@@ -784,6 +782,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       step();
     }
   }
+
   public class UndoAction extends AbstractAction {
     private static final long serialVersionUID = 1L;
 

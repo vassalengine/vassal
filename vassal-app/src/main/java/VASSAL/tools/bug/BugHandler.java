@@ -20,5 +20,6 @@ package VASSAL.tools.bug;
 
 public interface BugHandler {
   boolean accept(Throwable thrown);
+
   void handle(Throwable thrown);
 }

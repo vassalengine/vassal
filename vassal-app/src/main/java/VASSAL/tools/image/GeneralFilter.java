@@ -92,6 +92,7 @@ public final class GeneralFilter {
   /** The abstract base class for filters. */
   public abstract static class Filter {
     public abstract float getSamplingRadius();
+
     public abstract float apply(float t);
   }
 

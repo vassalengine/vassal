@@ -480,6 +480,7 @@ public class ScenarioPropertiesOptionTab extends AbstractConfigurable implements
 
     return message;
   }
+
   /**
    * Is the current user allowed to change the locked state of a Scenario Option tab
    *  - A Locked tab can only be unlocked by the user who locked it.

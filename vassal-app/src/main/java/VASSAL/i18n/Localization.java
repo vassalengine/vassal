@@ -56,6 +56,7 @@ public class Localization extends Language {
     }
     return instance;
   }
+
   protected String moduleBundle;
   protected String languageBundle;
   protected String countryBundle;
@@ -193,6 +194,7 @@ public class Localization extends Language {
     }
     masterBundle = child;
   }
+
   protected boolean translationInProgress = false;
   protected boolean translationComplete = false;
 

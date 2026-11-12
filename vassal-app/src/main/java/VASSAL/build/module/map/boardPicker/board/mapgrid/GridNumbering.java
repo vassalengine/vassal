@@ -28,10 +28,12 @@ import VASSAL.build.module.map.boardPicker.board.MapGrid.BadCoords;
  */
 public interface GridNumbering {
   String locationName(Point pt);
+
   String localizedLocationName(Point pt);
 
   void draw(Graphics g, Rectangle bounds, Rectangle visibleRect, double scale, boolean reversed);
 
   boolean isVisible();
+
   Point getLocation(String location) throws BadCoords;
 }

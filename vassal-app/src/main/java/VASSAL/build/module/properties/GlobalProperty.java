@@ -298,6 +298,7 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
       .append(getContainerId());
     return se.getValue();
   }
+
   /**
    * Command to pass a new Global property value to other players or into the logfile.
    */

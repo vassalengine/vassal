@@ -1362,13 +1362,16 @@ public class PieceDefiner extends JPanel {
   protected static class TraitClipboard {
     private final String type;
     private final String state;
+
     public TraitClipboard(Decorator copy) {
       type = copy.myGetType();
       state = copy.myGetState();
     }
+
     public String getType() {
       return type;
     }
+
     public String getState() {
       return state;
     }
@@ -1464,6 +1467,7 @@ public class PieceDefiner extends JPanel {
       setDragImage(img);
       setDragImageOffset(new Point(0, h));
     }
+
     /**
      * Move Only
      */

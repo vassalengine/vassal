@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.vassalengine</groupId>
         <artifactId>vassal-parent</artifactId>
-        <version>3.8.0-SNAPSHOT</version>
+        <version>3.9.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>vassal-app</artifactId>
@@ -17,8 +17,8 @@
     <properties>
         <main.basedir>${project.basedir}${file.separator}..</main.basedir>
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
-        <version.batik>1.19</version.batik>
-        <clirr.nofork.comparison.version>3.7.0</clirr.nofork.comparison.version>
+        <version.batik>1.20</version.batik>
+        <clirr.nofork.comparison.version>3.8.0</clirr.nofork.comparison.version>
         <argLine/>
     </properties>
 
@@ -38,7 +38,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.6.4</version>
+            <version>1.6.6</version>
         </dependency>
         <dependency>
             <groupId>com.miglayout</groupId>
@@ -53,12 +53,17 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.22.1</version>
+            <version>1.23.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.22.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.tukaani</groupId>
+            <artifactId>xz</artifactId>
+            <version>1.12</version>
         </dependency>
         <dependency>
             <groupId>gnu.getopt</groupId>
@@ -68,12 +73,12 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.20.0</version>
+            <version>3.22.0</version>
         </dependency>
         <dependency>
           <groupId>org.apache.httpcomponents.client5</groupId>
           <artifactId>httpclient5</artifactId>
-          <version>5.6.4</version>
+          <version>5.6.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
@@ -121,19 +126,14 @@
             <version>2.2</version>
         </dependency>
         <dependency>
-            <groupId>net.java.dev.timingframework</groupId>
-            <artifactId>timingframework</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>3.9.16</version>
+            <version>3.10.0</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <version>9.10.1</version>
+            <version>9.11.1</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -144,7 +144,7 @@
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>1.23.2</version>
+            <version>1.24.1</version>
         </dependency>
 
         <!-- Test Dependencies -->
@@ -188,7 +188,7 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy</artifactId>
-            <version>1.18.14</version>
+            <version>1.18.17</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -206,7 +206,7 @@
         <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
-            <version>4.10.4</version>
+            <version>4.10.5</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
@@ -326,7 +326,7 @@
                 <dependency>
                   <groupId>org.ow2.asm</groupId>
                   <artifactId>asm</artifactId>
-                  <version>9.10.1</version>
+                  <version>9.11.1</version>
                 </dependency>
               </dependencies>
             </plugin>

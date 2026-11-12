@@ -91,6 +91,7 @@ public class GlobalCommandTargetConfigurer extends Configurer {
     this(target);
     this.sourcePiece = sourcePiece;
   }
+
   public GlobalCommandTarget getTarget() {
     return (GlobalCommandTarget) getValue();
   }

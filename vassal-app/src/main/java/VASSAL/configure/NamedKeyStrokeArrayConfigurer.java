@@ -83,6 +83,7 @@ public class NamedKeyStrokeArrayConfigurer extends Configurer implements Configu
     rebuildControls();
     entries.get(focus).requestFocus();
   }
+
   /**
    * Rebuild controls from scratch
    */

@@ -22,7 +22,10 @@ import java.awt.Image;
 
 public interface Visualizable {
   int getVisualizerHeight();
+
   int getVisualizerWidth();
+
   Image getVisualizerImage();
+
   void rebuildVisualizerImage();
 }

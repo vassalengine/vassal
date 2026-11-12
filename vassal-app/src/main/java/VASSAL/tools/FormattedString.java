@@ -387,6 +387,7 @@ public class FormattedString implements Loopable {
       RecursionLimiter.endExecution();
     }
   }
+
   /**
    * Expand a FormattedString using the supplied propertySource and parse it as
    * an integer. If the expanded string is not an integer, generate a Bad Data Report

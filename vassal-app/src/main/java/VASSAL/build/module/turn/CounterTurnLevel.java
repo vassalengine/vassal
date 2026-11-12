@@ -62,6 +62,7 @@ public class CounterTurnLevel extends TurnLevel {
     rolledOver = false;
     super.setHigh();
   }
+
   /*
    * Generate the state of the level
    */

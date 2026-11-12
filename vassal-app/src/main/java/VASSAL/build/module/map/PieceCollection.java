@@ -35,23 +35,31 @@ import VASSAL.counters.GamePiece;
 public interface PieceCollection {
   /** Reposition a piece to the front of all others in the same visual layer*/
   void moveToFront(GamePiece p);
+
   /** Reposition a piece to the back of all others in the same visual layer*/
   void moveToBack(GamePiece p);
+
   /** Return all currently-visible pieces in the collection as a read-only array */
   GamePiece[] getPieces();
+
   /** Return all pieces in the collection, regardless of visibility */
   GamePiece[] getAllPieces();
+
   /** Return true if the two pieces can be merged into a single stack */
   boolean canMerge(GamePiece p1, GamePiece p2);
+
   /**
    * Returns the index of a piece.  When painting the map, pieces
    * are drawn in order of index -- lowest index drawn first and therefore
    * appearing "below" later pieces which are drawn on top of it. */
   int indexOf(GamePiece p);
+
   /** Removes the piece */
   void remove(GamePiece p);
+
   /** Adds a piece */
   void add(GamePiece p);
+
   /** Remove all pieces */
   void clear();
 }

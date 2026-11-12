@@ -25,9 +25,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import org.tukaani.xz.XZInputStream;
+
 /**
- * A {@link FilterInputStream} which converts a file created with
- * {@link ObfuscatingOutputStream} back into plain text.
+ * A {@link FilterInputStream} which reads a saved game's command log in
+ * whichever form it was written: XZ-compressed (VASSAL 3.8), obfuscated in
+ * hex (through 3.7), or plain text.
  * Files in the legacy hex-encoded format are also handled, and
  * plain text will be passed through unchanged.
  *
@@ -36,8 +39,11 @@ import java.util.Arrays;
  */
 public class DeobfuscatingInputStream extends FilterInputStream {
 
-  /** The header of the hex-encoded format written before VASSAL 3.8. */
+  /** The header of the hex-encoded obfuscated format written before VASSAL 3.8. */
   private static final byte[] LEGACY_HEADER = { '!', 'V', 'C', 'S', 'K' };
+
+  /** The magic bytes beginning every XZ stream. */
+  private static final byte[] XZ_MAGIC = { (byte) 0xFD, '7', 'z', 'X', 'Z', 0 };
 
   /**
    * @param in the stream to wrap
@@ -46,56 +52,29 @@ public class DeobfuscatingInputStream extends FilterInputStream {
   public DeobfuscatingInputStream(InputStream in) throws IOException {
     super(null);
 
-    final byte[] buf = in.readNBytes(5);
+    final byte[] buf = in.readNBytes(XZ_MAGIC.length);
 
-    if (Arrays.equals(buf, ObfuscatingOutputStream.HEADER_BYTES)) {
-      this.in = new DeobfuscatingInputStreamImpl(in);
+    if (Arrays.equals(buf, XZ_MAGIC)) {
+      // Compressed, as written since VASSAL 3.8; the magic belongs to the stream.
+      this.in = new XZInputStream(unread(in, buf));
     }
-    else if (Arrays.equals(buf, LEGACY_HEADER)) {
-      this.in = new LegacyDeobfuscatingInputStreamImpl(in);
+    else if (buf.length > LEGACY_HEADER.length && Arrays.equals(Arrays.copyOf(buf, LEGACY_HEADER.length), LEGACY_HEADER)) {
+      // Obfuscated in hex, through VASSAL 3.7; the byte after the header is the key's.
+      this.in = new LegacyDeobfuscatingInputStreamImpl(unread(in, Arrays.copyOfRange(buf, LEGACY_HEADER.length, buf.length)));
     }
     else if (buf.length == 0) {
       this.in = in;
     }
     else {
-      // Not obfuscated; pass the whole stream through unchanged
-      final PushbackInputStream pin = new PushbackInputStream(in, buf.length);
-      pin.unread(buf);
-      this.in = pin;
+      // Neither; pass the whole stream through unchanged.
+      this.in = unread(in, buf);
     }
   }
 
-  /**
-   * Deobfuscates the format written by {@link ObfuscatingOutputStream}:
-   * a one-byte key, followed by the data XORed with the key.
-   */
-  private static class DeobfuscatingInputStreamImpl extends FilterInputStream {
-    private final byte key;
-
-    public DeobfuscatingInputStreamImpl(InputStream in) throws IOException {
-      super(in);
-
-      final int k = in.read();
-      if (k < 0) {
-        throw new IOException("Truncated obfuscated stream: missing key"); //NON-NLS
-      }
-      key = (byte) k;
-    }
-
-    @Override
-    public int read(byte[] bytes, int off, int len) throws IOException {
-      final int n = in.read(bytes, off, len);
-      for (int i = 0; i < n; ++i) {
-        bytes[off + i] ^= key;
-      }
-      return n;
-    }
-
-    @Override
-    public int read() throws IOException {
-      final int b = in.read();
-      return b < 0 ? -1 : (b ^ key) & 0xFF;
-    }
+  private static InputStream unread(InputStream in, byte[] bytes) throws IOException {
+    final PushbackInputStream pin = new PushbackInputStream(in, bytes.length);
+    pin.unread(bytes);
+    return pin;
   }
 
   /**

@@ -58,6 +58,7 @@ public interface MapGrid {
    * @return a string describing the location containing the given point
    */
   String locationName(Point p);
+
   String localizedLocationName(Point p);
 
   /**

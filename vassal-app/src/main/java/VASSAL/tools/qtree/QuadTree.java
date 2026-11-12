@@ -74,6 +74,7 @@ public class QuadTree<T> implements Cloneable {
   public QuadTree() {
 
   }
+
   /**
    * Returns a reference to the tree's root node.  Callers shouldn't modify nodes,
    * directly.  This is a convenience for visualization and debugging purposes.
@@ -268,6 +269,7 @@ public class QuadTree<T> implements Cloneable {
       node.getY() > bottom ||
       (node.getY() + node.getH()) < top);
   }
+
   /**
    * Clones the quad-tree and returns the new instance.
    * @return {QuadTree} A clone of the tree.

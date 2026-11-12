@@ -482,6 +482,7 @@ public class WizardSupport {
       this.tutorial = tutorial;
     }
   }
+
   /**
    * Wizard pages for starting a new game offline
    *

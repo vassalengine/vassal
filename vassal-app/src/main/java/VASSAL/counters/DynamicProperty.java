@@ -316,9 +316,16 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
 
   @Override
   public Command myKeyEvent(KeyStroke stroke) {
-    final ChangeTracker tracker = new ChangeTracker(this);
+    // Only snapshot the piece state once we know this trait handles the keystroke.
+    // A ChangeTracker serializes the state of the whole piece (twice), which is
+    // expensive on pieces with many traits, and every keystroke sent to a piece
+    // passes through every trait.
+    ChangeTracker tracker = null;
     for (final DynamicKeyCommand dkc : keyCommands) {
       if (dkc.matches(stroke)) {
+        if (tracker == null) {
+          tracker = new ChangeTracker(this);
+        }
         final String newValue = dkc.propChanger.getNewValue(value);
         // Null newValue indicates user has pressed Cancel button on a Prompt dialog
         if (newValue != null) {
@@ -327,7 +334,8 @@ public class DynamicProperty extends Decorator implements TranslatablePiece, Pro
       }
     }
 
-    return tracker.getChangeCommand();
+    // Nothing to send if no key matched, or the value didn't change (e.g. a Prompt was cancelled)
+    return tracker == null ? null : tracker.getChangeCommandIfChanged();
   }
 
   public String getCommandsList() {

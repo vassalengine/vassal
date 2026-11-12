@@ -282,7 +282,7 @@ public class LaunchButton extends JButton implements Auditable {
   @Override
   public String getComponentTypeName() {
     return "Launch Button";
-  };
+  }
 
   /**
    * Return the name of the trait or Component an Auditable is
@@ -291,5 +291,5 @@ public class LaunchButton extends JButton implements Auditable {
   @Override
   public String getComponentName() {
     return "Launch Button";
-  };
+  }
 }

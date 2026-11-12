@@ -83,6 +83,7 @@ public class PiecePropertyIndex {
   public int getCount() {
     return values.size();
   }
+
   /**
    * Remove a piece from the index
    *

@@ -79,9 +79,9 @@ APP_JARS	:= /usr/share/java/asm.jar			\
 		   /usr/share/java/plexus-utils.jar		\
 		   /usr/share/java/slf4j-api.jar		\
 		   /usr/share/java/swingx.jar			\
-		   /usr/share/java/TimingFramework.jar		\
 		   /usr/share/java/xml-apis-ext.jar		\
-		   /usr/share/java/xmlgraphics-commons.jar
+		   /usr/share/java/xmlgraphics-commons.jar	\
+		   /usr/share/java/xz.jar
 
 APP_NAME	:= org.vassalengine.vassal
 
@@ -89,7 +89,6 @@ DOC_SRCDIR	:= vassal-doc/src/main
 DOC_USER	:= $(DOC_SRCDIR)/userguide/userguide.adoc
 DOC_DESIGN	:= $(DOC_SRCDIR)/designerguide/designerguide.adoc
 DOC_README	:= $(DOC_SRCDIR)/readme-referencemanual/README.adoc
-DOC_HISTORY	:= $(DOC_SRCDIR)/readme-referencemanual/versionHistory.adoc
 DOC_REF		:= $(shell find \
 			$(DOC_SRCDIR)/readme-referencemanual/ReferenceManual \
 			-name "*.adoc")
@@ -97,7 +96,6 @@ DOC_REF		:= $(shell find \
 DOC_TARGETS	:= $(DOC_USER:%.adoc=%.pdf)		\
 		   $(DOC_DESIGN:%.adoc=%.pdf)		\
 		   $(DOC_README:%.adoc=%.html)		\
-		   $(DOC_HISTORY:%.adoc=%.html)		\
 		   $(DOC_REF:%.adoc=%.html)
 
 

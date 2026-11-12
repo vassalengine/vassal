@@ -24,73 +24,54 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Random;
+
+import VASSAL.build.module.GameState;
 
 /**
- * A {@link FilterOutputStream} which handles simple obfuscation of a file's
- * contents, to prevent the casual cheat of hand-editing.
+ * Formerly obfuscated a saved game's command log by XORing it with a key,
+ * so that it was not plain text inside the ZIP. The log is now compressed
+ * with XZ instead, which is not plain text either, and this class only
+ * delegates to that.
  *
- * <p>The output consists of {@link #HEADER_BYTES}, followed by the one-byte
- * key, followed by the input XORed byte-by-byte with the key.</p>
- *
- * @author uckelman
- * @since 3.2.0
+ * @deprecated Use {@link GameState#compressSavedGame(OutputStream)}.
+ * {@link DeobfuscatingInputStream} still reads the formats this class wrote.
  */
+@Deprecated(since = "2026-10-02", forRemoval = true)
 public class ObfuscatingOutputStream extends FilterOutputStream {
   /**
    * The header of the hex-encoded format written before VASSAL 3.8.
    *
    * @deprecated The hex-encoded format is no longer written, only read.
-   * Obfuscated output is now marked with {@link #HEADER_BYTES}.
    */
   @Deprecated(since = "2026-09-08", forRemoval = true)
   public static final String HEADER = "!VCSK"; //NON-NLS
-
-  /** The header marking obfuscated output. */
-  public static final byte[] HEADER_BYTES = { '!', 'V', 'O', 'B', 'S' };
-
-  private static final Random rand = new Random();
-
-  private final byte key;
 
   /**
    * @param out the stream to wrap
    * @throws IOException oops
    */
   public ObfuscatingOutputStream(OutputStream out) throws IOException {
-    // Keys are in 1-255; XORing with 0 would leave the data in plain text.
-    this(out, (byte) (rand.nextInt(255) + 1));
+    super(GameState.compressSavedGame(out));
   }
 
   /**
    * @param out the stream to wrap
-   * @param key the byte to use as the key
+   * @param key ignored; nothing is XORed any more
    * @throws IOException oops
    */
-  public ObfuscatingOutputStream(OutputStream out, byte key)
-                                                          throws IOException {
-    super(out);
-    this.key = key;
-
-    out.write(HEADER_BYTES);
-    out.write(key);
+  public ObfuscatingOutputStream(OutputStream out, byte key) throws IOException {
+    this(out);
   }
 
   /** {@inheritDoc} */
   @Override
   public void write(byte[] bytes, int off, int len) throws IOException {
-    for (int i = 0; i < len; ++i) write(bytes[off + i]);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void write(int b) throws IOException {
-    out.write(b ^ key);
+    out.write(bytes, off, len);
   }
 
   public static void main(String[] args) throws IOException {
     try (InputStream in = args.length > 0 ? Files.newInputStream(Path.of(args[0])) : System.in;
-         OutputStream out = new ObfuscatingOutputStream(new BufferedOutputStream(System.out))) {
+         OutputStream out = GameState.compressSavedGame(new BufferedOutputStream(System.out))) {
       in.transferTo(out);
     }
 

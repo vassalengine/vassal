@@ -28,8 +28,12 @@ import VASSAL.build.module.map.boardPicker.board.MapGrid;
  */
 public interface GridContainer {
   void setGrid(MapGrid grid);
+
   void removeGrid(MapGrid grid);
+
   Board getBoard();
+
   Dimension getSize();
+
   boolean contains(Point point);
 }

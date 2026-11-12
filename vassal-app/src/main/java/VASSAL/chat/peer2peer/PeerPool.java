@@ -28,6 +28,8 @@ import org.litesoft.p2pchat.PendingPeerManager;
  */
 public interface PeerPool {
   void initialize(P2PPlayer myInfo, PendingPeerManager ppm) throws IOException;
+
   void disconnect();
+
   void connectFailed(PeerInfo peerInfo);
 }

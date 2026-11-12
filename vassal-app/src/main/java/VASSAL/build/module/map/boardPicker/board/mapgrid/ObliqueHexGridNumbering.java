@@ -41,8 +41,15 @@ public class ObliqueHexGridNumbering extends HexGridNumbering {
   public int getRow(Point p) {
     return slantRow(super.getRow(p), super.getColumn(p));
   }
+
   public int slantRow(int row, int column) {
-    return stagger ? column/2 + row : row - column/2 + 1;
+    int off = 0;
+    if ((getGrid().isSideways() && hDescending) ||
+        (!getGrid().isSideways() && vDescending)) {
+      off = (column % 2 == 0) ? (stagger ? -1 : 1) : 0;
+    }
+    
+    return (stagger ? column/2 + row : row - column/2 + 1) + off;
   }
 
   public static String getConfigureTypeName() {

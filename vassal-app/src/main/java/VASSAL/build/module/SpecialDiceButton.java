@@ -625,6 +625,7 @@ public class SpecialDiceButton extends DoActionButton implements CommandEncoder,
     }
     return new ShowResults(this, results);
   }
+
   /**
    * Command for displaying the results of a roll of the dice
    */

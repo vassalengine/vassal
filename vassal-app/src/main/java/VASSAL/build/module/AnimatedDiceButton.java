@@ -159,6 +159,7 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
       command = c;
       results = r;
     }
+
     public void setTimer(Timer t) {
       timer = t;
     }
@@ -207,6 +208,7 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
     getLaunchButton().setIcon(buttonResultsIcon);
     getLaunchButton().repaint();
   }
+
   /**
    * Show the result of the die roll graphically as a pop-up window
    * or on the launch button (or both).  Note, the drawing of the
@@ -325,6 +327,7 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
                              Resources.getString("Editor.AnimatedDiceButton.button_scale")
                              );
   }
+
   /**
    * Overriden to give types of added attributes STEPS and FPS.
    */
@@ -565,6 +568,7 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
             
       return sop;
     }
+
     /**
      * Get the (cached) result icon for a specific die and
      * result. May return null.
@@ -609,6 +613,7 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
       }
       doResults(results);
     }
+
     /** To be implemented */
     protected abstract void doResults(int[] results);
         
@@ -664,7 +669,7 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
      */
     @Override
     public abstract int getIconHeight();
-  };
+  }
 
   /** Icon class for button dusplay of dice roll */
   private class ButtonResultsIcon extends BaseResultsIcon {
@@ -689,6 +694,7 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
         }
       }
     }
+
     /**
      * Paint the icon.  This relies on the current set of icons being
      * set in `todraw`.
@@ -737,6 +743,7 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
       return (int)(h * buttonScale);
     }
   }        
+
   /** Icon class for graphical display of a dice roll */
   private class AnimResultsIcon extends BaseResultsIcon {
     // FIXME: because Sun checks what class Icon implementations are,
