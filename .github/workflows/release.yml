@@ -7,9 +7,10 @@ on:
     tags: '*'
 
 env:
-  TEMURIN_SEMVER_VERSION: 26.0.2+101
-  TEMURIN_REAL_VERSION: 26.0.2.1+1
-  LIBERICA_VERSION: 26.0.2+13
+  TEMURIN_SEMVER_VERSION: 27.0.1.0.2+1
+  TEMURIN_REAL_VERSION: 27.0.1.0.2+1
+  LIBERICA_VERSION: 27.0.1.0.3+5
+  LIBERICA_WIN32_VERSION: 21.0.13.0.3+5
 
 jobs:
   # Regular packages.  Note, we take the version number from the tag.
@@ -28,7 +29,7 @@ jobs:
           sudo apt install -y dos2unix genisoimage ghostscript nsis
           sudo pip install jinja2-cli  --break-system-packages
 
-      - name: Setup Java - Temurin
+      - name: Install Java
         uses: actions/setup-java@v6.2.0
         id: setup-java
         with:
@@ -113,7 +114,7 @@ jobs:
           sudo apt update -y
           sudo apt install -y dos2unix genisoimage ghostscript nsis
 
-      - name: Setup Java - liberica
+      - name: Install Java
         uses: actions/setup-java@v6.2.0
         id: setup-java
         with:
@@ -167,12 +168,12 @@ jobs:
           sudo apt update -y
           sudo apt install -y dos2unix genisoimage ghostscript nsis
 
-      - name: Setup Java - liberica 21
+      - name: Install Java
         uses: actions/setup-java@v6.2.0
         id: setup-java
         with:
           distribution: 'liberica'
-          java-version: 21
+          java-version: ${{ env.LIBERICA_WIN32_VERSION }}
           java-package: jdk
 
       - name: Maven cache
@@ -359,7 +360,7 @@ jobs:
         run: |
           sudo apt update -y
 
-      - name: Setup Java
+      - name: Install Java
         uses: actions/setup-java@v6.2.0
         with:
           distribution: 'temurin'
