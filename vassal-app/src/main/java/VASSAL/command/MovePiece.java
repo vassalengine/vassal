@@ -1,6 +1,7 @@
 package VASSAL.command;
 
 import java.awt.Point;
+import java.util.Objects;
 
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GlobalOptions;
@@ -11,6 +12,7 @@ import VASSAL.counters.Deck;
 import VASSAL.counters.DeckVisitor;
 import VASSAL.counters.DeckVisitorDispatcher;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.KeyBuffer;
 import VASSAL.counters.PieceVisitorDispatcher;
 import VASSAL.counters.Properties;
 import VASSAL.counters.Stack;
@@ -124,6 +126,12 @@ public class MovePiece extends Command {
   protected void executeCommand() {
     final GamePiece piece = GameModule.getGameModule().getGameState().getPieceForId(id);
     if (piece != null) {
+      // A selected piece moved to another map (e.g., sent off-map and back
+      // to be shuffled) must lose its selection, so it cannot be tracked
+      final KeyBuffer kb = KeyBuffer.getBuffer();
+      if (!Objects.equals(newMapId, oldMapId) && kb.contains(piece)) {
+        kb.remove(piece);
+      }
       final BoundsTracker bounds = new BoundsTracker();
       bounds.addPiece(piece);
       final Map newMap = Map.getMapById(newMapId);

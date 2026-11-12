@@ -29,7 +29,6 @@ Build-Depends-Indep:
         libsemver-java,
 	libslf4j-java (>= 1.7.32),
 	libswingx-java (>= 1.6.2),
-        libtimingframework-java (>= 1.0),
 	libxml-commons-external-java,
 	libxz-java (>= 1.9),
 	libxmlgraphics-commons-java
@@ -61,7 +60,6 @@ Depends:
         libplexus-utils2-java,
 	libslf4j-java (>= 1.7.32),
 	libswingx-java (>= 1.6.2),
-        libtimingframework-java (>= 1.0),
 	libxml-commons-external-java,
 	libxz-java (>= 1.9),
 	libxmlgraphics-commons-java,

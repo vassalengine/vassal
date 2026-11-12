@@ -130,8 +130,6 @@ import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.jdesktop.animation.timing.Animator;
-import org.jdesktop.animation.timing.TimingTargetAdapter;
 import org.w3c.dom.Element;
 
 import javax.swing.JComponent;
@@ -146,6 +144,7 @@ import javax.swing.OverlayLayout;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.Timer;
 import java.awt.AWTEventMulticaster;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -171,6 +170,8 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.dnd.InvalidDnDOperationException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.HierarchyListener;
 import java.awt.event.KeyEvent;
@@ -2258,8 +2259,11 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     // start autoscrolling if we have a nonzero scroll vector
     if (sx != 0 || sy != 0) {
       if (!scroller.isRunning()) {
-        scroller.setStartDelay((Integer)
-          GameModule.getGameModule().getPrefs().getValue(PREFERRED_EDGE_DELAY));
+        // scroller.setStartDelay((Integer)
+        scroller.setInitialDelay((Integer)GameModule
+                                 .getGameModule()
+                                 .getPrefs()
+                                 .getValue(PREFERRED_EDGE_DELAY));
         scroller.start();
       }
     }
@@ -2268,48 +2272,28 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     }
   }
 
-  /** The animator which controls autoscrolling. */
-  protected Animator scroller = new Animator(Animator.INFINITE,
-    new TimingTargetAdapter() {
-
-      private long t0;
-
-      /**
-       * Continue to scroll the map as animator instructs us
-       * @param fraction not used
-       */
-      @Override
-      public void timingEvent(float fraction) {
-        // Constant velocity along each axis, 0.5px/ms default
-        final long t1 = System.currentTimeMillis();
-        final int dt = (int)((t1 - t0) * Math.max(EDGE_SCROLL_RATE, 0.01));
-        t0 = t1;
-
-        scroll(sx * dt, sy * dt);
-
-        // Check whether we have hit an edge
-        final Rectangle vrect = scroll.getViewport().getViewRect();
-
-        if ((sx == -1 && vrect.x == 0) ||
-            (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
-
-        if ((sy == -1 && vrect.y == 0) ||
-            (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
-
-        // Stop if the scroll vector is zero
-        if (sx == 0 && sy == 0) scroller.stop();
-      }
-
-      /**
-       * Get ready to scroll
-       */
-      @Override
-      public void begin() {
-        t0 = System.currentTimeMillis();
-      }
+  protected Timer scroller = new Timer(20, new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      final int  dt = (int)(scroller.getDelay()
+                            * Math.max(EDGE_SCROLL_RATE, 0.01));
+      
+      scroll(sx * dt, sy * dt);
+      
+      // Check whether we have hit an edge
+      final Rectangle vrect = scroll.getViewport().getViewRect();
+      
+      if ((sx == -1 && vrect.x == 0) ||
+          (sx ==  1 && vrect.x + vrect.width >= theMap.getWidth())) sx = 0;
+      
+      if ((sy == -1 && vrect.y == 0) ||
+          (sy ==  1 && vrect.y + vrect.height >= theMap.getHeight())) sy = 0;
+      
+      // Stop if the scroll vector is zero
+      if (sx == 0 && sy == 0) scroller.stop();
     }
-  );
-
+  });
+      
   /**
    * Repaints the map. Accepts parameter about whether to clear the display first.
    * @param cf true if display should be cleared before drawing the map
