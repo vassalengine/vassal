@@ -5,6 +5,7 @@
 dist/dmg/
 dist/jdks/
 dist/launch4j/
+dist/lipo/
 
 # generated files
 jdoc/
