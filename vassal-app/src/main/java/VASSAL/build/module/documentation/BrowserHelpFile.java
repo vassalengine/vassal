@@ -151,14 +151,36 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
   }
 
-  private void internalExtractContents(ZipInputStream in) throws IOException {
+  void internalExtractContents(ZipInputStream in) throws IOException {
     final Path p = Path.of(
       Info.getTempDir().getAbsolutePath(),
       "VASSAL", //$NON-NLS-1$
       "help",   //$NON-NLS-1$
       getContentsResource()
-    );
+    ).normalize();
 
+    extractTo(in, p);
+
+    externalTempFile = p.toFile();
+    url = regenerateUrl();
+  }
+
+  /**
+   * Unpacks the help archive into {@code p}.
+   *
+   * <p>Note that the archive carries no directory entries: {@code packContents}
+   * walks the chosen folder and writes a {@link ZipEntry} for each <em>file</em>
+   * it finds, with the sub-folder in the entry's name. So a file in a sub-folder
+   * is the only sign that the sub-folder exists, and its parent has to be created
+   * before it can be written. Relying on directory entries meant the first file
+   * in a sub-folder failed with NoSuchFileException, which aborted the unpacking
+   * and left behind only whatever had been written before it. See
+   * <a href="https://github.com/vassalengine/vassal/issues/15234">#15234</a>.
+   *
+   * @param in the help archive
+   * @param p  directory to unpack into
+   */
+  static void extractTo(ZipInputStream in, Path p) throws IOException {
     if (Files.exists(p)) {
       PathUtils.deleteDirectory(p);
     }
@@ -167,18 +189,28 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
 
     ZipEntry entry;
     while ((entry = in.getNextEntry()) != null) {
+      final Path f = p.resolve(entry.getName()).normalize();
+
+      // A module is a file from elsewhere; do not let an entry name walk out
+      // of the directory we are unpacking into.
+      if (!f.startsWith(p)) {
+        throw new IOException("Help entry outside the help directory: " + entry.getName()); //NON-NLS
+      }
+
       if (entry.isDirectory()) {
-        Files.createDirectories(p.resolve(entry.getName()));
+        Files.createDirectories(f);
       }
       else {
+        final Path parent = f.getParent();
+        if (parent != null) {
+          Files.createDirectories(parent);
+        }
 // FIXME: no way to distinguish between read and write errors here
-        try (OutputStream fos = Files.newOutputStream(p.resolve(entry.getName()))) {
+        try (OutputStream fos = Files.newOutputStream(f)) {
           in.transferTo(fos);
         }
       }
     }
-    externalTempFile = p.toFile();
-    url = regenerateUrl();
   }
 
   protected URL regenerateUrl() {
