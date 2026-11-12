@@ -409,18 +409,13 @@ public class Console {
           // Is side allocated to a player? Which one ?
           for (final PlayerRoster.PlayerInfo p : pr.players) {
             if (s.equals(p.getLocalizedSide())) {
-              // password checks
+              // Password check, reported for the player's own side only: a blank password lets anyone
+              // else with a blank password take the side, but which sides are exposed is not shown to others.
+              // (Two sides cannot share a password: players are identified by password, so a second
+              // player with the same one replaces the first in the roster rather than joining alongside.)
               String pwStatus = "";
-              if (StringUtils.isEmpty(p.playerId)) {
-                pwStatus = " Warning: Blank password"; // NON-NLS
-              }
-              else {
-                for (final PlayerRoster.PlayerInfo p2 : pr.players) {
-                  if (p.playerId.equals(p2.playerId) && !s.equals(p2.getLocalizedSide())) {
-                    pwStatus = " Warning: Password identical to that of " + p2.playerName; // NON-NLS
-                    break;
-                  }
-                }
+              if (StringUtils.isEmpty(p.playerId) && p.playerId.equals(GameModule.getActiveUserId())) {
+                pwStatus = " Warning: your password is blank"; // NON-NLS
               }
               status = "Occupied (" + p.playerName + ")" + pwStatus;  //NON-NLS
               break;
@@ -428,7 +423,7 @@ public class Console {
           }
           if (status.isEmpty()) {
             // No matching player, so side is either locked (by module) or available...
-            if (Boolean.parseBoolean((String) gm.getProperty(PlayerRoster.VassalHideSide + pr.untranslateSide(s)))) {
+            if (Boolean.parseBoolean((String) gm.getProperty(PlayerRoster.VASSAL_HIDE_SIDE + pr.untranslateSide(s)))) {
               status = "Locked by module"; //NON-NLS
             }
             else {

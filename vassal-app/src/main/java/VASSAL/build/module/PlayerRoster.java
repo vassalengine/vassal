@@ -88,10 +88,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
   public static final String MODERATOR = "Moderator"; // NON-NLS
 
   // Module control property names or prefixes
-  public static final String VassalRandomSide = "VassalRandomSide"; // NON-NLS
-  public static final String VassalForceSide = "VassalForceSide"; // NON-NLS
-  public static final String VassalHideSide = "VassalHideSide_"; // NON-NLS
-  public static final String VassalNextSide = "VassalNextSide"; // NON-NLS
+  public static final String VASSAL_RANDOM_SIDE = "VassalRandomSide"; // NON-NLS
+  public static final String VASSAL_FORCE_SIDE = "VassalForceSide"; // NON-NLS
+  public static final String VASSAL_HIDE_SIDE = "VassalHideSide_"; // NON-NLS
+  public static final String VASSAL_NEXT_SIDE = "VassalNextSide"; // NON-NLS
 
 
   protected List<PlayerInfo> players = new ArrayList<>();
@@ -552,7 +552,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     // Scan module VassalHideSide_<side> properties to exclude side when true
     // The properties are named for untranslated sides!
     for (final String s : availableSides) { // search of sides
-      if (Boolean.parseBoolean((String) gm.getProperty(VassalHideSide + untranslateSide(s))) && !alreadyTaken.contains(s)) {
+      if (Boolean.parseBoolean((String) gm.getProperty(VASSAL_HIDE_SIDE + untranslateSide(s))) && !alreadyTaken.contains(s)) {
         alreadyTaken.add(s);
       }
     }
@@ -894,7 +894,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
     final List<String> alreadyTaken = new ArrayList<>();
     final List<String> availableRealSides = new ArrayList<>();
 
-    final Random rn = new Random();
+    final Random rn = GameModule.getGameModule().getRNG();
     int autoRandomPass = 0;
     boolean promptOn = true;
     boolean noSides = false; // set when there are no sides left other than observer & solo/moderator sides; set by random choice failure
@@ -911,17 +911,17 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       // The property is cleared after use.
       // property VassalForceSide has priority; must be an available side in english
       // The side choice is immune to its VassalHideSide_<side> property.
-      final String forceSide = StringUtils.defaultString((String) gm.getProperty(VassalForceSide));
+      final String forceSide = StringUtils.defaultString((String) gm.getProperty(VASSAL_FORCE_SIDE));
       if (!StringUtils.isEmpty(forceSide)) {
         newSide = translateSide(forceSide);
 
         // clear VassalForceSide property here so that this feature does not prevent retiring or changing side after use.
-        clearControlProperty(VassalForceSide);
+        clearControlProperty(VASSAL_FORCE_SIDE);
 
         // VassalForceSide takes priority over VassalRandomSide, so a pending random request is used up too.
         // Otherwise it would stay set and turn the next ordinary Retire into a random side change.
-        if (Boolean.parseBoolean((String) gm.getProperty(VassalRandomSide))) {
-          clearControlProperty(VassalRandomSide);
+        if (Boolean.parseBoolean((String) gm.getProperty(VASSAL_RANDOM_SIDE))) {
+          clearControlProperty(VASSAL_RANDOM_SIDE);
         }
 
         if (translatedObserver.equals(newSide)) {
@@ -941,10 +941,10 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
       alreadyConnected = true;
 
       // Automatically processing random side choice ?
-      if (Boolean.parseBoolean((String) gm.getProperty(VassalRandomSide))) { // property reset after use
+      if (Boolean.parseBoolean((String) gm.getProperty(VASSAL_RANDOM_SIDE))) { // property reset after use
         autoRandomPass = 1;
         promptOn = false; // skip prompt if initial (external) selection is for random choice
-        clearControlProperty(VassalRandomSide);
+        clearControlProperty(VASSAL_RANDOM_SIDE);
       }
     }
     else {
@@ -989,7 +989,7 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // Scan module VassalHideSide_<side> properties to exclude side when true
         // The properties are named for untranslated sides!
         for (final String s : availableSides) { // search of sides
-          if (Boolean.parseBoolean((String) gm.getProperty(VassalHideSide + untranslateSide(s))) && !alreadyTaken.contains(s)) alreadyTaken.add(s);
+          if (Boolean.parseBoolean((String) gm.getProperty(VASSAL_HIDE_SIDE + untranslateSide(s))) && !alreadyTaken.contains(s)) alreadyTaken.add(s);
         }
       }
 
@@ -1002,8 +1002,8 @@ public class PlayerRoster extends AbstractToolbarItem implements CommandEncoder,
         // Module controlled hot-seat: set from VassalNextSide (a Module Global Property)
         // Reserved property VassalNextSide may override hotseat default; must be an available side in english
         // sits within the loop in case property changes between iterations (due to other player activity)
-        if (!StringUtils.isEmpty((String) gm.getProperty(VassalNextSide))) {
-          nextChoice = translateSide((String) gm.getProperty(VassalNextSide));
+        if (!StringUtils.isEmpty((String) gm.getProperty(VASSAL_NEXT_SIDE))) {
+          nextChoice = translateSide((String) gm.getProperty(VASSAL_NEXT_SIDE));
           if (!availableSides.contains(nextChoice)) {
             nextChoice = translatedObserver; // invalid value - revert to default
           }
