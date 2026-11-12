@@ -59,7 +59,27 @@ public class FileConfigurer extends Configurer {
     setValue(null);
     editable = true;
     this.startingDirectory = startingDirectory;
-    fc = initFileChooser();
+  }
+
+  /**
+   * The file chooser for this Configurer, created on first use.
+   *
+   * <p>It is deliberately not built in the constructor. On Windows a
+   * {@link javax.swing.JFileChooser} asks the shell to enumerate its folders
+   * as it is constructed, and that can fail outright: when the "Network"
+   * shell folder is unreachable, {@code Win32ShellFolderManager2.getNetwork()}
+   * returns null and the JDK then throws a NullPointerException. Building a
+   * chooser the user may never open — the global preferences make one for the
+   * modules directory during start-up — turned that into a fatal error before
+   * the Module Manager window existed. See vassalengine/vassal#15297.
+   *
+   * @return the file chooser, creating it if this is the first call
+   */
+  protected FileChooser getFileChooser() {
+    if (fc == null) {
+      fc = initFileChooser();
+    }
+    return fc;
   }
 
   protected FileChooser initFileChooser() {
@@ -181,11 +201,12 @@ public class FileConfigurer extends Configurer {
   }
 
   public void chooseNewValue() {
-    if (fc.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {
+    final FileChooser chooser = getFileChooser();
+    if (chooser.showOpenDialog(getControls()) != FileChooser.APPROVE_OPTION) {
       setValue((Object) null);
     }
     else {
-      setValue(fc.getSelectedFile().exists() ? fc.getSelectedFile() : null);
+      setValue(chooser.getSelectedFile().exists() ? chooser.getSelectedFile() : null);
     }
   }
 
