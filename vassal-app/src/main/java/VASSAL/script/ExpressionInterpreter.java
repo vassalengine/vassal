@@ -456,9 +456,39 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     return value == null ? "" : value.toString();
   }
 
+  /**
+   * The GamePiece a function should act on, given the property source the
+   * expression is being evaluated against.
+   *
+   * <p>Usually the source is the piece itself. The Report trait is the
+   * exception: it evaluates its format against a
+   * {@link ReportState.OldAndNewPieceProperties} so that {@code $oldX$} resolves
+   * to the value before the change, and that wrapper is not a GamePiece -- which
+   * hid the piece from every function needing one. {@code CountMap()} with no map
+   * argument, for example, returned 0 inside a Report trait while working
+   * everywhere else. See
+   * <a href="https://github.com/vassalengine/vassal/issues/15281">#15281</a>.
+   *
+   * <p>The wrapper is still what sub-expressions are evaluated against, so
+   * {@code $oldX$} keeps working; only the piece lookup is widened.
+   *
+   * @param ps property source the expression is evaluated against
+   * @return the piece to act on, or null if the source does not have one
+   */
+  private static GamePiece getSourcePiece(Object ps) {
+    if (ps instanceof GamePiece) {
+      return (GamePiece) ps;
+    }
+    if (ps instanceof ReportState.OldAndNewPieceProperties) {
+      return ((ReportState.OldAndNewPieceProperties) ps).getNewPiece();
+    }
+    return null;
+  }
+
   public Object getZoneProperty(Object propertyName, Object zoneName) {
-    if (source instanceof GamePiece) {
-      final Map map = ((GamePiece) source).getMap();
+    final GamePiece sourceGp = getSourcePiece(source);
+    if (sourceGp != null) {
+      final Map map = sourceGp.getMap();
       if (map != null) {
         final Zone zone = map.findZone(zoneName.toString());
         if (zone != null) {
@@ -538,8 +568,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   private Object getAttachmentProperty(String attachment, String property, Integer index, String pieceName, PieceFilter filter, PropertySource ps) {
     ps = translatePiece(ps);
 
-    if (ps instanceof GamePiece) {
-      final GamePiece p = Decorator.getOutermost((Decorator) ps);
+    if (getSourcePiece(ps) != null) {
+      final GamePiece p = Decorator.getOutermost(getSourcePiece(ps));
       for (final GamePiece gp : Decorator.getDecorators(p, Attachment.class)) {
         final Attachment attach = (Attachment) gp;
         if (attachment.equals(attach.getAttachName())) {
@@ -650,9 +680,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     }
 
     ps = translatePiece(ps);
-    if (ps instanceof GamePiece) {
-      final GamePiece piece = (GamePiece) ps;
-      final Stack s = ((GamePiece) ps).getParent();
+    if (getSourcePiece(ps) != null) {
+      final GamePiece piece = getSourcePiece(ps);
+      final Stack s = piece.getParent();
       if (s == null) {
         return sumOf(piece, property, filter);
       }
@@ -690,9 +720,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     ps = translatePiece(ps);
 
-    if (ps instanceof GamePiece) {
-      final GamePiece piece = (GamePiece) ps;
-      final Stack s = ((GamePiece) ps).getParent();
+    if (getSourcePiece(ps) != null) {
+      final GamePiece piece = getSourcePiece(ps);
+      final Stack s = piece.getParent();
       if (s == null) {
         result = countOf(piece, property, filter);
       }
@@ -720,7 +750,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     ps = translatePiece(ps);
 
-    if (ps instanceof GamePiece) {
+    if (getSourcePiece(ps) != null) {
       final GamePiece p = Decorator.getOutermost((Decorator)ps);
       for (final GamePiece decorator : Decorator.getDecorators(p, Attachment.class)) {
         final Attachment a = (Attachment) decorator;
@@ -754,7 +784,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     ps = translatePiece(ps);
 
-    if (ps instanceof GamePiece) {
+    if (getSourcePiece(ps) != null) {
       final GamePiece p = Decorator.getOutermost((Decorator)ps);
       for (final GamePiece decorator : Decorator.getDecorators(p, Attachment.class)) {
         final Attachment a = (Attachment) decorator;
@@ -791,7 +821,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (property != null && !property.isEmpty()) {
       ps = translatePiece(ps);
 
-      if (ps instanceof GamePiece) {
+      if (getSourcePiece(ps) != null) {
         final GamePiece p = Decorator.getOutermost((Decorator)ps);
         for (final GamePiece decorator : Decorator.getDecorators(p, Attachment.class)) {
           final Attachment a = (Attachment) decorator;
@@ -824,8 +854,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   private Object countAttachment(String attachment, String property, PieceFilter filter, PropertySource ps) {
     ps = translatePiece(ps);
 
-    return (ps instanceof GamePiece) ?
-      countOf(Attachment.getAttachList((GamePiece) ps, attachment), property, filter) : 0;
+    return (getSourcePiece(ps) != null) ?
+      countOf(Attachment.getAttachList(getSourcePiece(ps), attachment), property, filter) : 0;
   }
 
   /**
@@ -858,8 +888,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     if (property != null && !property.isEmpty()) {
       ps = translatePiece(ps);
 
-      if (ps instanceof GamePiece) {
-        GamePiece gp = (GamePiece) ps;
+      if (getSourcePiece(ps) != null) {
+        GamePiece gp = getSourcePiece(ps);
         GamePiece mat;
         if (gp instanceof Decorator) {
           gp = Decorator.getOutermost(gp);
@@ -883,7 +913,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
           result += sumOf(actualMat.getContents(), property, filter);
         }
         else {
-          result += sumOf((GamePiece) ps, property, filter);
+          result += sumOf(getSourcePiece(ps), property, filter);
         }
       }
     }
@@ -922,8 +952,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     ps = translatePiece(ps);
 
-    if (ps instanceof GamePiece) {
-      GamePiece gp = (GamePiece) ps;
+    if (getSourcePiece(ps) != null) {
+      GamePiece gp = getSourcePiece(ps);
       GamePiece mat;
       if (gp instanceof Decorator) {
         gp  = Decorator.getOutermost(gp);
@@ -947,7 +977,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
         result += countOf(actualMat.getContents(), property, filter);
       }
       else {
-        result += countOf((GamePiece) ps, property, filter);
+        result += countOf(getSourcePiece(ps), property, filter);
       }
     }
 
@@ -979,8 +1009,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
   public Object sumLocation(Object property, Object expression, PropertySource ps) {
 
-    if (ps instanceof GamePiece) {
-      final GamePiece p = (GamePiece) ps;
+    if (getSourcePiece(ps) != null) {
+      final GamePiece p = getSourcePiece(ps);
       final Map m = p.getMap();
       if (m != null) {
         final String here = m.locationName(p.getPosition());
@@ -1084,8 +1114,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Object countCurrentLocation(Object property, Object expression, PropertySource ps) {
-    if (ps instanceof GamePiece) {
-      final GamePiece p = (GamePiece) ps;
+    if (getSourcePiece(ps) != null) {
+      final GamePiece p = getSourcePiece(ps);
       final Map m = p.getMap();
       if (m != null) {
         final String here = m.locationName(p.getPosition());
@@ -1159,7 +1189,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final String expr = expression == null ? "" : expression.toString();
 
     // GamePiece versions of SumZone may not have provided a map or zone, use the ones where the source piece is.
-    if (ps instanceof GamePiece && mapName.isEmpty()) {
+    if (getSourcePiece(ps) != null && mapName.isEmpty()) {
       mapName = (String) ps.getProperty(BasicPiece.CURRENT_MAP);
       zoneName = (String) ps.getProperty(BasicPiece.CURRENT_ZONE);
     }
@@ -1224,7 +1254,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public Object countCurrentZone(Object propertyName, Object expression, PropertySource ps) {
-    if (ps instanceof GamePiece) {
+    if (getSourcePiece(ps) != null) {
       final String mapName = (String) ps.getProperty(BasicPiece.CURRENT_MAP);
       final String zoneName = (String) ps.getProperty(BasicPiece.CURRENT_ZONE);
       return countZone(zoneName, mapName, propertyName, expression, ps);
@@ -1304,7 +1334,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     String mapName = map == null ? "" : map.toString();
 
     // GamePiece versions of SumZone may not have provided a map or zone, use the ones where the source piece is.
-    if (ps instanceof GamePiece && mapName.isEmpty()) {
+    if (getSourcePiece(ps) != null && mapName.isEmpty()) {
       mapName = (String) ps.getProperty(BasicPiece.CURRENT_MAP);
     }
 
@@ -1393,8 +1423,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     Map targetMap = null;
 
     // GamePiece versions of SumZone may not have provided a map or zone, use the ones where the source piece is.
-    if (ps instanceof GamePiece && mapName.isEmpty()) {
-      targetMap = ((GamePiece) ps).getMap();
+    if (getSourcePiece(ps) != null && mapName.isEmpty()) {
+      targetMap = getSourcePiece(ps).getMap();
     }
     else {
       targetMap = findVassalMap(mapName);
@@ -1440,10 +1470,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Object rangeAttach(String attachmentName, PieceFilter filter, boolean asPixels,  PropertySource ps) {
-    if (ps instanceof GamePiece) {
-      final Map map = ((GamePiece) ps).getMap();
-      final Point from = ((GamePiece) ps).getPosition();
-      for (final GamePiece target : Attachment.getAttachList((GamePiece) ps, attachmentName)) {
+    if (getSourcePiece(ps) != null) {
+      final GamePiece piece = getSourcePiece(ps);
+      final Map map = piece.getMap();
+      final Point from = piece.getPosition();
+      for (final GamePiece target : Attachment.getAttachList(piece, attachmentName)) {
         // Act on the first attached piece on the same Map that is not the source piece (in case of self-attachments)
         if (target != ps && (filter == null || filter.accept(target))) {
           final Map toMap = target.getMap();
@@ -1467,9 +1498,10 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Object rangeXY(Object x, Object y, PropertySource ps, boolean asPixels) {
-    if (ps instanceof GamePiece) {
-      final Map map = ((GamePiece) ps).getMap();
-      final Point from = ((GamePiece) ps).getPosition();
+    if (getSourcePiece(ps) != null) {
+      final GamePiece piece = getSourcePiece(ps);
+      final Map map = piece.getMap();
+      final Point from = piece.getPosition();
       return range(from, new Point(intPropValue(x), intPropValue(y)), map, asPixels);
     }
     return 0;
@@ -1569,11 +1601,11 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     final PieceFilter filter = createFilter(expression, ps);
 
-    if (!(ps instanceof GamePiece)) return 0;
+    if (getSourcePiece(ps) == null) return 0;
 
     int result = 0;
 
-    final GamePiece sourcePiece = (GamePiece) ps;
+    final GamePiece sourcePiece = getSourcePiece(ps);
     if (sourcePiece == null || sourcePiece.getMap() == null) {
       return result;
     }
@@ -1725,7 +1757,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       result = Integer.parseInt(value.toString());
     }
     catch (Exception e) {
-      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
+      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + (getSourcePiece(src)).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
       final String data = "Data=[" + value.toString() + "]."; //NON-NLS
       ErrorDialog.dataWarning(new BadDataReport(message, data, e));
     }
@@ -1759,8 +1791,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     final PieceFilter filter = createFilter((String) propertyMatch, (PropertySource) src);
 
-    if (src instanceof GamePiece) {
-      mapList = getMapList(mapName, (GamePiece) src);
+    if (getSourcePiece(src) != null) {
+      mapList = getMapList(mapName, getSourcePiece(src));
     }
     else if (mapName != null && !((String) mapName).isEmpty()) {
       mapList.add(findVassalMap((String) mapName));
@@ -1824,8 +1856,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final String matchString = replaceDollarVariables((String) propertyMatch, (PropertySource) src);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) src);
 
-    if (src instanceof GamePiece) {
-      mapList = getMapList(mapName, (GamePiece) src);
+    if (getSourcePiece(src) != null) {
+      mapList = getMapList(mapName, getSourcePiece(src));
     }
     else if (mapName != null && !((String) mapName).isEmpty()) {
       mapList.add(findVassalMap((String) mapName));
