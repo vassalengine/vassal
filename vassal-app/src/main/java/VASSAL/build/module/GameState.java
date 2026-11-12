@@ -121,6 +121,23 @@ public class GameState implements CommandEncoder {
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
   protected Action loadGame, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndFastForward, loadAndAppend;
+  /**
+   * Whether the game has changed since it was last saved. Maintained from the
+   * command stream (see {@link #setModified}) rather than by comparing the game
+   * against a serialised copy of itself: on a large module that copy cost seconds
+   * of CPU and tens of megabytes of retained heap every time a game was loaded,
+   * started or synchronised, to answer a yes/no question.
+   */
+  protected boolean modified;
+
+  /**
+   * No longer used: the game is no longer compared against a serialised copy of
+   * itself to decide whether it has been modified (see {@link #modified}). Kept,
+   * unset, so that module code which referenced it still links.
+   *
+   * @deprecated use {@link #isModified()} / {@link #setModified(boolean)}
+   */
+  @Deprecated(since = "2026-11-12", forRemoval = true)
   protected String lastSave;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
@@ -291,8 +308,9 @@ public class GameState implements CommandEncoder {
    * @return true if the game state is different from when it was last saved
    */
   public boolean isModified() {
-    final String s = saveString();
-    return s != null && !s.equals(lastSave);
+    // saveString() returned null, and so isModified() false, whenever
+    // getRestoreCommand() declined to build one; keep that.
+    return saveGame.isEnabled() && modified;
   }
 
   /**
@@ -538,7 +556,7 @@ public class GameState implements CommandEncoder {
     }
 
     gameStarted |= this.gameStarting;
-    lastSave = gameStarting ? saveString() : null;
+    modified = false;
     lastSaveFile = null;
 
     if (gameStarted) {
@@ -1105,13 +1123,14 @@ public class GameState implements CommandEncoder {
     }
   }
 
+  /**
+   * Records whether the game differs from the last saved copy of it. Called with
+   * {@code true} by {@link BasicLogger#log} for every command that goes into the
+   * logfile — which is every change, local or received from another player — and
+   * with {@code false} when the game is saved or a new one is set up.
+   */
   public void setModified(boolean modified) {
-    if (modified) {
-      lastSave = null;
-    }
-    else {
-      lastSave = saveString();
-    }
+    this.modified = modified;
   }
 
   private File getSaveFile() {
@@ -1404,7 +1423,7 @@ public class GameState implements CommandEncoder {
       metaData.save(zw);
     }
 
-    lastSave = save;
+    modified = false;
     final String msg;
     final String saveComments = metaData.getLocalizedDescription();
     if (!StringUtils.isEmpty(saveComments)) {

@@ -2,6 +2,8 @@ package VASSAL.build.module;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import VASSAL.build.GameModule;
@@ -49,6 +51,41 @@ public class BasicLoggerTest {
       logger.log(new ChangePiece("c", null, "1"));
 
       assertDoesNotThrow(logger::undo);
+    }
+  }
+
+  /**
+   * Every change to a game -- made locally, received from another player, or
+   * replayed from a logfile -- is logged here, which is how GameState knows the
+   * game has been modified without serialising the whole of it to compare.
+   */
+  @Test
+  public void loggingACommandMarksTheGameModified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new ChangePiece("a", "1", "2"));
+      verify(gs).setModified(true);
+    }
+  }
+
+  /** A command that does nothing is not logged, and must not dirty the game. */
+  @Test
+  public void loggingANullCommandLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new NullCommand());
+      logger.log(null);
+      verify(gs, never()).setModified(true);
     }
   }
 }
