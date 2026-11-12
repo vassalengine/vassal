@@ -4,6 +4,7 @@
 
 3.8.1 - ???
 
+* 15317: Upgraded exec-maven-plugin to 3.7.0
 * 15302: Upgraded commons-lang3 to 3.22.0
 * 15294: Upgraded license-maven-plugin to 2.8.0
 * 15283: Snapshot piece state only when Dynamic Property / Layer handle the
