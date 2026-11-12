@@ -50,7 +50,6 @@ import java.util.stream.Collectors;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.ItemListener;
 
@@ -487,7 +486,7 @@ public class LookAndFeelConfigurer extends Configurer {
           final Class<?> cls = Class.forName(className, true, loader);
           if (LookAndFeel.class.isAssignableFrom(cls)) {
             final LookAndFeel lnf =
-              (LookAndFeel)cls.getConstructors()[0].newInstance();
+              (LookAndFeel)cls.getDeclaredConstructor().newInstance();
             
             UIManager.installLookAndFeel(lnf.getName(), cls.getName());
           }
@@ -501,6 +500,7 @@ public class LookAndFeelConfigurer extends Configurer {
                InstantiationException    |
                InvocationTargetException |
                IllegalAccessException    |
+               NoSuchMethodException     |
                NullPointerException e) {
           ErrorDialog.show(e,
                            "LookAndFeel.load_class_fail",
@@ -862,7 +862,11 @@ public class LookAndFeelConfigurer extends Configurer {
              IllegalAccessException          |
              UnsupportedLookAndFeelException | 
              ClassCastException              e) {
-        // This should very rarely happen 
+        // This should very rarely happen
+        if (previous != null)
+          // Possibly load theme properties, to restore
+          previous.loadThemeProperties();
+        
         ErrorDialog.show(e,
                          "LookAndFeel.set_fail",
                          getName(),
@@ -874,14 +878,12 @@ public class LookAndFeelConfigurer extends Configurer {
         Thread.currentThread().setContextClassLoader(old);
       }
       
-      // Update UI on all frames and windows
-      for (final Frame frame : Frame.getFrames()) {
-        if (frame == null)
+      // Update UI on all windows (frames, dialogs, etc.)
+      for (final Window window : Window.getWindows()) {
+        if (window == null)
           continue;
-        SwingUtilities.updateComponentTreeUI(frame);
         
-        for (final Window window : frame.getOwnedWindows()) 
-          SwingUtilities.updateComponentTreeUI(window);
+        SwingUtilities.updateComponentTreeUI(window);
       }      
     }
     

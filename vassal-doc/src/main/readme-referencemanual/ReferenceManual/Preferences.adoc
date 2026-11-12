@@ -20,6 +20,7 @@ a <<TurnTracker#top,Turn Tracker>> won't display a Turn Tracker tab). You will f
 * <<#TurnCounter,*Turn Counter*>> - <<TurnTracker#top,Turn Tracker>> display configuration.
 * <<#Converter,*Converter*>> - Module converter settings.
 * <<#Tiler,*Tiler*>> - Image tiler settings.
+* <<#LookAndFeel, *Look and Feel*>> - Look and Feel settings
 
 Modules can also define their own preference that will appear on module specific tabs.
 [#General]
@@ -242,3 +243,16 @@ The _Tiler_ tab lets you set the preferences for the image tiler. This tab is av
 |image:images/PreferencesTiler.png[]
 |===
 
+
+[#LookAndFeel]
+==== Look and Feel
+The _Look and Feel_ tab lets you set the preferences for the Look and Feel (appearance) of Vassal.  You can choose between Look and Feels provided by the Java Runtime Environment (typically Metal, CDF/Motif, Nimbus, and a system Look and Feel), or load in a JAR that contains more Look and Feel definitions.
+
+The Look and Feel chosen will be stored in the user preferences, and carried on between the Module Manager, Player, and Editor.  The newly chosen Look and Feel will be set when the preference dialog is set.
+
+NOTE: When you change between Look and Feels, it may happen that some old crift is left behind by the previous theme.  If you suspect that has happened, then restart Vassal completely to check that all looks as you expect.
+
+NOTE: On MacOS and Linux, the default Look and Feel has long been the system Look and Feel (Aqua and GTK+, respectively), while on Windows the default Look and Feel was Metal.   The CDF/Motif Look and Feel is an older Look and Feel and may feel antiquated to modern users.   The Nimbus Look and Feel is more modern, which is highly customisable.
+
+*Selected:*:: Choose between the currently known Look and Feels
+*New:*:: Load a JAR file containing Look and Feel(s) class(es).  In the file browser, navigate to a JAR file containing Look and Feel classes, and load that.  Then, you will be presented with a list of available classes in that JAR, from which you can select the Look and Feel classes you want to make available in Vassal.  If you select a non-Look and Feel class from the list, you will be alerted that the class is not a Look and Feel class. You can add as many JARs as you like, and they will be loaded on every start-up of Vassal, including the selection of Look and Feel classes.
