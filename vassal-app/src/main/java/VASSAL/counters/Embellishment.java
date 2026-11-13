@@ -206,6 +206,105 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       originalSetType(s);
     }
     else {
+      // The parsed type is shared by every Layer built from the same type string.
+      final TypeData d = TraitTypeCache.lookup(TypeData.class, s, TypeData::new);
+      activateCommand = d.activateCommand;
+      activateModifiers = d.activateModifiers;
+      activateKey = d.activateKey;
+      upCommand = d.upCommand;
+      upModifiers = d.upModifiers;
+      upKey = d.upKey;
+      downCommand = d.downCommand;
+      downModifiers = d.downModifiers;
+      downKey = d.downKey;
+      resetCommand = d.resetCommand;
+      resetKey = d.resetKey;
+      resetLevel = new FormattedString(d.resetLevel); // mutable, so each instance has its own
+      drawUnderneathWhenSelected = d.drawUnderneathWhenSelected;
+      xOff = d.xOff;
+      yOff = d.yOff;
+      // The arrays themselves are this instance's own: they are protected
+      // fields, and a subclass (MassPieceLoader's, for one) may write into
+      // them, which must not reach the other sharers. Their elements are
+      // shared.
+      imageName = d.imageName.clone();
+      commonName = d.commonName.clone();
+      loopLevels = d.loopLevels;
+      name = d.name;
+      rndKey = d.rndKey;
+      rndText = d.rndText;
+      followProperty = d.followProperty;
+      propertyName = d.propertyName;
+      firstLevelValue = d.firstLevelValue;
+      version = d.version;
+      alwaysActive = d.alwaysActive;
+      activateKeyStroke = d.activateKeyStroke;
+      increaseKeyStroke = d.increaseKeyStroke;
+      decreaseKeyStroke = d.decreaseKeyStroke;
+      description = d.description;
+      scale = d.scale;
+      onlyPropertyName = d.onlyPropertyName;
+      onlyPropertyState = d.onlyPropertyState;
+
+      value = canBeActivated() ? -1 : 1;
+      nValues = imageName.length;
+      // Bounds are returned to callers by getCurrentImageBounds(), so each
+      // instance computes its own; the painters, which hold only the image
+      // op and its scale cache, are shared, in an array of this instance's own.
+      size = new Rectangle[imageName.length];
+      imagePainter = d.imagePainter.clone();
+    }
+
+    commands = null;
+  }
+
+  /**
+   * The immutable part of a Layer's type, parsed once per distinct type
+   * string and shared by every instance (see {@link TraitTypeCache}): the
+   * image names, key strokes and commands, the reset-level format (as text:
+   * {@link FormattedString} is mutable, so each instance builds its own), and
+   * the per-level painters, which depend on the image alone. The current level, the key commands and the image bounds stay
+   * per piece, and so do the arrays behind the protected fields: an
+   * instance receives copies, since a subclass may write into them.
+   */
+  private static final class TypeData {
+    final String activateKey;
+    final String upKey;
+    final String downKey;
+    final int activateModifiers;
+    final int upModifiers;
+    final int downModifiers;
+    final String upCommand;
+    final String downCommand;
+    final String activateCommand;
+    final String resetCommand;
+    final String resetLevel;
+    final boolean loopLevels;
+    final NamedKeyStroke resetKey;
+    final boolean followProperty;
+    final String propertyName;
+    final int firstLevelValue;
+    final String onlyPropertyName;
+    final String onlyPropertyState;
+    final NamedKeyStroke rndKey;
+    final String rndText;
+    final int xOff;
+    final int yOff;
+    final String[] imageName;
+    final String[] commonName;
+    final boolean drawUnderneathWhenSelected;
+    final String name;
+    int version;
+    boolean alwaysActive;
+    NamedKeyStroke activateKeyStroke;
+    NamedKeyStroke increaseKeyStroke;
+    NamedKeyStroke decreaseKeyStroke;
+    final String description;
+    final double scale;
+    /** Painters per level; they hold only the image op and a scale cache, nothing per piece. */
+    final ScaledImagePainter[] imagePainter;
+
+    TypeData(String s) {
       s = s.substring(ID.length());
 
       final boolean brandNew = Resources.getString("Editor.Embellishment.activate").equals(s);
@@ -222,7 +321,7 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
       downKey = st.nextToken("");
       resetCommand = st.nextToken("");
       resetKey = st.nextNamedKeyStroke();
-      resetLevel = new FormattedString(st.nextToken("1"));
+      resetLevel = st.nextToken("1");
       drawUnderneathWhenSelected = st.nextBoolean(false);
       xOff = st.nextInt(0);
       yOff = st.nextInt(0);
@@ -281,18 +380,13 @@ public class Embellishment extends Decorator implements TranslatablePiece, Recur
         }
       }
 
-      value = canBeActivated() ? -1 : 1;
-      nValues = imageName.length;
-      size = new Rectangle[imageName.length];
-      imagePainter = new ScaledImagePainter[imageName.length];
 
+      imagePainter = new ScaledImagePainter[imageName.length];
       for (int i = 0; i < imageName.length; ++i) {
         imagePainter[i] = new ScaledImagePainter();
         imagePainter[i].setImageName(imageName[i]);
       }
     }
-
-    commands = null;
   }
 
   /**

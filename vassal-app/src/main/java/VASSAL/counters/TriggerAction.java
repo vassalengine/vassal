@@ -410,45 +410,91 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   @Override
   public void mySetType(String type) {
-    final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
-    st.nextToken();
-    name = st.nextToken(""); //$NON-NLS-1$
-    command = st.nextToken("Trigger"); //$NON-NLS-1$
-    key = st.nextNamedKeyStroke('T');
-    propertyMatch.setExpression(st.nextToken("")); //$NON-NLS-1$
+    // The parsed type is shared by every Trigger Action built from the same
+    // type string; only the fields below are per instance.
+    final TypeData d = TraitTypeCache.lookup(TypeData.class, type, TypeData::new);
+    name = d.name;
+    command = d.command;
+    key = d.key;
+    // FormattedString and PropertyExpression have public mutators, so each
+    // instance gets its own, built from the shared source text; the parsed
+    // Expression behind a FormattedString is already shared by its own cache.
+    propertyMatch = new PropertyExpression(d.propertyMatch);
+    // Copies of the shared arrays: they are protected fields a subclass may
+    // write into, and that must not reach the other sharers.
+    watchKeys = d.watchKeys.clone();
+    actionKeys = d.actionKeys.clone();
+    loop = d.loop;
+    preLoopKey = d.preLoopKey;
+    postLoopKey = d.postLoopKey;
+    loopType = d.loopType;
+    whileExpression = new PropertyExpression(d.whileExpression);
+    untilExpression = new PropertyExpression(d.untilExpression);
+    loopCount = new FormattedString(d.loopCount);
+    index = d.index;
+    indexProperty = d.indexProperty;
+    indexStart = new FormattedString(d.indexStart);
+    indexStep = new FormattedString(d.indexStep);
+  }
 
-    String keys = st.nextToken(""); //$NON-NLS-1$
-    if (keys.indexOf(',') > 0) {
-      watchKeys = NamedKeyStrokeArrayConfigurer.decode(keys);
-    }
-    else {
-      watchKeys = new NamedKeyStroke[keys.length()];
-      for (int i = 0; i < watchKeys.length; i++) {
-        watchKeys[i] = NamedKeyStroke.of(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
-      }
+  /**
+   * The immutable part of a Trigger Action's type, parsed once per distinct
+   * type string and shared by every instance (see {@link TraitTypeCache}).
+   * The expressions and formatted strings are held as their source text:
+   * {@link PropertyExpression} and {@link FormattedString} are mutable, so
+   * each instance builds its own.
+   */
+  private static final class TypeData {
+    final String name;
+    final String command;
+    final NamedKeyStroke key;
+    final String propertyMatch;
+    final NamedKeyStroke[] watchKeys;
+    final NamedKeyStroke[] actionKeys;
+    final boolean loop;
+    final NamedKeyStroke preLoopKey;
+    final NamedKeyStroke postLoopKey;
+    final String loopType;
+    final String whileExpression;
+    final String untilExpression;
+    final String loopCount;
+    final boolean index;
+    final String indexProperty;
+    final String indexStart;
+    final String indexStep;
+
+    TypeData(String type) {
+      final SequenceEncoder.Decoder st = new SequenceEncoder.Decoder(type, ';');
+      st.nextToken();
+      name = st.nextToken(""); //$NON-NLS-1$
+      command = st.nextToken("Trigger"); //$NON-NLS-1$
+      key = st.nextNamedKeyStroke('T');
+      propertyMatch = st.nextToken(""); //$NON-NLS-1$
+      watchKeys = decodeKeys(st.nextToken("")); //$NON-NLS-1$
+      actionKeys = decodeKeys(st.nextToken("")); //$NON-NLS-1$
+      loop = st.nextBoolean(false);
+      preLoopKey = st.nextNamedKeyStroke();
+      postLoopKey = st.nextNamedKeyStroke();
+      loopType = st.nextToken(LoopControl.LOOP_COUNTED);
+      whileExpression = st.nextToken(""); //$NON-NLS-1$
+      untilExpression = st.nextToken(""); //$NON-NLS-1$
+      loopCount = st.nextToken(""); //$NON-NLS-1$
+      index = st.nextBoolean(false);
+      indexProperty = st.nextToken(""); //$NON-NLS-1$
+      indexStart = st.nextToken("1");
+      indexStep = st.nextToken("1");
     }
 
-    keys = st.nextToken(""); //$NON-NLS-1$
-    if (keys.indexOf(',') > 0) {
-      actionKeys = NamedKeyStrokeArrayConfigurer.decode(keys);
-    }
-    else {
-      actionKeys = new NamedKeyStroke[keys.length()];
-      for (int i = 0; i < actionKeys.length; i++) {
-        actionKeys[i] = NamedKeyStroke.of(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
+    private static NamedKeyStroke[] decodeKeys(String keys) {
+      if (keys.indexOf(',') > 0) {
+        return NamedKeyStrokeArrayConfigurer.decode(keys);
       }
+      final NamedKeyStroke[] result = new NamedKeyStroke[keys.length()];
+      for (int i = 0; i < result.length; i++) {
+        result[i] = NamedKeyStroke.of(keys.charAt(i), InputEvent.CTRL_DOWN_MASK);
+      }
+      return result;
     }
-    loop = st.nextBoolean(false);
-    preLoopKey = st.nextNamedKeyStroke();
-    postLoopKey = st.nextNamedKeyStroke();
-    loopType = st.nextToken(LoopControl.LOOP_COUNTED);
-    whileExpression.setExpression(st.nextToken("")); //$NON-NLS-1$
-    untilExpression.setExpression(st.nextToken("")); //$NON-NLS-1$
-    loopCount.setFormat(st.nextToken("")); //$NON-NLS-1$
-    index = st.nextBoolean(false);
-    indexProperty = st.nextToken(""); //$NON-NLS-1$
-    indexStart.setFormat(st.nextToken("1"));
-    indexStep.setFormat(st.nextToken("1"));
   }
 
   /**
@@ -468,7 +514,8 @@ public class TriggerAction extends Decorator implements TranslatablePiece,
 
   // Setters for JUnit testing
   public void setPropertyMatch(String s) {
-    propertyMatch.setExpression(s);
+    // The expression object may be shared with other instances; replace rather than alter it.
+    propertyMatch = new PropertyExpression(s);
   }
 
   public void setCommandName(String s) {
