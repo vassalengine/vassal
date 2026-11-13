@@ -634,6 +634,17 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       if (c.getUndoCommand() != null && !c.getUndoCommand().isNull()) {
         nextUndo = logOutput.size() - 1;
       }
+      // Every change to the game passes through here: a local one via
+      // GameModule.sendAndLog, one from another player via CommandDecoder, and a
+      // replayed one via step(). Marking the game modified here is what lets
+      // GameState.isModified() answer without serialising the whole game.
+      // Loading a game does not come through here -- loadGameInForeground
+      // executes the restore command directly -- so a freshly loaded game is
+      // correctly left unmodified.
+      final GameModule g = GameModule.getGameModule();
+      if (g != null) {
+        g.getGameState().setModified(true);
+      }
     }
     undoAction.setEnabled(nextUndo >= dontUndoPast);
   }
