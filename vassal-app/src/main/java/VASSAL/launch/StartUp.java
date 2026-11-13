@@ -22,6 +22,8 @@ import java.awt.AWTError;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
+import java.util.Locale;
 import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -176,6 +178,14 @@ public class StartUp {
                       + System.getProperty("os.arch")); //$NON-NLS-1$
     logger.info("Java version " + System.getProperty("java.version")); //$NON-NLS-1$ //$NON-NLS-2$
     logger.info("Java home " + System.getProperty("java.home")); //$NON-NLS-1$ //$NON-NLS-2$
+    // The filename encoding comes from the C library locale and decides
+    // whether non-ASCII paths can be read at all, so record it: when it is
+    // ASCII, every such path throws InvalidPathException.
+    logger.info("Filename encoding " //$NON-NLS-1$
+                      + System.getProperty("sun.jnu.encoding") //$NON-NLS-1$
+                      + ", default charset " //$NON-NLS-1$
+                      + Charset.defaultCharset().name()
+                      + ", locale " + Locale.getDefault()); //$NON-NLS-1$
     logger.info("VASSAL version " + Info.getVersion()); //$NON-NLS-1$
   }
 }
