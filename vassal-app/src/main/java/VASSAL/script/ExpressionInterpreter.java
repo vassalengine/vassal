@@ -1470,13 +1470,14 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Object rangeAttach(String attachmentName, PieceFilter filter, boolean asPixels,  PropertySource ps) {
-    if (getSourcePiece(ps) != null) {
-      final GamePiece piece = getSourcePiece(ps);
+    final GamePiece piece = getSourcePiece(ps);
+    if (piece != null) {
       final Map map = piece.getMap();
       final Point from = piece.getPosition();
       for (final GamePiece target : Attachment.getAttachList(piece, attachmentName)) {
-        // Act on the first attached piece on the same Map that is not the source piece (in case of self-attachments)
-        if (target != ps && (filter == null || filter.accept(target))) {
+        // Act on the first attached piece on the same Map that is not the source piece (in case of self-attachments).
+        // Compare against the piece rather than the property source: behind a Report trait they are not the same object.
+        if (target != piece && (filter == null || filter.accept(target))) {
           final Map toMap = target.getMap();
           final Point to = target.getPosition();
           // Pieces must be on the same map
@@ -1757,7 +1758,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
       result = Integer.parseInt(value.toString());
     }
     catch (Exception e) {
-      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + (getSourcePiece(src)).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
+      final String message = "Illegal number in call to Beanshell function " + function + ". " + ((src instanceof Decorator) ? "Piece= [" + ((Decorator) src).getProperty(BasicPiece.BASIC_NAME) + "]. " : ""); //NON-NLS
       final String data = "Data=[" + value.toString() + "]."; //NON-NLS
       ErrorDialog.dataWarning(new BadDataReport(message, data, e));
     }
@@ -1791,8 +1792,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
 
     final PieceFilter filter = createFilter((String) propertyMatch, (PropertySource) src);
 
-    if (getSourcePiece(src) != null) {
-      mapList = getMapList(mapName, getSourcePiece(src));
+    if (src instanceof GamePiece) {
+      mapList = getMapList(mapName, (GamePiece) src);
     }
     else if (mapName != null && !((String) mapName).isEmpty()) {
       mapList.add(findVassalMap((String) mapName));
@@ -1856,8 +1857,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final String matchString = replaceDollarVariables((String) propertyMatch, (PropertySource) src);
     final PieceFilter filter = matchString == null ? null : new PropertyExpression(unescape(matchString)).getFilter((PropertySource) src);
 
-    if (getSourcePiece(src) != null) {
-      mapList = getMapList(mapName, getSourcePiece(src));
+    if (src instanceof GamePiece) {
+      mapList = getMapList(mapName, (GamePiece) src);
     }
     else if (mapName != null && !((String) mapName).isEmpty()) {
       mapList.add(findVassalMap((String) mapName));

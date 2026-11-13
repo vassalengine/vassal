@@ -14,6 +14,7 @@ import VASSAL.build.GameModule;
 import VASSAL.build.module.Map;
 import VASSAL.build.module.map.boardPicker.board.mapgrid.Zone;
 import VASSAL.build.module.properties.PropertySource;
+import VASSAL.counters.Attachment;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Properties;
@@ -21,7 +22,9 @@ import VASSAL.counters.ReportState;
 import VASSAL.counters.Stack;
 import VASSAL.script.expression.ExpressionException;
 
+import java.awt.Point;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -367,6 +370,43 @@ public class ExpressionInterpreterTest {
       assertThat("$oldX$ still resolves through the wrapper",
         oldValue.evaluate(reportSource), is(equalTo("before")));
     }
+  }
+
+  /**
+   * An Attachment may attach a piece to itself, and the range functions skip
+   * that self-attachment so they report the range to something else. The skip
+   * compares the attached piece against the source piece, which is not the
+   * same object as the property source once a Report trait has wrapped it.
+   */
+  @Test
+  public void rangeAttachSkipsTheSourcePieceBehindAReportTrait() throws ExpressionException {
+    final Map map = mock(Map.class);
+    when(map.getMapName()).thenReturn(MAP_NAME);
+
+    final BasicPiece inner = new BasicPiece();
+    inner.setProperty(Properties.PIECE_ID, "1"); //NON-NLS
+    final Attachment attached = new Attachment(Attachment.ID + "att;", inner); //NON-NLS
+    attached.setMap(map);
+    attached.setPosition(new Point(0, 0));
+
+    final BasicPiece other = new BasicPiece();
+    other.setProperty(Properties.PIECE_ID, "2"); //NON-NLS
+    other.setMap(map);
+    other.setPosition(new Point(30, 40));
+
+    // The self-attachment comes first, so a failure to skip it answers 0.
+    attached.setContents(new ArrayList<>(List.of(attached, other)));
+
+    final ExpressionInterpreter interpreter = new ExpressionInterpreter("RangePx(\"att\")"); //NON-NLS
+
+    assertThat("range from the piece",
+      interpreter.evaluate(attached), is(equalTo("50")));
+
+    final PropertySource reportSource =
+      new ReportState.OldAndNewPieceProperties(new HashMap<>(), attached);
+
+    assertThat("range from a Report trait's property source",
+      interpreter.evaluate(reportSource), is(equalTo("50")));
   }
 
   @Test
