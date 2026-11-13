@@ -535,8 +535,8 @@ public class GameLibrary {
     // Destination and temporary file
     final String fn     = file.getFileName();
     final File   target = new File(outputDir, fn);
-    final File   tmp    = File.createTempFile(Info.getTempDir().getName(),
-                                              fn + ".part"); //NON-NLS
+    final File   tmp    = File.createTempFile(fn, ".part",
+                                              Info.getTempDir()); //NON-NLS
 
     try {
       final URL url = encodeURL(file.getURL());
