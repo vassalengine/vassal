@@ -978,7 +978,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    * @return total
    */
   public Object sumLocation(Object property, Object expression, PropertySource ps) {
-
+    ps = translatePiece(ps);
     if (ps instanceof GamePiece) {
       final GamePiece p = (GamePiece) ps;
       final Map m = p.getMap();
@@ -1084,6 +1084,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Object countCurrentLocation(Object property, Object expression, PropertySource ps) {
+    ps = translatePiece(ps);
     if (ps instanceof GamePiece) {
       final GamePiece p = (GamePiece) ps;
       final Map m = p.getMap();
@@ -1224,6 +1225,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public Object countCurrentZone(Object propertyName, Object expression, PropertySource ps) {
+    ps = translatePiece(ps);
     if (ps instanceof GamePiece) {
       final String mapName = (String) ps.getProperty(BasicPiece.CURRENT_MAP);
       final String zoneName = (String) ps.getProperty(BasicPiece.CURRENT_ZONE);
@@ -1392,7 +1394,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     final String propertyName = property == null ? "" : property.toString();
     Map targetMap = null;
 
-    // GamePiece versions of SumZone may not have provided a map or zone, use the ones where the source piece is.
+    // GamePiece versions of CountMap may not have provided a map or zone, use the ones where the source piece is.
+    ps = translatePiece(ps);
     if (ps instanceof GamePiece && mapName.isEmpty()) {
       targetMap = ((GamePiece) ps).getMap();
     }
@@ -1567,6 +1570,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
   private Object sumOrCountRange(String propertyName, Object expression, Object minRange, Object maxRange, boolean asPixels, boolean doSum, PropertySource ps) {
 
+    ps = translatePiece(ps);
     final PieceFilter filter = createFilter(expression, ps);
 
     if (!(ps instanceof GamePiece)) return 0;
