@@ -40,7 +40,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
 import VASSAL.search.HTMLImageFinder;
 import VASSAL.tools.FormattedString;
-import VASSAL.tools.LaunchButton;
 import VASSAL.tools.swing.SwingUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -65,7 +64,7 @@ public class DiceButton extends AbstractToolbarItem {
   protected boolean reportTotal = false;
   protected boolean promptAlways = false;
   protected boolean sortDice = false;
-  protected final FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** &lt;$" + GlobalOptions.PLAYER_NAME + "$&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+  protected FormattedString reportFormat = new FormattedString("** $" + REPORT_NAME + "$ = $" + RESULT + "$ *** &lt;$" + GlobalOptions.PLAYER_NAME + "$&gt;"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
   /** Locking of options for roll prompts */
   protected boolean lockSides = false;
@@ -106,10 +105,6 @@ public class DiceButton extends AbstractToolbarItem {
   protected static final String KEEP_EQUAL = "=";
   protected static final String KEEP_GREATER = ">";
   protected static final String KEEP_LESS = "<";
-
-  /** @deprecated use launch from the superclass */
-  @Deprecated(since = "2021-04-03", forRemoval = true)
-  protected LaunchButton launch;
 
   protected String tooltip = ""; //$NON-NLS-1$
   protected final MutableProperty.Impl property = new Impl("", this);
