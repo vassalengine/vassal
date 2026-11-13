@@ -272,7 +272,7 @@ public class Chart extends Widget {
     }
 
     public void setAlpha(int alpha) {
-      this.alpha = alpha;
+      this.alpha = Math.min(255, Math.max(alpha, 0));
       repaint();
     }
 
@@ -322,6 +322,7 @@ public class Chart extends Widget {
 
       final int w = getWidth();
       final int h = getHeight();
+      final int f = (int)(Math.min(w, h) / .9);
       shape       = getShape(w, h);
 
       final Color bgColor = getBG(getModel().isPressed(),
@@ -341,7 +342,7 @@ public class Chart extends Widget {
       // Draw large centered text
       g2.setColor(new Color(fg.getRed(), fg.getGreen(), fg.getBlue(),
                             Math.min(255, alpha + 80)));
-      g2.setFont(new Font("SansSerif", Font.BOLD, 22));
+      g2.setFont(new Font("SansSerif", Font.BOLD, f));
 
       final FontMetrics fm      = g2.getFontMetrics();
       final int         width   = fm.stringWidth(text);
@@ -843,7 +844,7 @@ public class Chart extends Widget {
       if (val instanceof String) {
         val = Integer.valueOf((String)val);
       }
-      zoomButtonOpacity = (Integer)val;
+      zoomButtonOpacity = Math.min(255, Math.max((Integer)val, 0));
     }
     else if (ZOOM_BUTTON_WIDTH.equals(key)) {
       if (val instanceof String) {
