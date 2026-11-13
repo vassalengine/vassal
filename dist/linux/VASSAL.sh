@@ -38,6 +38,46 @@ dbg=0
 src=
 hlp=0
 
+# --- Ensure a locale which can read non-ASCII filenames -------------
+# The JVM decodes filenames with the charset named by sun.jnu.encoding,
+# which it derives from the C library locale at startup and which cannot
+# be changed afterwards with -D. If that locale is unusable -- unset, C /
+# POSIX, or naming locale data which is not installed -- the charset is
+# ASCII and every path holding a non-ASCII character throws
+# InvalidPathException, which is enough to break simply listing a home
+# directory (vassalengine/vassal#15314).
+#
+# Two subtleties:
+#  * LC_ALL is what has to be set. A LANG naming missing locale data makes
+#    setlocale(LC_ALL, "") fail as a whole, which defeats a per-category
+#    LC_CTYPE even though `locale charmap` then reports UTF-8.
+#  * `locale charmap` alone is therefore not a sufficient test; the locale
+#    must also load without error, which is what the stderr check covers.
+#
+# A locale which is merely not UTF-8 is left alone: a legacy ISO-8859-1
+# system round-trips its own filenames perfectly well, and overriding it
+# would be the regression rather than the fix. Only ASCII is repaired.
+#
+# Set VASSAL_NO_LOCALE_FIX=1 to skip this.
+locale_handles_non_ascii() {
+    # the locale must load as a whole ...
+    test -z "$(locale 2>&1 >/dev/null)" || return 1
+    # ... and must not be ASCII, which cannot represent non-ASCII filenames
+    case "$(locale charmap 2>/dev/null)" in
+        ANSI_X3.4-1968|ANSI_X3.4-1986|US-ASCII|ASCII) return 1 ;;
+    esac
+    return 0
+}
+
+if test -z "$VASSAL_NO_LOCALE_FIX" && ! locale_handles_non_ascii ; then
+    for loc in C.UTF-8 C.utf8 en_US.UTF-8 en_US.utf8 ; do
+        if LC_ALL=$loc locale_handles_non_ascii ; then
+            export LC_ALL=$loc
+            break
+        fi
+    done
+fi
+
 # --- Check for Java -------------------------------------------------
 if test ! -x "$java" ; then
     cat <<-EOF
