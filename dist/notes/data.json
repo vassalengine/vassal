@@ -30,6 +30,18 @@
       ]
     },
     {
+      "in": "3.8.2",
+      "since": "3.8.1",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "improvements": [
+      ],
+      "other": [
+      ]
+    },
+    {
       "in": "3.8.1",
       "since": "3.8.0",
       "new_features": [
