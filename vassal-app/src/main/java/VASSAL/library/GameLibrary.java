@@ -17,6 +17,8 @@
 package VASSAL.library;
 
 import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -176,20 +178,25 @@ public class GameLibrary {
     get.setHeader(HttpHeaders.USER_AGENT, "VASSAL"); //NON-NLS
     if (accept != null && !accept.isBlank()) 
       get.setHeader(HttpHeaders.ACCEPT, accept);
-    
-    final CloseableHttpClient   client   = HttpClients.createDefault();
-    final CloseableHttpResponse response = client.execute(get);
-    final int                   code     = response.getCode();
-    
-    if (code == 404) {
-      throw new IOException(Resources.getString("LibraryBrowser.404", url)); //NON-NLS
+
+    try (
+         CloseableHttpClient   client   = HttpClients.createDefault();
+         CloseableHttpResponse response = client.execute(get)) {
+      final int code = response.getCode();
+      
+      if (code == 404) {
+        throw new IOException(Resources.getString("LibraryBrowser.404", url)); //NON-NLS
+      }
+      
+      if (code / 100 != 2)  {
+        throw new IOException(Resources.getString("LibraryBrowser.bad_code",
+                                                  url, code)); //NON-NLS
+      }
+      final InputStream           content = response.getEntity().getContent();
+      final ByteArrayOutputStream obytes  = new ByteArrayOutputStream();
+      content.transferTo(obytes);
+      return new ByteArrayInputStream(obytes.toByteArray());       
     }
-    
-    if (code / 100 != 2)  {
-      throw new IOException(Resources.getString("LibraryBrowser.bad_code", url, code)); //NON-NLS
-    }
-    
-    return response.getEntity().getContent();
   }
 
   /**
@@ -199,9 +206,10 @@ public class GameLibrary {
    * @return JSON as a string
    */
   protected String getJSON(URL url)  throws IOException, URISyntaxException {
-    return new String(getRequest(url,
-                                 "application/json").readAllBytes(), //NON-NLS
-                      StandardCharsets.UTF_8);
+    try (InputStream input = getRequest(url, "application/json")) {
+      return new String(input.readAllBytes(), //NON-NLS
+                        StandardCharsets.UTF_8);
+    }
   }
 
   /**
