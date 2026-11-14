@@ -168,14 +168,10 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
   /**
    * Unpacks the help archive into {@code p}.
    *
-   * <p>Note that the archive carries no directory entries: {@code packContents}
-   * walks the chosen folder and writes a {@link ZipEntry} for each <em>file</em>
-   * it finds, with the sub-folder in the entry's name. So a file in a sub-folder
-   * is the only sign that the sub-folder exists, and its parent has to be created
-   * before it can be written. Relying on directory entries meant the first file
-   * in a sub-folder failed with NoSuchFileException, which aborted the unpacking
-   * and left behind only whatever had been written before it. See
-   * <a href="https://github.com/vassalengine/vassal/issues/15234">#15234</a>.
+   * <p>{@code packContents} writes a {@link ZipEntry} per file, with the
+   * sub-folder in the entry's name, and no directory entries. A file is
+   * therefore the only sign that its sub-folder exists, and the parent has to
+   * be created before the file can be written.
    *
    * @param in the help archive
    * @param p  directory to unpack into
