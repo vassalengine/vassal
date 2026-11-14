@@ -179,14 +179,6 @@ public class FixedScaleOpTiledBitmapImpl extends FixedScaleOpBitmapImpl {
       final Point[] tiles =
         rsop.getTileIndices(new Rectangle(sx0, sy0, sw, sh));
 
-      // There may be no source tiles to cobble from. getTileIndices()
-      // returns none when the region it is asked for is empty, and the
-      // region is empty when the source has been scaled down to nothing:
-      // the size of a scaled op is truncated, not rounded up, so a
-      // dimension of less than one pixel becomes zero. That makes sd 0
-      // wide or high here, which turns xscale or yscale negative and
-      // leaves sw or sh at 0. Nothing can be drawn from no pixels, so
-      // give back an empty image as the degenerate destination above does.
       if (tiles.length == 0) return ImageUtils.NULL_IMAGE;
 
       final int tw = rsop.getTileWidth();
