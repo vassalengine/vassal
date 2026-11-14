@@ -39,6 +39,8 @@
       "improvements": [
       ],
       "other": [
+        { "num": 15321, "desc": "Added tiling diagnostics" },
+        { "num": 15325, "desc": "Upgraded license-maven-plugin to 2.9.0" }
       ]
     },
     {
