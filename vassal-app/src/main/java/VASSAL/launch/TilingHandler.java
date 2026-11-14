@@ -51,7 +51,6 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -234,12 +233,15 @@ public class TilingHandler {
    * its source every time rather than from tiles, so neither is a failure to
    * read when it cannot be measured.
    *
+   * <p>The suffix test is case-sensitive, as {@link VASSAL.tools.imageop.Op}
+   * decides what to load an image as the same way: a file named
+   * <code>.SVG</code> is loaded as a bitmap, so it is tileable.
+   *
    * @param ipath the path of an entry under the archive's image directory
    * @return whether the entry is a candidate for tiling
    */
   protected static boolean isTileable(String ipath) {
-    return !ipath.endsWith("/") &&
-           !ipath.toLowerCase(Locale.ROOT).endsWith(".svg"); //NON-NLS
+    return !ipath.endsWith("/") && !ipath.endsWith(".svg"); //NON-NLS
   }
 
   protected interface StateMachineHandler {

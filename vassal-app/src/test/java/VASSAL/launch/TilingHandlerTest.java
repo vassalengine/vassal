@@ -93,7 +93,10 @@ public class TilingHandlerTest {
 
     // an SVG is drawn from its source, never from tiles
     assertThat(TilingHandler.isTileable("images/icon.svg"), is(false)); //NON-NLS
-    assertThat(TilingHandler.isTileable("images/icon.SVG"), is(false)); //NON-NLS
+
+    // Op.load() tests the suffix case-sensitively, so anything else is
+    // loaded as a bitmap and is tileable, typo or not
+    assertThat(TilingHandler.isTileable("images/icon.SVG"), is(true)); //NON-NLS
   }
 
   /**
