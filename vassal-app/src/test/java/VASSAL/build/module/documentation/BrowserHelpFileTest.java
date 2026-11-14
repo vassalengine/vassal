@@ -58,12 +58,9 @@ public class BrowserHelpFileTest {
   }
 
   /**
-   * An HTML Help File folder holding a sub-folder must unpack whole.
-   *
-   * <p>The archive carries no directory entries, so the first file inside a
-   * sub-folder used to fail with NoSuchFileException. That aborted the loop, so
-   * everything after it was lost too — in the report, help.html arrived and the
-   * images folder and style.css did not.
+   * An HTML Help File folder holding a sub-folder must unpack whole: the
+   * archive carries no directory entries, so a file is the only sign that its
+   * sub-folder exists.
    *
    * @see <a href="https://github.com/vassalengine/vassal/issues/15234">#15234</a>
    */
