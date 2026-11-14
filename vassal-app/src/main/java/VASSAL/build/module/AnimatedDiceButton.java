@@ -32,6 +32,7 @@ import VASSAL.tools.imageop.Op;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -62,25 +63,24 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
   private static final Logger logger =
     LoggerFactory.getLogger(AnimatedDiceButton.class);
 
-  protected JDialog           dialog; // Dialog to show results graphical
-  protected JLabel            dialogLabel;
   protected int               steps             = 4;
   protected int               fps               = 30;
-  protected int               lastTotal         = 0;
-  protected AnimResultsIcon   animResultsIcon   = new AnimResultsIcon();
-  protected ButtonResultsIcon buttonResultsIcon = new ButtonResultsIcon();
-  protected Thread            animator;
+  private final AnimResultsIcon   animResultsIcon   = new AnimResultsIcon();
+  private final ButtonResultsIcon buttonResultsIcon = new ButtonResultsIcon();
   protected int               delay             = 1000 / fps;
   protected double            buttonScale       = .5;
+  private   boolean           timerActive       = false;
+  private   Command           command           = null;
 
   public static final String STEPS        = "steps"; //$NON-NLS-1$
   public static final String FPS          = "fps"; //$NON-NLS-1$
   public static final String BUTTON_SCALE = "buttonScale"; //$NON-NLS-1$
   private static final int   BUTTON_OFF   = 4;
 
-  public AnimatedDiceButton() {
-    super(); 
-    
+  @Override
+  public void build(Element e) {
+    super.build(e);
+ 
     dialog = new JDialog(GameModule.getGameModule().getPlayerWindow());
     
     // Below will make the frame transparent but still have window
@@ -109,40 +109,73 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
   }
 
   /**
-   * Forwards the result of the roll to the {@link Chatter#send}
-   * method of the {@link Chatter} of the {@link GameModule}.  Format
-   * is prefix+[comma-separated roll list]+suffix additionally a
-   * command for every die is generated
+   * Build an animation command to forward to {@link DoActionButton#doActions}.
+   * This method is called twice, first to start
+   * the animation and secondly after the animation completes.
    *
-   * Note that we calculate the total here so that it can be set
-   * earlier then in the super class (not done yet). This triggers the
-   * animation and reporting of the results.
+   * On the initial call, the {@link command} member variable is null.
+   * It computes the new results, builds the {@link command} and sets
+   * the properties. If the user chooses to show the {@link dialog},
+   * the animator starts and null is returned to hold-off {@link DoActionButton#doActions}.
+   * If not using the Animator, then the {@link command} is returned back
+   * to {@link DoActionButton#doActions}.
+   *
+   * When the animator completes, it invokes {@link DoActionButton#doActions}
+   * which in turn calls this function. Since {@link command} is not null,
+   * it simply returns the command.
+   *
+   * @return Return null to cancel {@link DoActionButton#doActions}. Returning a
+   * non-null Command forwards it to {@link DoActionButton#doActions}.
    */
   @Override
-  protected void DR() {
+  protected Command prepareActionsCommand() {
+    if (command != null) {
+      if (timerActive) {
+        // Ignore button clicks during animation.
+        return null;
+      }
+      final Command c = command;
+      command = null;
+      return c;
+    }
+
     final int[] results = new int[dice.size()];
     int i = 0;
-    lastTotal = 0;
+    int total = 0;
     for (final SpecialDie sd : dice) {
       final int faceCount = sd.getFaceCount();
-      final int roll  =  faceCount == 0 ? 0 : ran.nextInt(sd.getFaceCount());
-      final int value =  sd.getIntValue(roll);
-      results[i++]    =  roll;            
-      lastTotal       += value;
+      final int roll = faceCount == 0 ? 0 : ran.nextInt(sd.getFaceCount());
+      final int value = sd.getIntValue(roll);
+      results[i++] = roll;
+      total += value;
     }
     setFormat(results);
-    reportAnimResults(results);
+    final Command c = new ShowAnimResults(this, lastRollResults, results);
+    c.append(property.setPropertyValue(String.valueOf(total)));
+    if (reportResultAsText) {
+      c.append(reportAnimTextResults());
+    }
+
+    if (reportResultInWindow) {
+      animateDice(c, results);
+      command = c;
+      return null;
+    }
+
+    // No animation. Animation occurs in the dialog and the dialog is not shown.
+    command = null;
+    c.execute();
+    return c;
   }
 
   private void actionsAndSend(Command c) {
     try {
+      c.execute();
       doActions();
     }
     catch (RecursionLimitException ex) {
       RecursionLimiter.infiniteLoop(ex);
     }
-    
-    GameModule.getGameModule().sendAndLog(c);
   }
 
   /**
@@ -152,12 +185,10 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
   private class Animator implements ActionListener {
     private int step = 0;
     private Timer timer;
-    private Command command;
-    private final int[] results;
+    private final Command command;
 
-    Animator(Command c, int[] r) {
+    Animator(Command c) {
       command = c;
-      results = r;
     }
 
     public void setTimer(Timer t) {
@@ -172,18 +203,14 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
         return;
       }
       // Done at end of thread
-      if (reportResultInButton) {
-        showButton(results);
-      }
-      if (reportResultAsText) {
-        command = command.append(reportAnimTextResults());
-      }
-      actionsAndSend(command);
+      timerActive = false;
       timer.stop();
+      actionsAndSend(command);
     }
   }
-  
+
   private void animateDice(Command command, int[] results) {
+    animResultsIcon.setResults(results);
     final int w = animResultsIcon.getIconWidth();
     final int h = animResultsIcon.getIconHeight();
     dialogLabel.setSize(new Dimension(w, h));
@@ -193,10 +220,9 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
     dialog.pack();
     dialog.setVisible(true);
     
-    animResultsIcon.setResults(results);
-    
-    final Animator animator = new Animator(command, results);
+    final Animator animator = new Animator(command);
     final Timer    timer    = new Timer(delay, animator);
+    timerActive = true;
     animator.setTimer(timer);
     
     // Start animating
@@ -217,34 +243,20 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
    * die roll.
    */
   private void reportAnimResults(int[] results) {
-    final Command command = new ShowResults(this, results);
-    
     if (reportResultInWindow) {
-      animateDice(command, results);
+      animResultsIcon.setFinalResultsIcon(results);
+      dialogLabel.setIcon(animResultsIcon);
+      dialogLabel.repaint();
     }
     else {
       // Remove dialog if not enabled
       dialog.setVisible(false);
     }
     if (reportResultInButton) {
-      if (!reportResultInWindow) {
-        showButton(results);
-      }
-      getLaunchButton().setIcon(buttonResultsIcon);
-      getLaunchButton().repaint();    
+      showButton(results);
     }
-    else {
-      // Remove icon if not enabled
-      getLaunchButton().setIcon(null);
-      getLaunchButton().repaint();    
-    }
-    if (reportResultAsText && !reportResultInWindow) {
-      command.append(reportAnimTextResults());
-    }
-    actionsAndSend(command);
   }
 
-    
   /**
    * Formats the result as text according to developer settings.
    *
@@ -253,23 +265,18 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
   private Command reportAnimTextResults() {
     format.setFormat(chatResultFormat);
     String msg = format.getLocalizedText(this, "Editor.report_format");
-    if (msg.length() > 0) {
+    if (!msg.isEmpty()) {
       if (msg.startsWith("*")) { //$NON-NLS-1$
         msg = "*" + msg; //$NON-NLS-1$
       }
       else {
         msg = "* " + msg; //$NON-NLS-1$
       }
+      return new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
     }
-    final Command c = msg.length() == 0 ?
-      new NullCommand() :
-      new Chatter.DisplayText(GameModule.getGameModule().getChatter(), msg);
-    c.execute();
-    // This is kinda late - the property `<Name>_result` will not
-    // be set until _after_ the die roll has completed.  Perhaps
-    // it should really be dine before.
-    c.append(property.setPropertyValue(String.valueOf(lastTotal)));
-    return c;
+    else {
+      return new NullCommand();
+    }
   }
 
   /**
@@ -280,21 +287,19 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
    */
   @Override
   protected void setFormat(int[] results) {
-    // Command  c = property.setPropertyValue(String.valueOf(lastTotal));
-            
     format.setProperty(NAME, getLocalizedConfigureName());
-    String full = "";
+    final StringBuilder full = new StringBuilder();
+    int total = 0;
     for (int i = 0; i < dice.size() && i < results.length; ++i) {
       final SpecialDie die       = dice.get(i);
       final String     dieResult = die.getTextValue(results[i]);
       format.setProperty("result" + (i + 1), dieResult); //$NON-NLS-1$
-      full += " " + dieResult;
+      total += die.getIntValue(results[i]);
+      full.append(' ').append(dieResult);
     }
-    format.setProperty(RESULT_TOTAL, String.valueOf(lastTotal)); //$NON-NLS-1$
-    format.setProperty("fullResult", full); //$NON-NLS-1$
+    format.setProperty(RESULT_TOTAL, String.valueOf(total));
+    format.setProperty("fullResult", full.toString()); //$NON-NLS-1$
     format.setFormat(chatResultFormat);
-
-    //GameModule.getGameModule().sendAndLog(c);        
   }
     
   /**
@@ -455,6 +460,9 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
     animResultsIcon.setResults(new int[dice.size()]);
     buttonResultsIcon.setResults(new int[dice.size()]);
         
+    // Set lastRollResults to the initial state (empty/zero)
+    lastRollResults = new int[dice.size()];
+
     final LaunchButton lb = getLaunchButton();
     if (lb != null && reportResultInButton) {
       lb.setIcon(buttonResultsIcon);
@@ -475,8 +483,12 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
     }
     final ShowAnimResults c2 = (ShowAnimResults) c;
     final SequenceEncoder se = new SequenceEncoder(c2.target.getIdentifier(), '\t');
-    for (int i = 0; i < c2.rolls.length; ++i) {
-      se.append(Integer.toString(c2.rolls[i])); //$NON-NLS-1$
+    for (int i = 0; i < c2.newValue.length; ++i) {
+      se.append(Integer.toString(c2.newValue[i]));
+    }
+    // Encode the old values after the new values.
+    for (int i = 0; i < c2.oldValue.length; ++i) {
+      se.append(Integer.toString(c2.oldValue[i]));
     }
     return SHOW_RESULTS_COMMAND + se.getValue();
   }
@@ -512,7 +524,13 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
     for (final String n : l) {
       results[i++] = Integer.parseInt(n);
     }
-    return new ShowAnimResults(this, results);
+
+    // Split the array into new and old values using the number of dice as the delimiter.
+    final int index = Math.min(l.size(), dice.size());
+    final int[] newValues = Arrays.copyOfRange(results, 0, index);
+    final int[] oldValues = Arrays.copyOfRange(results, index, l.size());
+
+    return new ShowAnimResults(this, oldValues, newValues);
   }
 
   /**
@@ -523,22 +541,25 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
    */
   public static class ShowAnimResults extends Command {
     private final AnimatedDiceButton target;
-    private final int[] rolls;
-        
-    public ShowAnimResults(AnimatedDiceButton oTarget, int[] results) {
+    private final int[] oldValue;
+    private final int[] newValue;
+
+    public ShowAnimResults(AnimatedDiceButton oTarget, int[] oldValue, int[] newValue) {
       target = oTarget;
-      rolls = Arrays.copyOf(results, results.length);
+      this.oldValue = Arrays.copyOf(oldValue, oldValue.length);
+      this.newValue = Arrays.copyOf(newValue, newValue.length);
     }
 
     @Override
     protected void executeCommand() {
-      target.setFormat(rolls);
-      target.reportAnimResults(rolls);
+      target.setFormat(newValue);
+      target.reportAnimResults(newValue);
+      target.lastRollResults = Arrays.copyOf(newValue, newValue.length);
     }
 
     @Override
     protected Command myUndoCommand() {
-      return null;
+      return new ShowAnimResults(target, newValue, oldValue);
     }
   }
 
@@ -671,7 +692,7 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
     public abstract int getIconHeight();
   }
 
-  /** Icon class for button dusplay of dice roll */
+  /** Icon class for button display of dice roll */
   private class ButtonResultsIcon extends BaseResultsIcon {
     /**
      * Set the results of the die-rolls.
@@ -754,7 +775,7 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
     /**
      * For a given die and a given result, find the indexes of upto
      * `steps` other faces, excluding the face that corresponds to
-     * result.  There will always be steps - 1 random faces, non of
+     * result.  There will always be steps - 1 random faces, none of
      * them the final result, before the final image which corresponds
      * to the result.
      *
@@ -794,6 +815,25 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
       // }
 
       return sub;
+    }
+
+    /**
+     * Update just the final step of the icons. This is
+     * used by the undo command to replace the final
+     * results with the previous results. Undo does not
+     * perform the animation therefore the other steps
+     * are irrelevant.
+     */
+
+    protected void setFinalResultsIcon(int[] results) {
+      if (icons == null || icons.length <= steps) {
+        icons = new ImageOp[steps + 1][results.length];
+      }
+      for (int i = 0; i < results.length; ++i) {
+        final ImageOp icon = getResultIcon(i, results[i]);
+        icons[steps][i] = icon;
+      }
+      todraw = icons[steps];
     }
 
     /**
