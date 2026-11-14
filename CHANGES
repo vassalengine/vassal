@@ -4,6 +4,8 @@
 
 3.8.2 - ???
 
+* 15327: Set the ancestor before building pasted, cloned and copy-dragged
+    components
 * 15321: Added tiling diagnostics
 * 15325: Upgraded license-maven-plugin to 2.9.0
 
