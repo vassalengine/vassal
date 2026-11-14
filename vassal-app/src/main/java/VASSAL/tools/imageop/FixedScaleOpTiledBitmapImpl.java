@@ -178,6 +178,9 @@ public class FixedScaleOpTiledBitmapImpl extends FixedScaleOpBitmapImpl {
       // cobble
       final Point[] tiles =
         rsop.getTileIndices(new Rectangle(sx0, sy0, sw, sh));
+
+      if (tiles.length == 0) return ImageUtils.NULL_IMAGE;
+
       final int tw = rsop.getTileWidth();
       final int th = rsop.getTileHeight();
 
