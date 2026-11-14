@@ -66,7 +66,11 @@ APP_JARS	:= /usr/share/java/asm.jar			\
 		   /usr/share/java/httpclient5.jar		\
 		   /usr/share/java/httpcore5.jar		\
 		   /usr/share/java/httpcore5-h2.jar		\
+		   /usr/share/java/jackson-core.jar		\
+		   /usr/share/java/jackson-annotation.jar	\
+		   /usr/share/java/jackson-databind.jar		\
 		   /usr/share/java/janino.jar			\
+		   /usr/share/java/java-semver.jar		\
 		   /usr/share/java/gnu-getopt.jar		\
 		   /usr/share/java/findbugs.jar			\
 		   /usr/share/java/jl.jar			\
