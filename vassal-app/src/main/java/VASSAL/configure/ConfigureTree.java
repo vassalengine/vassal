@@ -453,12 +453,30 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     return target;
   }
 
+  /**
+   * Whether a child should be left out of the tree altogether.
+   *
+   * <p>Plug-ins always are. So is anything a loaded {@link ModuleExtension}
+   * grafted in: it lives in the module's component tree so the game works, but it
+   * belongs to the extension, the module will not save it, and offering it here
+   * would invite edits that silently vanish. {@link ExtensionTree} overrides this,
+   * because the extension editor deliberately shows the whole module tree and
+   * greys out the parts the extension being edited does not own.</p>
+   */
+  protected boolean isHiddenFromTree(Configurable c) {
+    if (c instanceof Plugin) {
+      return true;
+    }
+    final GameModule g = GameModule.getGameModule();
+    return g != null && g.isExtensionComponent(c);
+  }
+
   protected DefaultMutableTreeNode buildTreeNode(Configurable c) {
     c.addPropertyChangeListener(this);
     final DefaultMutableTreeNode node = new ConfigureTreeNode(c);
     final Configurable[] children = c.getConfigureComponents();
     for (final Configurable child : children) {
-      if (! (child instanceof Plugin)) { // Hide Plug-ins
+      if (!isHiddenFromTree(child)) {
         node.add(buildTreeNode(child));
       }
     }
