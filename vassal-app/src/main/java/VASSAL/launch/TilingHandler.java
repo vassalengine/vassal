@@ -165,9 +165,20 @@ public class TilingHandler {
     int maxpix = 0; // number of pixels in the largest image
     int tcount = 0; // tile count
 
+    int examined = 0;  // images we tried to measure
+    int fresh = 0;     // images whose tiles are all present and current
+    int single = 0;    // images too small to be worth tiling
+
     final FileArchive fa = archive.getArchive();
 
     for (final String ipath : getImagePaths(archive)) {
+      if (!isTileable(ipath)) {
+        // not an image we would ever tile; not a failure either
+        continue;
+      }
+
+      ++examined;
+
       final Dimension idim;
       try {
         idim = getImageSize(archive, ipath);
@@ -180,6 +191,7 @@ public class TilingHandler {
 
       // skip images with fresh tiles
       if (isFresh(fa, tcache, ipath, idim)) {
+        ++fresh;
         continue;
       }
 
@@ -187,7 +199,10 @@ public class TilingHandler {
       final int t = TileUtils.tileCountAtScale(idim, tdim, 1) > 1 ?
                     TileUtils.tileCount(idim, tdim) : 0;
 
-      if (t == 0) continue;
+      if (t == 0) {
+        ++single;
+        continue;
+      }
 
       tcount += t;
       multi.add(ipath);
@@ -198,7 +213,35 @@ public class TilingHandler {
       }
     }
 
+    // Which bucket every image fell into. Without this, a log showing
+    // "No images to tile." cannot be told apart from one where every image
+    // was unreadable, which is the difference between a tile cache that is
+    // up to date and one which will never be built.
+    final String summary =
+      "Examined " + examined + " images: " + fresh + " already tiled, " + //NON-NLS
+      single + " too small to tile, " + failed.size() + " unreadable, " + //NON-NLS
+      multi.size() + " to tile"; //NON-NLS
+    logger.info(summary);
+
     return new Pair<>(tcount, maxpix);
+  }
+
+  /**
+   * Is this archive entry something the tiler could ever produce tiles for?
+   *
+   * <p>Directory entries are not images at all, and an SVG is rendered from
+   * its source every time rather than from tiles, so neither is a failure to
+   * read when it cannot be measured.
+   *
+   * <p>The suffix test is case-sensitive, as {@link VASSAL.tools.imageop.Op}
+   * decides what to load an image as the same way: a file named
+   * <code>.SVG</code> is loaded as a bitmap, so it is tileable.
+   *
+   * @param ipath the path of an entry under the archive's image directory
+   * @return whether the entry is a candidate for tiling
+   */
+  protected static boolean isTileable(String ipath) {
+    return !ipath.endsWith("/") && !ipath.endsWith(".svg"); //NON-NLS
   }
 
   protected interface StateMachineHandler {
@@ -482,10 +525,19 @@ public class TilingHandler {
     final List<Pair<String, IOException>> failed =
       new ArrayList<>();
 
+    logger.info("Tiling " + aname + " into " + cdir); //NON-NLS
+
     final Pair<Integer, Integer> s;
     try (DataArchive archive = new DataArchive(aname)) {
       final FileStore tcache = new ImageTileDiskCache(cdir.getAbsolutePath());
       s = findImages(archive, tcache, multi, failed);
+    }
+
+    // An image we cannot measure is one we cannot tile, and it will be asked
+    // for at render time all the same. This list used to be collected and
+    // dropped, which left no trace of it anywhere.
+    for (final Pair<String, IOException> f : failed) {
+      logger.warn("Not tiling " + f.first + ": cannot read image", f.second); //NON-NLS
     }
 
     // nothing to do if no images need tiling
