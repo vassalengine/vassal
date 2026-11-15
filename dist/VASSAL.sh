@@ -26,5 +26,14 @@ if ! "$JAVA" -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.JavaVersion
   exit 1
 fi
 
+# Java takes the character set for file names from the locale. Without a
+# UTF-8 locale (C or POSIX, as when launched outside a desktop session, or a
+# LANG that is not installed), any file name with a character outside ASCII
+# makes the file chooser fail. A working UTF-8 locale is left alone.
+case "$(locale charmap 2>/dev/null)" in
+  UTF-8|utf8|UTF8) ;;
+  *) export LC_ALL=C.UTF-8 ;;
+esac
+
 # Launch VASSSAL
 "$JAVA" -Duser.dir="$INSTALL_DIR" -classpath "$INSTALL_DIR"/lib/Vengine.jar VASSAL.launch.ModuleManager "$@"

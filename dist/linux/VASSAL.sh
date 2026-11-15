@@ -149,6 +149,16 @@ if test "x$entry" == "x$srv_entry" ; then
 fi
 
 
+# --- Make sure file names can be encoded ----------------------------
+# Java takes the character set for file names from the locale. Without a
+# UTF-8 locale (C or POSIX, as when launched outside a desktop session, or a
+# LANG that is not installed), any file name with a character outside ASCII
+# makes the file chooser fail. A working UTF-8 locale is left alone.
+case "$(locale charmap 2>/dev/null)" in
+  UTF-8|utf8|UTF8) ;;
+  *) export LC_ALL=C.UTF-8 ;;
+esac
+
 # --- Run java with defines, entry point, and other arguments --------
 "${cmd}" "${defs[@]}" -classpath "${jar}" "$entry" "${args[@]}"
 
