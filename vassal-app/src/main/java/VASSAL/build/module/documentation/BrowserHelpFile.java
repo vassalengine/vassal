@@ -151,7 +151,7 @@ public class BrowserHelpFile extends AbstractBuildable implements Configurable {
     }
   }
 
-  void internalExtractContents(ZipInputStream in) throws IOException {
+  private void internalExtractContents(ZipInputStream in) throws IOException {
     final Path p = Path.of(
       Info.getTempDir().getAbsolutePath(),
       "VASSAL", //$NON-NLS-1$
