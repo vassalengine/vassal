@@ -92,6 +92,9 @@ public class MetaDataFactory {
            BufferedReader br = new BufferedReader(isr)) {
         for (int i = 0; i < 10; i++) {
           final String s = br.readLine();
+          if (s == null) {
+            break;
+          }
           if (s.indexOf(BUILDFILE_MODULE_ELEMENT1) > 0
               || s.indexOf(BUILDFILE_MODULE_ELEMENT2) > 0) {
             return new ModuleMetaData(zip);
