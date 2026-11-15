@@ -87,6 +87,7 @@ public class MapWidget extends Widget {
     if (b instanceof WidgetMap) {
       if (mapHolder != null) {
         panel.remove(mapHolder);
+        panel.remove(map.getToolBar());
         mapHolder = null;
       }
       map = (WidgetMap) b;
@@ -100,10 +101,13 @@ public class MapWidget extends Widget {
 
   @Override
   public void remove(Buildable b) {
-    if (b instanceof WidgetMap) {
-      panel.remove(mapHolder);
+    if (b == map) {
+      if (mapHolder != null) {
+        panel.remove(mapHolder);
+        mapHolder = null;
+      }
       panel.remove(map.getToolBar());
-      mapHolder = null;
+      map = null;
     }
     super.remove(b);
   }
