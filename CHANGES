@@ -3,6 +3,7 @@
 * 15327: Set the ancestor before building pasted, cloned and copy-dragged
     components
 * 15321: Added tiling diagnostics
+* 15320: Fix count and sum expressions when invoked from Report Action trait
 * 15325: Upgraded license-maven-plugin to 2.9.0
 * 15318: Draw nothing, rather than crash, when a board scales to no pixels
 * 15313: Create parent folders when unpacking an HTML Help File
