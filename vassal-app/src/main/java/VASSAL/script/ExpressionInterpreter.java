@@ -457,8 +457,8 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   public Object getZoneProperty(Object propertyName, Object zoneName) {
-    if (source instanceof GamePiece) {
-      final Map map = ((GamePiece) source).getMap();
+    if (translatePiece(source) instanceof GamePiece gamePiece) {
+      final Map map = gamePiece.getMap();
       if (map != null) {
         final Zone zone = map.findZone(zoneName.toString());
         if (zone != null) {
@@ -539,7 +539,7 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     ps = translatePiece(ps);
 
     if (ps instanceof GamePiece) {
-      final GamePiece p = Decorator.getOutermost((Decorator) ps);
+      final GamePiece p = Decorator.getOutermost((GamePiece) ps);
       for (final GamePiece gp : Decorator.getDecorators(p, Attachment.class)) {
         final Attachment attach = (Attachment) gp;
         if (attachment.equals(attach.getAttachName())) {
@@ -1395,14 +1395,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
     Map targetMap = null;
 
     // GamePiece versions of CountMap may not have provided a map or zone, use the ones where the source piece is.
-    ps = translatePiece(ps);
-    if (ps instanceof GamePiece && mapName.isEmpty()) {
-      targetMap = ((GamePiece) ps).getMap();
+    if ((translatePiece(ps) instanceof GamePiece piece) && mapName.isEmpty()) {
+      targetMap = piece.getMap();
     }
     else {
       targetMap = findVassalMap(mapName);
     }
-
 
     final PieceFilter filter = createFilter(expression, ps);
 
@@ -1443,12 +1441,12 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Object rangeAttach(String attachmentName, PieceFilter filter, boolean asPixels,  PropertySource ps) {
-    if (ps instanceof GamePiece) {
-      final Map map = ((GamePiece) ps).getMap();
-      final Point from = ((GamePiece) ps).getPosition();
-      for (final GamePiece target : Attachment.getAttachList((GamePiece) ps, attachmentName)) {
+    if (translatePiece(ps) instanceof GamePiece piece) {
+      final Map map = piece.getMap();
+      final Point from = piece.getPosition();
+      for (final GamePiece target : Attachment.getAttachList(piece, attachmentName)) {
         // Act on the first attached piece on the same Map that is not the source piece (in case of self-attachments)
-        if (target != ps && (filter == null || filter.accept(target))) {
+        if (target != piece && (filter == null || filter.accept(target))) {
           final Map toMap = target.getMap();
           final Point to = target.getPosition();
           // Pieces must be on the same map
@@ -1470,9 +1468,9 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
   }
 
   private Object rangeXY(Object x, Object y, PropertySource ps, boolean asPixels) {
-    if (ps instanceof GamePiece) {
-      final Map map = ((GamePiece) ps).getMap();
-      final Point from = ((GamePiece) ps).getPosition();
+    if (translatePiece(ps) instanceof GamePiece piece) {
+      final Map map = piece.getMap();
+      final Point from = piece.getPosition();
       return range(from, new Point(intPropValue(x), intPropValue(y)), map, asPixels);
     }
     return 0;
@@ -1570,42 +1568,39 @@ public class ExpressionInterpreter extends AbstractInterpreter implements Loopab
    */
   private Object sumOrCountRange(String propertyName, Object expression, Object minRange, Object maxRange, boolean asPixels, boolean doSum, PropertySource ps) {
 
-    ps = translatePiece(ps);
     final PieceFilter filter = createFilter(expression, ps);
-
-    if (!(ps instanceof GamePiece)) return 0;
 
     int result = 0;
 
-    final GamePiece sourcePiece = (GamePiece) ps;
-    if (sourcePiece == null || sourcePiece.getMap() == null) {
-      return result;
-    }
+    if (translatePiece(ps) instanceof GamePiece sourcePiece) {
 
-    int min = intPropValue(minRange);
-    if (min < 0) min = 0;
-    int max = intPropValue(maxRange);
-    if (max < min) max = min;
-
-
-    final Point position = sourcePiece.getPosition();
-
-    // Ask the IndexManager for the pieces within the maximum range
-    // NOTE: The IndexManager will NOT return the source piece in the list if the minRange is 0. We need to handle this separately.
-    for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(sourcePiece, max, asPixels)) {
-      // Check the minimum range
-      if (min > 0) {
-        final int range = range(position, piece.getPosition(), sourcePiece.getMap(), asPixels);
-        if (range < min) continue;
+      if (sourcePiece.getMap() == null) {
+        return result;
       }
-      result = updateTotal(result, piece, propertyName, filter, doSum);
-    }
 
-    // If the range is 0, check our source piece as well.
-    if (min == 0) {
-      result = updateTotal(result, sourcePiece, propertyName, filter, doSum);
-    }
+      int min = intPropValue(minRange);
+      if (min < 0) min = 0;
+      int max = intPropValue(maxRange);
+      if (max < min) max = min;
 
+      final Point position = sourcePiece.getPosition();
+
+      // Ask the IndexManager for the pieces within the maximum range
+      // NOTE: The IndexManager will NOT return the source piece in the list if the minRange is 0. We need to handle this separately.
+      for (final GamePiece piece : GameModule.getGameModule().getIndexManager().getPieces(sourcePiece, max, asPixels)) {
+        // Check the minimum range
+        if (min > 0) {
+          final int range = range(position, piece.getPosition(), sourcePiece.getMap(), asPixels);
+          if (range < min) continue;
+        }
+        result = updateTotal(result, piece, propertyName, filter, doSum);
+      }
+
+      // If the range is 0, check our source piece as well.
+      if (min == 0) {
+        result = updateTotal(result, sourcePiece, propertyName, filter, doSum);
+      }
+    }
     return result;
   }
 
