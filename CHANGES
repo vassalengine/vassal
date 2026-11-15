@@ -1,5 +1,6 @@
 3.8.2 - ???
 
+* 15313: Create parent folders when unpacking an HTML Help File
 * 15327: Set the ancestor before building pasted, cloned and copy-dragged
     components
 * 15321: Added tiling diagnostics

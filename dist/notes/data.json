@@ -22,7 +22,8 @@
       "new_features": [
       ],
       "bug_fixes": [
-        { "num": 15327, "desc": "Set the ancestor before building pasted, cloned and copy-dragged component" }
+        { "num": 15327, "desc": "Set the ancestor before building pasted, cloned and copy-dragged component" },
+        { "num": 15313, "desc": "Create parent folders when unpacking an HTML Help File" }
       ],
       "improvements": [
       ],
