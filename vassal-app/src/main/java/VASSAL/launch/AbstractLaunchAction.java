@@ -589,6 +589,17 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           );
           return;
         }
+        final TileCacheException tce =
+          ThrowableUtils.getAncestor(TileCacheException.class, e);
+        if (tce != null) {
+          ErrorDialog.showDetails(
+            e,
+            ThrowableUtils.getStackTrace(e),
+            "Error.tile_cache_unwritable", //NON-NLS
+            tce.getDirectory().getAbsolutePath()
+          );
+          return;
+        }
         ErrorDialog.bug(e);
       }
       catch (InterruptedException e) {
