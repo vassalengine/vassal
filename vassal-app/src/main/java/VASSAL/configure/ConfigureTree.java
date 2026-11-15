@@ -1177,12 +1177,15 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       }
     }
 
-    protected void doIt(Configurable child) {
-      if (child == null) {
+    protected void doIt(Configurable newChild) {
+      if (newChild == null) {
         return;
       }
 
-      buildAsChildOf(child, (duplicate != null) ? duplicate.getBuildElement(Builder.createNewDocument()) : null, target);
+      buildAsChildOf(newChild, (duplicate != null) ? duplicate.getBuildElement(Builder.createNewDocument()) : null, target);
+
+      // insert() converts the child to the type its parent takes, and it is the converted child which ends up in the tree
+      final Configurable child = convertChild(target, newChild);
 
       if (child instanceof PieceSlot) {
         ((PieceSlot) child).updateGpId(GameModule.getGameModule());
@@ -2893,10 +2896,11 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
       else {
+        // the root of an extension's tree is the extension, not the module, and has no parent
         final DefaultMutableTreeNode pNode = (DefaultMutableTreeNode) node.getParent();
-        final Configurable p = (Configurable) pNode.getUserObject();
+        final Configurable p = pNode == null ? null : (Configurable) pNode.getUserObject();
 
-        if (getConfigureName(p.getClass()).equals(CLASS_HELP_MENU)) {
+        if (p != null && getConfigureName(p.getClass()).equals(CLASS_HELP_MENU)) {
           // [Help Menu]
           // Menu is also the Name, so only catch here if not already caught as Name
 
