@@ -23,6 +23,7 @@
       ],
       "bug_fixes": [
         { "num": 15327, "desc": "Set the ancestor before building pasted, cloned and copy-dragged component" },
+        { "num": 15318, "desc": "Draw nothing, rather than crash, when a board scales to no pixels" },
         { "num": 15313, "desc": "Create parent folders when unpacking an HTML Help File" }
       ],
       "improvements": [

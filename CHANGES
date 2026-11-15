@@ -1,10 +1,11 @@
 3.8.2 - ???
 
-* 15313: Create parent folders when unpacking an HTML Help File
 * 15327: Set the ancestor before building pasted, cloned and copy-dragged
     components
 * 15321: Added tiling diagnostics
 * 15325: Upgraded license-maven-plugin to 2.9.0
+* 15318: Draw nothing, rather than crash, when a board scales to no pixels
+* 15313: Create parent folders when unpacking an HTML Help File
 
 3.8.1 - 13 November 2026
 
