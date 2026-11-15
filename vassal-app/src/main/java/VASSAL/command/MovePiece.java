@@ -140,8 +140,10 @@ public class MovePiece extends Command {
    */
   private Stack findEmptyStack(Map map, GamePiece piece, Point pos) {
     final PieceCollection pieces = map.getPieceCollection();
-    final int layer = pieces instanceof CompoundPieceCollection ?
-      ((CompoundPieceCollection) pieces).getLayerForPiece(piece) : Stack.LAYER_NOT_SET;
+    if (!(pieces instanceof CompoundPieceCollection)) {
+      return null;
+    }
+    final int layer = ((CompoundPieceCollection) pieces).getLayerForPiece(piece);
     if (layer == Stack.LAYER_NOT_SET) {
       return null;
     }
