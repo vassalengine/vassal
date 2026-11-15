@@ -39,6 +39,7 @@ import VASSAL.tools.io.ProcessLauncher;
 import VASSAL.tools.io.ProcessWrapper;
 import VASSAL.tools.lang.MemoryUtils;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.output.TeeOutputStream;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -50,8 +51,11 @@ import javax.swing.SwingWorker;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -282,6 +286,16 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     return e != null && e.getMessage() != null && e.getMessage().contains("spawn helper"); //NON-NLS
   }
 
+  /**
+   * The message for a child process which exited before it could be
+   * considered started. The child's error output, if it produced any, is the
+   * only clue to why, so it goes into the message.
+   */
+  static String childProcessFailure(ByteArrayOutputStream childErr) {
+    final String err = childErr.toString(Charset.defaultCharset()).strip();
+    return "failed to start child process" + (err.isEmpty() ? "" : ":\n" + err); //NON-NLS
+  }
+
   protected class LaunchTask extends SwingWorker<Void, Void> {
     // lr might be modified before the task is over, keep a local copy
     protected final LaunchRequest lr =
@@ -457,7 +471,12 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       args[1] = "-Xms" + initialHeap + "M"; //NON-NLS
       args[2] = "-Xmx" + maximumHeap + "M"; //NON-NLS
 
-      ProcessWrapper proc = new ProcessLauncher().launch(args);
+      // keep a copy of the child's error output, so that we can say why if
+      // it dies before it is properly started
+      final ByteArrayOutputStream childErr = new ByteArrayOutputStream();
+      final OutputStream err = new TeeOutputStream(System.err, childErr);
+
+      ProcessWrapper proc = new ProcessLauncher().launch(null, System.out, err, args);
       try {
         proc.future.get(1000L, TimeUnit.MILLISECONDS);
       }
@@ -476,7 +495,8 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       if (proc.future.isDone()) {
         args[1] = "-Xms" + FAILSAFE_MAXIMUM_HEAP + "M"; //NON-NLS
         args[2] = "-Xmx" + FAILSAFE_MAXIMUM_HEAP + "M"; //NON-NLS
-        proc = new ProcessLauncher().launch(args);
+        childErr.reset();
+        proc = new ProcessLauncher().launch(null, System.out, err, args);
 
         try {
           proc.future.get(1000L, TimeUnit.MILLISECONDS);
@@ -489,7 +509,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         }
 
         if (proc.future.isDone()) {
-          throw new IOException("failed to start child process");
+          throw new IOException(childProcessFailure(childErr));
         }
         else {
           FutureUtils.wait(WarningDialog.show(
