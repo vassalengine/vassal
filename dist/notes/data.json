@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15247, "desc": "Prevent pieces vanishing when a move is undone" },
         { "num": 15327, "desc": "Set the ancestor before building pasted, cloned and copy-dragged component" },
         { "num": 15320, "desc": "Fix count and sum expressions when invoked from Report Action trait" },
         { "num": 15318, "desc": "Draw nothing, rather than crash, when a board scales to no pixels" },

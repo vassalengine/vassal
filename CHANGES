@@ -1,5 +1,6 @@
 3.8.2 - ???
 
+* 15247: Prevent pieces vanishing when a move is undone
 * 15327: Set the ancestor before building pasted, cloned and copy-dragged
     components
 * 15321: Added tiling diagnostics
