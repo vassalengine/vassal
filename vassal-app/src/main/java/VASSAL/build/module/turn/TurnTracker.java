@@ -806,6 +806,10 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
   }
 
   protected void set() {
+    if (getTurnLevelCount() == 0) {
+      return;
+    }
+
     savedSetState = getState();
     if (setDialog == null) {
       setDialog = new SetDialog();
