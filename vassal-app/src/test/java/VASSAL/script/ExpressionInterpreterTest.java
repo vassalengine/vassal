@@ -17,10 +17,12 @@ import VASSAL.build.module.properties.PropertySource;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.GamePiece;
 import VASSAL.counters.Properties;
+import VASSAL.counters.ReportState;
 import VASSAL.counters.Stack;
 import VASSAL.script.expression.ExpressionException;
 
 import java.security.SecureRandom;
+import java.util.HashMap;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -168,6 +170,7 @@ public class ExpressionInterpreterTest {
           return null;
         }
       }
+
       @Override
       public Object getLocalizedProperty(Object key) {
         if (String.valueOf(key).equals(GETKEY1)) {
@@ -236,6 +239,7 @@ public class ExpressionInterpreterTest {
 
   private static final String MAP_PROP = "mapProp";
   private static final String MAP_VAL = "mapVal";
+
   @Test
   public void getMapProperty() throws ExpressionException {
     try (MockedStatic<Map> staticMap = Mockito.mockStatic(Map.class)) {
@@ -318,6 +322,54 @@ public class ExpressionInterpreterTest {
   private static final String MATCH_VAL = "pickMe";
   private static final String MATCH_EXPR = "{match==\\\"pickMe\\\"}";
   private static final String MAP_NAME_2 = "myMap";
+
+
+  /**
+   * A Report trait evaluates its format against an OldAndNewPieceProperties so
+   * that $oldX$ resolves to the value before the change. That wrapper is not a
+   * GamePiece, which used to hide the piece from every function that needs one:
+   * CountMap() with no map argument returned 0 inside a Report trait while
+   * working everywhere else.
+   *
+   * @see <a href="https://github.com/vassalengine/vassal/issues/15281">#15281</a>
+   */
+  @Test
+  public void mapFunctionsWorkFromAReportTraitPropertySource() throws ExpressionException {
+    try (MockedStatic<Map> staticMap = Mockito.mockStatic(Map.class)) {
+      final BasicPiece bp1 = new BasicPiece();
+      bp1.setProperty(Properties.PIECE_ID, "1"); //NON-NLS
+      final BasicPiece bp2 = new BasicPiece();
+      bp2.setProperty(Properties.PIECE_ID, "2"); //NON-NLS
+
+      final Map map = mock(Map.class);
+      when(map.getMapName()).thenReturn(MAP_NAME);
+      when(map.getAllPieces()).thenReturn(new GamePiece[]{bp1, bp2});
+      bp1.setMap(map);
+      bp2.setMap(map);
+      staticMap.when(Map::getMapList).thenReturn(List.of(map));
+
+      final ExpressionInterpreter interpreter = new ExpressionInterpreter("CountMap()"); //NON-NLS
+
+      // Directly on the piece, as from a Text Label trait
+      assertThat("CountMap() from the piece",
+              interpreter.evaluate(bp1), is(equalTo("2")));
+
+      // Through the wrapper a Report trait supplies
+      final java.util.Map<String, Object> old = new HashMap<>();
+      old.put("Foo", "before"); //NON-NLS
+      final PropertySource reportSource =
+              new ReportState.OldAndNewPieceProperties(old, bp1);
+
+      assertThat("CountMap() from a Report trait's property source",
+              interpreter.evaluate(reportSource), is(equalTo("2")));
+
+      // ...and the wrapper must still answer for the old values, which is the
+      // whole reason the Report trait uses it.
+      final ExpressionInterpreter oldValue = new ExpressionInterpreter("oldFoo"); //NON-NLS
+      assertThat("$oldX$ still resolves through the wrapper",
+              oldValue.evaluate(reportSource), is(equalTo("before")));
+    }
+  }
 
   @Test
   public void sum_and_count() throws ExpressionException {
