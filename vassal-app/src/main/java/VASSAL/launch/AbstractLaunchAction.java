@@ -270,6 +270,18 @@ public abstract class AbstractLaunchAction extends AbstractAction {
     return null;
   }
 
+  /**
+   * On Linux the JDK starts processes through its jspawnhelper binary. When
+   * the JDK is updated in place while VASSAL is running, the helper on disk
+   * no longer matches the running JVM and ProcessBuilder.start() fails with
+   * "Failed to exec spawn helper". Nothing is wrong with VASSAL; it has to be
+   * restarted.
+   */
+  static boolean isSpawnHelperFailure(Throwable t) {
+    final IOException e = ThrowableUtils.getAncestor(IOException.class, t);
+    return e != null && e.getMessage() != null && e.getMessage().contains("spawn helper"); //NON-NLS
+  }
+
   protected class LaunchTask extends SwingWorker<Void, Void> {
     // lr might be modified before the task is over, keep a local copy
     protected final LaunchRequest lr =
@@ -547,6 +559,15 @@ public abstract class AbstractLaunchAction extends AbstractAction {
             );
             return;
           }
+        }
+        if (isSpawnHelperFailure(e)) {
+          ErrorDialog.showDetails(
+            e,
+            ThrowableUtils.getStackTrace(e),
+            "Error.spawn_helper_failed", //NON-NLS
+            ThrowableUtils.getAncestor(IOException.class, e).getMessage()
+          );
+          return;
         }
         ErrorDialog.bug(e);
       }
