@@ -472,7 +472,7 @@ public class Flare extends AbstractConfigurable
         animfrac = 1;
         active   = false;
 
-        timer.stop();
+        ((Timer)e.getSource()).stop();
         return;
       }
 
@@ -502,7 +502,7 @@ public class Flare extends AbstractConfigurable
     }
     
     timer = new Timer(20, new Animator(Math.max(pulses, 1),
-                                       1000 / Math.max(pulsesPerSec, 1)));
+                                       Math.max(1, 1000 / Math.max(pulsesPerSec, 1))));
     timer.start();
   }
 

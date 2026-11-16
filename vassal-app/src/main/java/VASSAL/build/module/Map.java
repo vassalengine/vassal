@@ -2282,8 +2282,9 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
       // Use real time since the previous tick: ticks can arrive late if
       // repainting is slow
       final long now = System.nanoTime();
+      // Cap the step so a long stall is dropped rather than repaid as a jump
       final long ms = scrollerLastTick == 0 ? scroller.getDelay()
-                                            : (now - scrollerLastTick) / 1_000_000;
+                                            : Math.min(100, (now - scrollerLastTick) / 1_000_000);
       scrollerLastTick = now;
 
       final int  dt = (int)(ms * Math.max(EDGE_SCROLL_RATE, 0.01));
