@@ -440,8 +440,8 @@ public class Flare extends AbstractConfigurable
     private final int pulses;
     /** Current pulse number */
     private int pulse;
-    /** Elapsed miliseconds */
-    private int elapsed;
+    /** Start time in nanoseconds */
+    private final long t0;
     /** Pulse duration in miliseconds */
     private final int duration;
     /**
@@ -451,18 +451,19 @@ public class Flare extends AbstractConfigurable
     Animator(int np, int dur) {
       pulses   = np;
       pulse    = 0;
-      elapsed  = 0;
+      t0       = System.nanoTime();
       duration = dur;
       animfrac = 0;
       active   = true;
     }
-    
+
     /**
      * Executed on each timing event
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-      elapsed += timer.getDelay();
+      // Use real elapsed time: ticks can arrive late if repainting is slow
+      final int elapsed = (int)((System.nanoTime() - t0) / 1_000_000);
       pulse   =  elapsed / duration + 1;
       animfrac = (float)(elapsed % duration) / duration;
 

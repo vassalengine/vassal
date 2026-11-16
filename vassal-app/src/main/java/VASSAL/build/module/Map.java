@@ -2264,6 +2264,7 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
                                  .getGameModule()
                                  .getPrefs()
                                  .getValue(PREFERRED_EDGE_DELAY));
+        scrollerLastTick = 0;
         scroller.start();
       }
     }
@@ -2272,12 +2273,21 @@ public class Map extends AbstractToolbarItem implements GameComponent, MouseList
     }
   }
 
+  /** Time of the previous autoscroll tick in nanoseconds, 0 if none yet. */
+  private long scrollerLastTick = 0;
+
   protected Timer scroller = new Timer(20, new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
-      final int  dt = (int)(scroller.getDelay()
-                            * Math.max(EDGE_SCROLL_RATE, 0.01));
-      
+      // Use real time since the previous tick: ticks can arrive late if
+      // repainting is slow
+      final long now = System.nanoTime();
+      final long ms = scrollerLastTick == 0 ? scroller.getDelay()
+                                            : (now - scrollerLastTick) / 1_000_000;
+      scrollerLastTick = now;
+
+      final int  dt = (int)(ms * Math.max(EDGE_SCROLL_RATE, 0.01));
+
       scroll(sx * dt, sy * dt);
       
       // Check whether we have hit an edge
