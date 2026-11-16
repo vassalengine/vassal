@@ -64,14 +64,13 @@ public class FileConfigurer extends Configurer {
   /**
    * The file chooser for this Configurer, created on first use.
    *
-   * <p>It is deliberately not built in the constructor. On Windows a
+   * <p>Not built in the constructor: on Windows a
    * {@link javax.swing.JFileChooser} asks the shell to enumerate its folders
-   * as it is constructed, and that can fail outright: when the "Network"
-   * shell folder is unreachable, {@code Win32ShellFolderManager2.getNetwork()}
-   * returns null and the JDK then throws a NullPointerException. Building a
-   * chooser the user may never open — the global preferences make one for the
-   * modules directory during start-up — turned that into a fatal error before
-   * the Module Manager window existed. See vassalengine/vassal#15297.
+   * as it is constructed, and that throws a NullPointerException on a machine
+   * where {@code Win32ShellFolderManager2.getNetwork()} returns null. The
+   * global preferences make one of these for the modules directory, so a
+   * chooser built eagerly is built during start-up. See
+   * vassalengine/vassal#15297.
    *
    * @return the file chooser, creating it if this is the first call
    */
