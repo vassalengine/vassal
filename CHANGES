@@ -1,5 +1,6 @@
 3.8.2 - ???
 
+* 15355: Upgraded logback-classic 1.6.7
 * 15354: Stop reporting every tiling failure as running out of memory
 * 15352: Only take the panel apart for the map which is in it
 * 15345: Read a field-access method handle as a field descriptor
