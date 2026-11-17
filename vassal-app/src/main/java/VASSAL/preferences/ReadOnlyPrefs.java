@@ -48,7 +48,15 @@ public class ReadOnlyPrefs {
   protected ReadOnlyPrefs(File file) {
     try (InputStream fin = Files.newInputStream(file.toPath());
          BufferedInputStream in = new BufferedInputStream(fin)) {
-      storedValues.load(in);
+      try {
+        storedValues.load(in);
+      }
+      catch (IllegalArgumentException e) {
+        // This happens if we have a corrupted prefs file, which is not
+        // a very friendly exception for Properties.load() to throw when
+        // doing I/O.
+        throw new IOException("Corrupted prefs file", e);
+      }
     }
     catch (NoSuchFileException e) {
       // First time for this module, not an error.
