@@ -29,6 +29,8 @@ import java.util.zip.ZipOutputStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import VASSAL.tools.bug.CustomCode;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -75,12 +77,15 @@ public class DataArchiveTest {
         frame.getClassLoaderName()
       );
 
-      // ... and so does the printed trace a reader sees.
+      // ... in the printed trace a reader sees ...
       assertTrue(
         ThrowableUtils.getStackTrace(thrown)
           .contains(DataArchive.MODULE_LOADER_PREFIX + "Great Battles.vmod//" + FIXTURE),
         "the printed trace should name the archive"
       );
+
+      // ... and the failure is attributed to the module rather than to VASSAL.
+      assertEquals(FIXTURE, CustomCode.blame(thrown));
     }
   }
 

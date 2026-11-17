@@ -23,6 +23,7 @@ import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.bug.BugHandler;
+import VASSAL.tools.bug.CustomCode;
 import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.image.tilecache.TileNotFoundException;
 import VASSAL.tools.version.VersionUtils;
@@ -79,6 +80,25 @@ public class ErrorDialog {
           return;
         }
       }
+    }
+
+    // A failure which came out of custom Java code supplied by the module is not a VASSAL bug.
+    // The VASSAL developers have neither the source nor any way to fix it, and the player needs
+    // to be told whose code failed so the report reaches the module's maintainer instead. See
+    // vassalengine/vassal#15225.
+    final String custom = CustomCode.blame(thrown);
+    if (custom != null) {
+      ProblemDialog.showDetailsDisableable(
+        JOptionPane.ERROR_MESSAGE,
+        GameModule.getGameModule() == null ?
+          null : GameModule.getGameModule().getPlayerWindow(),
+        thrown,
+        ThrowableUtils.getStackTrace(thrown),
+        custom,
+        "Error.custom_code_error", //NON-NLS
+        custom
+      );
+      return;
     }
 
     // show a bug report dialog if one has not been shown before
