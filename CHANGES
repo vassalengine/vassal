@@ -6,6 +6,7 @@
 * 15345: Read a field-access method handle as a field descriptor
 * 15347: Upgraded maven-artifact to 3.10.1
 * 15346: Upgraded apache-maven to 3.10.1
+* 15340: Use real elapsed time in Swing Timer animations
 * 15334: Let a Region grid without a container be removed and its regions moved
 * 15329: Report a corrupt module prefs file as a read error instead of a bug
 * 15247: Prevent pieces vanishing when a move is undone
