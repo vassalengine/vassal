@@ -17,6 +17,7 @@
 package VASSAL.tools;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,13 +68,45 @@ public class DataArchive extends SecureClassLoader implements Closeable {
 
   public static final String ICON_DIR = "icons/"; //NON-NLS
 
-  protected DataArchive() {
-    super(DataArchive.class.getClassLoader());
+  /**
+   * Prefix of the {@link ClassLoader} name given to every {@code DataArchive} which can load
+   * classes out of a module or extension archive. The name is recorded by the VM in each stack
+   * frame of a class this loader defined, so a stack trace says for itself that the frame belongs
+   * to module-supplied code rather than to VASSAL:
+   *
+   * <pre>at module:SomeModule.vmod//some.module.Thing.method(Thing.java:41)</pre>
+   *
+   * It is also what lets VASSAL tell a failure in module-supplied code from one of its own. Note
+   * that this is the name held by {@link ClassLoader}, which is fixed at construction; it is not
+   * what {@link #getName()} returns, and overriding that method does not affect it.
+   */
+  public static final String MODULE_LOADER_PREFIX = "module:"; //NON-NLS
+
+  /**
+   * @param zipName the archive's file name, or null if it is not yet known
+   * @return the {@link ClassLoader} name to give an archive which may supply custom classes
+   */
+  protected static String moduleLoaderName(String zipName) {
+    return zipName == null ?
+      MODULE_LOADER_PREFIX : MODULE_LOADER_PREFIX + new File(zipName).getName();
+  }
+
+  /**
+   * @param loaderName the name to record as this class loader's name; see
+   *   {@link #MODULE_LOADER_PREFIX}
+   * @param parent the class loader to delegate to
+   */
+  protected DataArchive(String loaderName, ClassLoader parent) {
+    super(loaderName, parent);
     resetLocalImages();
   }
 
+  protected DataArchive() {
+    this(moduleLoaderName(null), DataArchive.class.getClassLoader());
+  }
+
   public DataArchive(String zipName, String imageDir) throws IOException {
-    this();
+    this(moduleLoaderName(zipName), DataArchive.class.getClassLoader());
     archive = new ZipArchive(zipName);
     this.imageDir = imageDir;
   }

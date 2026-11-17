@@ -60,6 +60,7 @@ public class ArchiveWriter extends DataArchive {
    * be the default file extension added automatically.
    */
   public ArchiveWriter(String zipName, String defaultExtension) {
+    super(moduleLoaderName(zipName), DataArchive.class.getClassLoader());
     archiveName = zipName;
     this.defaultExtension = defaultExtension;
 
@@ -100,6 +101,7 @@ public class ArchiveWriter extends DataArchive {
   }
 
   public ArchiveWriter(FileArchive archive, String defaultExtension) {
+    super(moduleLoaderName(archive.getName()), DataArchive.class.getClassLoader());
     archiveName = archive.getName();
     this.defaultExtension = defaultExtension;
     this.archive = archive;

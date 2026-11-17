@@ -31,7 +31,8 @@ public class JarArchive extends DataArchive {
   }
 
   public JarArchive(String prefix) {
-    super();
+    // Not MODULE_LOADER_PREFIX: this archive is VASSAL's own jar, not a module.
+    super("vassal", DataArchive.class.getClassLoader()); //NON-NLS
     this.prefix = prefix;
   }
 
