@@ -313,7 +313,7 @@ jobs:
             Update the debian/changelog from release build
           add-paths: debian/changelog
           draft: false
-          base: master
+          base: main
 
       - name: Move artefacts
         run: |

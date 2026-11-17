@@ -28,7 +28,7 @@
     <scm>
         <connection>scm:git:git://github.com/vassalengine/vassal.git</connection>
         <developerConnection>scm:git:ssh://github.com:vassalengine/vassal.git</developerConnection>
-        <url>https://github.com/vassalengine/vassal/tree/master</url>
+        <url>https://github.com/vassalengine/vassal/tree/main</url>
     </scm>
     <distributionManagement>
         <repository>

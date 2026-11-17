@@ -37,16 +37,19 @@ import VASSAL.tools.swing.ProgressDialog;
 import VASSAL.tools.swing.Progressor;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.TeeOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Dimension;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -373,6 +376,53 @@ public class TilingHandler {
   protected static final int SLICER_SUCCESS = -1;
   protected static final int SLICER_GAVE_UP = -2;
 
+  /** The tiler's exit code when, and only when, an OutOfMemoryError was what stopped it. */
+  protected static final int OUT_OF_MEMORY = 2;
+
+  /** How much of the tiler's error output to keep for the failure message. */
+  private static final int ERROR_KEEP_BYTES = 4096;
+
+  /** What actually went wrong, when we know; null until something does. */
+  private String tilerError;
+
+  /**
+   * @return what stopped the tiler, as far as we can tell, or null if nothing has yet
+   */
+  protected String failureMessage() {
+    return tilerError;
+  }
+
+  /** Keeps the first bytes written to it and discards the rest. */
+  private static class FirstBytes extends OutputStream {
+    private final ByteArrayOutputStream kept = new ByteArrayOutputStream();
+    private final int limit;
+
+    FirstBytes(int limit) {
+      this.limit = limit;
+    }
+
+    @Override
+    public synchronized void write(int b) {
+      if (kept.size() < limit) {
+        kept.write(b);
+      }
+    }
+
+    /**
+     * @return the first non-blank line of what was written, ready to append to a message,
+     * or the empty string if there was nothing
+     */
+    synchronized String firstLine() {
+      for (final String line : kept.toString(StandardCharsets.UTF_8).split("\\R")) {
+        final String t = line.strip();
+        if (!t.isEmpty()) {
+          return ": " + t;
+        }
+      }
+      return "";
+    }
+  }
+
   protected Pair<Integer, Integer> runSlicer(
     List<String> multi,
     int maxheap,
@@ -384,14 +434,19 @@ public class TilingHandler {
 
     final String[] args = makeSlicerCommandLine(maxheap);
 
-    // set up the process
-    final InputStreamPump errP = new InputOutputStreamPump(null, System.err);
+    // set up the process. The child's stderr still goes to ours, but the first few lines of
+    // it are kept as well: when the tiler fails before it can say anything of its own, that
+    // text is the only statement anywhere of what actually went wrong.
+    final FirstBytes errBuf = new FirstBytes(ERROR_KEEP_BYTES);
+    final InputStreamPump errP =
+      new InputOutputStreamPump(null, new TeeOutputStream(System.err, errBuf));
 
     final ProcessWrapper proc = new ProcessLauncher().launch(
       null, null, errP, args
     );
 
     final List<String> tiled = new ArrayList<>();
+    boolean started = false;
 
     // read state changes from child's stdout
     try (BufferedReader in = new BufferedReader(new InputStreamReader(proc.stdout, StandardCharsets.UTF_8))) {
@@ -409,6 +464,7 @@ public class TilingHandler {
         }
 
         if (READY.equals(line)) {
+          started = true;
           break;
         }
         else {
@@ -482,15 +538,29 @@ public class TilingHandler {
 
         logger.info("Tiling failed with return value == " + retval + "   MaxHeap=" + maxheap + "  MaxHeapLimit=" + maxheap_limit + "  PhysMemory:" + (MemoryUtils.getPhysicalMemory() >> 20)); //NON-NLS
 
-        if (maxheap < maxheap_limit) {
-          // The tiler possibly ran out of memory; we can't reliably detect
-          // this, so assume it did. Try again with 50% more max heap.
-          logger.info("Tiling with " + maxheap + " possibly ran out of memory. Retrying tiling with 50% more (" + (int)(maxheap * 1.5) + ")."); //NON-NLS
+        // The tiler exits 2 when, and only when, what killed it was an OutOfMemoryError
+        // (ZipFileImageTiler: System.exit(thrown instanceof OutOfMemoryError ? 2 : 1)). Any
+        // other value means more heap is not the answer -- and if the tiler never even got as
+        // far as announcing itself, the value is the JVM's own, and the tiler did not run at
+        // all. Retrying those was how a module whose tiler could not be loaded produced
+        // eighteen launches, a max heap wound up to the whole of the machine's memory, and a
+        // report of running out of it. See vassalengine/vassal#13851.
+        if (retval != OUT_OF_MEMORY) {
+          tilerError = started ?
+            "Tiling failed with return value == " + retval : //NON-NLS
+            "The tiler could not be started" + errBuf.firstLine(); //NON-NLS
+          logger.info(tilerError + ". Not retrying: this is not a memory failure."); //NON-NLS
+          maxheap = SLICER_GAVE_UP;
+        }
+        else if (maxheap < maxheap_limit) {
+          // The tiler ran out of memory. Try again with 50% more max heap.
+          logger.info("Tiling with " + maxheap + " ran out of memory. Retrying tiling with 50% more (" + (int)(maxheap * 1.5) + ")."); //NON-NLS
           maxheap *= 1.5;
           multi.removeAll(tiled);
         }
         else {
           // give up, don't retry
+          tilerError = "Ran out of memory. Tiling failed with return value == " + retval; //NON-NLS
           maxheap = SLICER_GAVE_UP;
         }
       }
@@ -572,8 +642,8 @@ public class TilingHandler {
       else {
         h.handleFailure();
 
-        final String likely = result.first == 2 ? "Probably" : "Possibly"; //NON-NLS
-        throw new IOException(likely + " ran out of memory. Tiling failed with return value == " + result.first);
+        throw new IOException(tilerError != null ? tilerError :
+          "Tiling failed with return value == " + result.first); //NON-NLS
       }
     }
     catch (CancellationException | IOException e) {
