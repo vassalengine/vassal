@@ -19,6 +19,7 @@
 * 15325: Upgraded license-maven-plugin to 2.9.0
 * 15318: Draw nothing, rather than crash, when a board scales to no pixels
 * 15313: Create parent folders when unpacking an HTML Help File
+* 15267: Disable Return to Deck on pieces not on a map
 
 3.8.1 - 13 November 2026
 
