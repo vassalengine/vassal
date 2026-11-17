@@ -210,7 +210,8 @@ public class Region extends AbstractConfigurable {
     final Point newP = new Point(getOrigin());
     newP.translate(dx, dy);
 
-    if (myGrid.container.contains(newP) || (myGrid.container instanceof Zone)) {
+    // the grid may have left its board while its regions window was still open
+    if (myGrid.container == null || myGrid.container.contains(newP) || (myGrid.container instanceof Zone)) {
       moveOrigin(dx, dy);
     }
   }

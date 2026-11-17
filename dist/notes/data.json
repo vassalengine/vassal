@@ -38,11 +38,12 @@
         { "num": 15354, "desc": "Stop reporting every tiling failure as running out of memory" },
         { "num": 15352, "desc": "Only take the panel apart for the map which is in it" },
         { "num": 15345, "desc": "Read a field-access method handle as a field descriptor" },
-        { "num": 15247, "desc": "Prevent pieces vanishing when a move is undone" },
+        { "num": 15334, "desc": "Let a Region grid without a container be removed and its regions moved" },
         { "num": 15327, "desc": "Set the ancestor before building pasted, cloned and copy-dragged component" },
         { "num": 15320, "desc": "Fix count and sum expressions when invoked from Report Action trait" },
         { "num": 15318, "desc": "Draw nothing, rather than crash, when a board scales to no pixels" },
-        { "num": 15313, "desc": "Create parent folders when unpacking an HTML Help File" }
+        { "num": 15313, "desc": "Create parent folders when unpacking an HTML Help File" },
+        { "num": 15247, "desc": "Prevent pieces vanishing when a move is undone" }
       ],
       "improvements": [
       ],
