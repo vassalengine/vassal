@@ -1,5 +1,7 @@
 3.8.2 - ???
 
+* 15347: Upgraded maven-artifact to 3.10.1
+* 15346: Upgraded apache-maven to 3.10.1
 * 15247: Prevent pieces vanishing when a move is undone
 * 15327: Set the ancestor before building pasted, cloned and copy-dragged
     components
