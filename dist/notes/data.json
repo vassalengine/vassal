@@ -33,6 +33,7 @@
         { "num": 15247, "desc": "Prevent pieces vanishing when a move is undone" }
       ],
       "improvements": [
+        { "num": 15329, "desc": "Report a corrupt module prefs file as a read error instead of a bug" }
       ],
       "other": [
         { "num": 15347, "desc": "Upgraded maven-artifact to 3.10.1" },
