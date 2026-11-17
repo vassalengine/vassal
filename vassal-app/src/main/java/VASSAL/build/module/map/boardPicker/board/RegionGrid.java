@@ -219,8 +219,10 @@ public class RegionGrid extends AbstractConfigurable implements MapGrid, Configu
 
   @Override
   public void removeFrom(Buildable b) {
-    container.removeGrid(this);
-    container = null;
+    if (container != null) {
+      container.removeGrid(this);
+      container = null;
+    }
   }
 
   public static String getConfigureTypeName() {
