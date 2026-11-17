@@ -4,9 +4,14 @@
 
 3.8.2 - ???
 
+* 15345: Read a field-access method handle as a field descriptor
+* 15347: Upgraded maven-artifact to 3.10.1
+* 15346: Upgraded apache-maven to 3.10.1
+* 15247: Prevent pieces vanishing when a move is undone
 * 15327: Set the ancestor before building pasted, cloned and copy-dragged
     components
 * 15321: Added tiling diagnostics
+* 15320: Fix count and sum expressions when invoked from Report Action trait
 * 15325: Upgraded license-maven-plugin to 2.9.0
 * 15318: Draw nothing, rather than crash, when a board scales to no pixels
 * 15313: Create parent folders when unpacking an HTML Help File

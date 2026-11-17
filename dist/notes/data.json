@@ -35,13 +35,18 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15345, "desc": "Read a field-access method handle as a field descriptor" },
+        { "num": 15247, "desc": "Prevent pieces vanishing when a move is undone" },
         { "num": 15327, "desc": "Set the ancestor before building pasted, cloned and copy-dragged component" },
+        { "num": 15320, "desc": "Fix count and sum expressions when invoked from Report Action trait" },
         { "num": 15318, "desc": "Draw nothing, rather than crash, when a board scales to no pixels" },
         { "num": 15313, "desc": "Create parent folders when unpacking an HTML Help File" }
       ],
       "improvements": [
       ],
       "other": [
+        { "num": 15347, "desc": "Upgraded maven-artifact to 3.10.1" },
+        { "num': 15346, "desc": "Upgraded apache-maven to 3.10.1" },
         { "num": 15321, "desc": "Added tiling diagnostics" },
         { "num": 15325, "desc": "Upgraded license-maven-plugin to 2.9.0" }
       ]
