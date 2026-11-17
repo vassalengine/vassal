@@ -28,7 +28,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import org.w3c.dom.Document;
+
 import VASSAL.build.Buildable;
+import VASSAL.build.Builder;
 import VASSAL.build.GameModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
@@ -86,10 +89,26 @@ public class MapWidgetTest {
     staticGm.close();
   }
 
+  /**
+   * The widget with one map in it. MapWidget.add is what puts a map's components into the
+   * panel, which is all this class is about, so the map is handed straight to it.
+   *
+   * <p>Two things Builder would also do are left out because they want a display, and neither
+   * touches the panel: a map built with build(null) rather than from an element goes on to add
+   * a CounterDetailViewer, and Map.addTo asks for the default DragSource. Both throw
+   * HeadlessException on a machine without one, as CI is.</p>
+   */
   private static MapWidget widgetWithOneMap() {
     final MapWidget w = new MapWidget();
-    w.build(null);  // builds and adds a WidgetMap, as the editor's Add does
+    w.add(newMap());
     return w;
+  }
+
+  private static WidgetMap newMap() {
+    final Document doc = Builder.createNewDocument();
+    final WidgetMap m = new WidgetMap();
+    m.build(doc.createElement(WidgetMap.class.getName()));
+    return m;
   }
 
   private static JPanel panelOf(MapWidget w) {
@@ -117,9 +136,7 @@ public class MapWidgetTest {
 
     // A second map takes the panel over from the first. add() has always allowed this -- it
     // begins by dropping whatever is on display.
-    final WidgetMap second = new WidgetMap();
-    second.build(null);
-    second.addTo(w);
+    final WidgetMap second = newMap();
     w.add(second);
     assertSame(second, w.getMap());
 
@@ -165,9 +182,7 @@ public class MapWidgetTest {
     final MapWidget w = widgetWithOneMap();
     final WidgetMap first = w.getMap();
 
-    final WidgetMap second = new WidgetMap();
-    second.build(null);
-    second.addTo(w);
+    final WidgetMap second = newMap();
     w.add(second);
 
     // add() dropped the old holder but never the old toolbar, which stayed in the panel with
