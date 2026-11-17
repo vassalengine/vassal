@@ -222,12 +222,13 @@ public class TileRenderer {
                 final Point t = tile;
 
                 final Timer timer = new Timer(20, new ActionListener() {
-                  private int elapsed = 0;
+                  private final long t0 = System.nanoTime();
                   @Override
                   public void actionPerformed(ActionEvent e) {
                     final Timer tim = (Timer)e.getSource();
-                    elapsed += tim.getDelay();
-                    final float fraction = (float)elapsed / 100;
+                    // Use real elapsed time: ticks can arrive late if repainting is slow
+                    final long elapsed = (System.nanoTime() - t0) / 1_000_000;
+                    final float fraction = Math.min(1.0f, (float)elapsed / 100);
                     alpha.put(t, fraction);
                     obs.repaint(cx, cy, cw, ch);
 
