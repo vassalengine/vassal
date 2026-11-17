@@ -83,13 +83,17 @@ public class RoomTreeRenderer extends DefaultTreeCellRenderer {
       String version = null;
       final SimpleRoom room = (SimpleRoom) item;
 
+      // Fetched once. Asking the room three times gave three lists, and a player leaving
+      // between the isEmpty() check and the get(0) which followed it threw out of the paint.
+      // See vassalengine/vassal#15107.
+      final List<Player> players = room.getPlayerList();
+
       if (!room.getName().equals(ChatServerConnection.DEFAULT_ROOM_NAME)) {
-        if (!room.getPlayerList().isEmpty() && room.getPlayerList().get(0).getStatus() instanceof SimpleStatus) {
-          final SimpleStatus status = (SimpleStatus) room.getPlayerList().get(0).getStatus();
+        if (!players.isEmpty() && players.get(0).getStatus() instanceof SimpleStatus) {
+          final SimpleStatus status = (SimpleStatus) players.get(0).getStatus();
           version = VersionUtils.truncateToIncrementalVersion(status.getClient()) + '/' + NodeClient.cleanVersion(status.getModuleVersion());
         }
       }
-      final List<Player> players = room.getPlayerList();
       this.putClientProperty("html.disable", Boolean.FALSE);
       this.setText(
         "<html>" + getText() + " (" + players.size() + ")" +

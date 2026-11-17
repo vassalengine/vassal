@@ -17,6 +17,7 @@
  */
 package VASSAL.chat.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTree;
@@ -94,12 +95,19 @@ public class RoomTree extends JTree {
 // Update players
     for (int i = 0; i < root.getChildCount(); ++i) {
       final DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
-      final List<Player> p = roomAt(i).getPlayerList();
+      // Copied, not held: a Room's player list may be a live view of a collection which the
+      // chat client's network thread is still adding to and removing from, in which case its
+      // size can change between the loops below which match the node count to it and the loop
+      // after them which indexes it. See vassalengine/vassal#15107.
+      final List<Player> p = new ArrayList<>(roomAt(i).getPlayerList());
       while (p.size() < node.getChildCount()) {
         model.removeNodeFromParent((DefaultMutableTreeNode) node.getChildAt(0));
       }
       while (p.size() > node.getChildCount()) {
-        model.insertNodeInto(new DefaultMutableTreeNode(room[i]), node, 0);
+        // A placeholder: every node's user object is set from p immediately below. It must not
+        // be room[i], which is a Room standing in a player's position, and is out of bounds
+        // altogether should the tree ever hold more rooms than were passed in.
+        model.insertNodeInto(new DefaultMutableTreeNode(), node, 0);
       }
       for (int j = 0; j < node.getChildCount(); ++j) {
         model.valueForPathChanged(
