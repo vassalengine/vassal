@@ -984,11 +984,25 @@ public class PieceDefiner extends JPanel {
   }
 
   protected void paste() {
+    paste(getSelectedTraitIndex());
+  }
+
+  /**
+   * Paste the trait on the clipboard immediately outside the trait at the given position.
+   *
+   * <p>The position is a parameter rather than being read from the In-Use list because
+   * {@link MassPieceDefiner} applies the same paste to a whole set of PieceDefiners that
+   * share one visible list: only the one the user can see has a meaningful selection, and
+   * the others must be told where the trait goes. See vassalengine/vassal#15027.</p>
+   *
+   * @param selectedIndex position of the trait to paste outside of, or -1 to leave the
+   *                      pasted trait outermost
+   */
+  protected void paste(int selectedIndex) {
     final Decorator c = (Decorator) GameModule.getGameModule().createPiece(clipBoard.getType(), null);
     if (c instanceof PlaceMarker) {
       ((PlaceMarker) c).updateGpId(GameModule.getGameModule().getGpIdSupport());
     }
-    final int selectedIndex = inUseList.getSelectedIndex();
     c.setInner(inUseModel.lastElement());
     inUseModel.addElement(c);
     c.mySetState(clipBoard.getState());
@@ -1238,7 +1252,14 @@ public class PieceDefiner extends JPanel {
   }
 
   protected void addTrait(Decorator c) {
-    addTrait(c, inUseList.getSelectedIndex());
+    addTrait(c, getSelectedTraitIndex());
+  }
+
+  /**
+   * @return position of the trait currently selected in the In-Use list, or -1 if there is none
+   */
+  protected int getSelectedTraitIndex() {
+    return inUseList.getSelectedIndex();
   }
 
   protected void addTrait(Decorator c, int insertIndex) {
