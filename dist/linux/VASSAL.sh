@@ -22,6 +22,7 @@ ver_entry=VASSAL.launch.JavaVersionChecker
 mod_entry=VASSAL.launch.ModuleManager
 ply_entry=VASSAL.launch.Player
 edt_entry=VASSAL.launch.Editor
+lib_entry=VASSAL.launch.LibraryBrowser
 trl_entry=VASSAL.i18n.TranslateVassalWindow
 srv_entry=VASSAL.chat.node.Server
 entry=$mod_entry
@@ -119,7 +120,13 @@ while test $# -gt 0 ; do
             if test $drt -gt 0 ; then
                 entry=$edt_entry
             fi
-                        ;;
+            ;;
+        x--library-browser)
+            args+=("$1")
+            if test $drt -gt 0 ; then
+                entry=$lib_entry
+            fi
+            ;;
         x--server)
             entry=$srv_entry
             ;;
