@@ -182,8 +182,9 @@ public abstract class ListConfigurer extends Configurer implements PropertyChang
    */
   public void resize() {
     if (controls != null) {
-      final Dimension s = controls.getPreferredSize();
-      final int t = (Integer) UIManager.get("ScrollBar.width");
+      final Dimension s  = controls.getPreferredSize();
+      final Integer   ot = (Integer) UIManager.get("ScrollBar.width");
+      final int       t  = ot == null ? 16 : ot; // Not all LaF set this 
       panel.setPreferredSize(
         new Dimension(
           s.width + t + 2,
