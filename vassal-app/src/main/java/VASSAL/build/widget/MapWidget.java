@@ -85,10 +85,7 @@ public class MapWidget extends Widget {
   @Override
   public void add(Buildable b) {
     if (b instanceof WidgetMap) {
-      if (mapHolder != null) {
-        panel.remove(mapHolder);
-        mapHolder = null;
-      }
+      detachMap();
       map = (WidgetMap) b;
       mapHolder = map.getLayeredPane();
       panel.add(mapHolder, BorderLayout.CENTER);
@@ -100,12 +97,33 @@ public class MapWidget extends Widget {
 
   @Override
   public void remove(Buildable b) {
-    if (b instanceof WidgetMap) {
-      panel.remove(mapHolder);
-      panel.remove(map.getToolBar());
-      mapHolder = null;
+    // Only the map which is actually on display owns anything in the panel. This used to strip
+    // the panel from the mapHolder and map fields whatever b was, so a second WidgetMap -- or
+    // the same one a second time -- reached Container.remove(null) and threw a
+    // NullPointerException before super.remove(b) could run. The component was then still in
+    // the widget, which is why the deleted maps came back when the module was reopened.
+    // See vassalengine/vassal#14667.
+    if (b == map) {
+      detachMap();
+      panel.revalidate();
     }
     super.remove(b);
+  }
+
+  /**
+   * Take the map currently on display, if there is one, out of the panel. The holder and the
+   * toolbar go together: leaving the old map's toolbar behind when a new map replaced it left a
+   * component in the panel which nothing owned any more.
+   */
+  private void detachMap() {
+    if (mapHolder != null) {
+      panel.remove(mapHolder);
+      mapHolder = null;
+    }
+    if (map != null) {
+      panel.remove(map.getToolBar());
+      map = null;
+    }
   }
 
   @Override
