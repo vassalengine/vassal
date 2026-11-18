@@ -30,6 +30,18 @@
       ]
     },
     {
+      "in": "3.8.3",
+      "since": "3.8.2",
+      "new_features": [
+      ],
+      "bug_fixes": [
+      ],
+      "improvements": [
+      ],
+      "other": [
+      ]
+    },
+    {
       "in": "3.8.2",
       "since": "3.8.1",
       "new_features": [
@@ -38,6 +50,7 @@
         { "num": 15354, "desc": "Stop reporting every tiling failure as running out of memory" },
         { "num": 15352, "desc": "Only take the panel apart for the map which is in it" },
         { "num": 15345, "desc": "Read a field-access method handle as a field descriptor" },
+        { "num": 15340, "desc": "Use real elapsed time in Swing Timer animations" },
         { "num": 15334, "desc": "Let a Region grid without a container be removed and its regions moved" },
         { "num": 15327, "desc": "Set the ancestor before building pasted, cloned and copy-dragged component" },
         { "num": 15320, "desc": "Fix count and sum expressions when invoked from Report Action trait" },
