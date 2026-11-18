@@ -37,16 +37,19 @@ import VASSAL.tools.swing.ProgressDialog;
 import VASSAL.tools.swing.Progressor;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.TeeOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.Dimension;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -165,9 +168,20 @@ public class TilingHandler {
     int maxpix = 0; // number of pixels in the largest image
     int tcount = 0; // tile count
 
+    int examined = 0;  // images we tried to measure
+    int fresh = 0;     // images whose tiles are all present and current
+    int single = 0;    // images too small to be worth tiling
+
     final FileArchive fa = archive.getArchive();
 
     for (final String ipath : getImagePaths(archive)) {
+      if (!isTileable(ipath)) {
+        // not an image we would ever tile; not a failure either
+        continue;
+      }
+
+      ++examined;
+
       final Dimension idim;
       try {
         idim = getImageSize(archive, ipath);
@@ -180,6 +194,7 @@ public class TilingHandler {
 
       // skip images with fresh tiles
       if (isFresh(fa, tcache, ipath, idim)) {
+        ++fresh;
         continue;
       }
 
@@ -187,7 +202,10 @@ public class TilingHandler {
       final int t = TileUtils.tileCountAtScale(idim, tdim, 1) > 1 ?
                     TileUtils.tileCount(idim, tdim) : 0;
 
-      if (t == 0) continue;
+      if (t == 0) {
+        ++single;
+        continue;
+      }
 
       tcount += t;
       multi.add(ipath);
@@ -198,7 +216,35 @@ public class TilingHandler {
       }
     }
 
+    // Which bucket every image fell into. Without this, a log showing
+    // "No images to tile." cannot be told apart from one where every image
+    // was unreadable, which is the difference between a tile cache that is
+    // up to date and one which will never be built.
+    final String summary =
+      "Examined " + examined + " images: " + fresh + " already tiled, " + //NON-NLS
+      single + " too small to tile, " + failed.size() + " unreadable, " + //NON-NLS
+      multi.size() + " to tile"; //NON-NLS
+    logger.info(summary);
+
     return new Pair<>(tcount, maxpix);
+  }
+
+  /**
+   * Is this archive entry something the tiler could ever produce tiles for?
+   *
+   * <p>Directory entries are not images at all, and an SVG is rendered from
+   * its source every time rather than from tiles, so neither is a failure to
+   * read when it cannot be measured.
+   *
+   * <p>The suffix test is case-sensitive, as {@link VASSAL.tools.imageop.Op}
+   * decides what to load an image as the same way: a file named
+   * <code>.SVG</code> is loaded as a bitmap, so it is tileable.
+   *
+   * @param ipath the path of an entry under the archive's image directory
+   * @return whether the entry is a candidate for tiling
+   */
+  protected static boolean isTileable(String ipath) {
+    return !ipath.endsWith("/") && !ipath.endsWith(".svg"); //NON-NLS
   }
 
   protected interface StateMachineHandler {
@@ -330,6 +376,53 @@ public class TilingHandler {
   protected static final int SLICER_SUCCESS = -1;
   protected static final int SLICER_GAVE_UP = -2;
 
+  /** The tiler's exit code when, and only when, an OutOfMemoryError was what stopped it. */
+  protected static final int OUT_OF_MEMORY = 2;
+
+  /** How much of the tiler's error output to keep for the failure message. */
+  private static final int ERROR_KEEP_BYTES = 4096;
+
+  /** What actually went wrong, when we know; null until something does. */
+  private String tilerError;
+
+  /**
+   * @return what stopped the tiler, as far as we can tell, or null if nothing has yet
+   */
+  protected String failureMessage() {
+    return tilerError;
+  }
+
+  /** Keeps the first bytes written to it and discards the rest. */
+  private static class FirstBytes extends OutputStream {
+    private final ByteArrayOutputStream kept = new ByteArrayOutputStream();
+    private final int limit;
+
+    FirstBytes(int limit) {
+      this.limit = limit;
+    }
+
+    @Override
+    public synchronized void write(int b) {
+      if (kept.size() < limit) {
+        kept.write(b);
+      }
+    }
+
+    /**
+     * @return the first non-blank line of what was written, ready to append to a message,
+     * or the empty string if there was nothing
+     */
+    synchronized String firstLine() {
+      for (final String line : kept.toString(StandardCharsets.UTF_8).split("\\R")) {
+        final String t = line.strip();
+        if (!t.isEmpty()) {
+          return ": " + t;
+        }
+      }
+      return "";
+    }
+  }
+
   protected Pair<Integer, Integer> runSlicer(
     List<String> multi,
     int maxheap,
@@ -341,14 +434,19 @@ public class TilingHandler {
 
     final String[] args = makeSlicerCommandLine(maxheap);
 
-    // set up the process
-    final InputStreamPump errP = new InputOutputStreamPump(null, System.err);
+    // set up the process. The child's stderr still goes to ours, but the first few lines of
+    // it are kept as well: when the tiler fails before it can say anything of its own, that
+    // text is the only statement anywhere of what actually went wrong.
+    final FirstBytes errBuf = new FirstBytes(ERROR_KEEP_BYTES);
+    final InputStreamPump errP =
+      new InputOutputStreamPump(null, new TeeOutputStream(System.err, errBuf));
 
     final ProcessWrapper proc = new ProcessLauncher().launch(
       null, null, errP, args
     );
 
     final List<String> tiled = new ArrayList<>();
+    boolean started = false;
 
     // read state changes from child's stdout
     try (BufferedReader in = new BufferedReader(new InputStreamReader(proc.stdout, StandardCharsets.UTF_8))) {
@@ -366,6 +464,7 @@ public class TilingHandler {
         }
 
         if (READY.equals(line)) {
+          started = true;
           break;
         }
         else {
@@ -439,15 +538,29 @@ public class TilingHandler {
 
         logger.info("Tiling failed with return value == " + retval + "   MaxHeap=" + maxheap + "  MaxHeapLimit=" + maxheap_limit + "  PhysMemory:" + (MemoryUtils.getPhysicalMemory() >> 20)); //NON-NLS
 
-        if (maxheap < maxheap_limit) {
-          // The tiler possibly ran out of memory; we can't reliably detect
-          // this, so assume it did. Try again with 50% more max heap.
-          logger.info("Tiling with " + maxheap + " possibly ran out of memory. Retrying tiling with 50% more (" + (int)(maxheap * 1.5) + ")."); //NON-NLS
+        // The tiler exits 2 when, and only when, what killed it was an OutOfMemoryError
+        // (ZipFileImageTiler: System.exit(thrown instanceof OutOfMemoryError ? 2 : 1)). Any
+        // other value means more heap is not the answer -- and if the tiler never even got as
+        // far as announcing itself, the value is the JVM's own, and the tiler did not run at
+        // all. Retrying those was how a module whose tiler could not be loaded produced
+        // eighteen launches, a max heap wound up to the whole of the machine's memory, and a
+        // report of running out of it. See vassalengine/vassal#13851.
+        if (retval != OUT_OF_MEMORY) {
+          tilerError = started ?
+            "Tiling failed with return value == " + retval : //NON-NLS
+            "The tiler could not be started" + errBuf.firstLine(); //NON-NLS
+          logger.info(tilerError + ". Not retrying: this is not a memory failure."); //NON-NLS
+          maxheap = SLICER_GAVE_UP;
+        }
+        else if (maxheap < maxheap_limit) {
+          // The tiler ran out of memory. Try again with 50% more max heap.
+          logger.info("Tiling with " + maxheap + " ran out of memory. Retrying tiling with 50% more (" + (int)(maxheap * 1.5) + ")."); //NON-NLS
           maxheap *= 1.5;
           multi.removeAll(tiled);
         }
         else {
           // give up, don't retry
+          tilerError = "Ran out of memory. Tiling failed with return value == " + retval; //NON-NLS
           maxheap = SLICER_GAVE_UP;
         }
       }
@@ -482,10 +595,19 @@ public class TilingHandler {
     final List<Pair<String, IOException>> failed =
       new ArrayList<>();
 
+    logger.info("Tiling " + aname + " into " + cdir); //NON-NLS
+
     final Pair<Integer, Integer> s;
     try (DataArchive archive = new DataArchive(aname)) {
       final FileStore tcache = new ImageTileDiskCache(cdir.getAbsolutePath());
       s = findImages(archive, tcache, multi, failed);
+    }
+
+    // An image we cannot measure is one we cannot tile, and it will be asked
+    // for at render time all the same. This list used to be collected and
+    // dropped, which left no trace of it anywhere.
+    for (final Pair<String, IOException> f : failed) {
+      logger.warn("Not tiling " + f.first + ": cannot read image", f.second); //NON-NLS
     }
 
     // nothing to do if no images need tiling
@@ -520,8 +642,8 @@ public class TilingHandler {
       else {
         h.handleFailure();
 
-        final String likely = result.first == 2 ? "Probably" : "Possibly"; //NON-NLS
-        throw new IOException(likely + " ran out of memory. Tiling failed with return value == " + result.first);
+        throw new IOException(tilerError != null ? tilerError :
+          "Tiling failed with return value == " + result.first); //NON-NLS
       }
     }
     catch (CancellationException | IOException e) {
