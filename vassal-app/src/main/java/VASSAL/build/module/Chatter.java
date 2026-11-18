@@ -83,6 +83,15 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
   private static final long serialVersionUID = 1L;
 
   /**
+   * Matches a complete {@code <head>} element, contents and all. The head holds nothing which belongs in a
+   * chat message, and dropping only its tags would spill what is inside it into the visible text -- the
+   * body of a {@code <style>} element does exactly that. See {@link #stripDocumentTags}.
+   */
+  private static final Pattern HEAD_ELEMENT =
+    Pattern.compile("<head\\b[^>]*>.*?</head\\b[^>]*>",
+                    Pattern.CASE_INSENSITIVE | Pattern.DOTALL); //NON-NLS
+
+  /**
    * Matches the HTML document-structure tags -- {@code <html>}, {@code <head>}, {@code <body>} and their
    * closing forms. Each message is inserted into the conversation pane as a <i>fragment</i> of an existing
    * document, so these tags have nothing to delimit and are stripped before insertion. See
@@ -483,6 +492,11 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
    * the root, one stack frame per level, so after a few hundred such messages the paint overflows the stack
    * and takes the game down with it.
    *
+   * <p>A {@code <head>} element goes whole, contents included. Removing only its tags would leave what is
+   * inside it in the message, and that is not always invisible: Swing's HTML reader discards the text of a
+   * {@code <title>}, but the body of a {@code <style>} is inserted as ordinary text, so
+   * {@code <head><style>b{color:red}</style></head>} would print {@code b{color:red}} in the chat window.
+   *
    * <p>{@link VASSAL.tools.swing.DataArchiveTextPane} strips the same wrapper for the same reason.
    *
    * @param s message about to be displayed
@@ -490,7 +504,13 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
    */
   public static String stripDocumentTags(String s) {
     // The overwhelming majority of messages carry no such tag, so do not pay for a match unless one might.
-    return ((s == null) || (s.indexOf('<') < 0)) ? s : DOCUMENT_TAGS.matcher(s).replaceAll("");
+    if ((s == null) || (s.indexOf('<') < 0)) {
+      return s;
+    }
+
+    // The head element first, so that its contents go with it; then any remaining structure tags,
+    // which covers an unpaired <head> or </head> as well as <html> and <body>.
+    return DOCUMENT_TAGS.matcher(HEAD_ELEMENT.matcher(s).replaceAll("")).replaceAll("");
   }
 
   /**

@@ -25,6 +25,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ChatterTest {
@@ -44,6 +45,47 @@ public class ChatterTest {
     assertEquals("hello", Chatter.stripDocumentTags("<html><body>hello</body></html>"));
     assertEquals("hello", Chatter.stripDocumentTags("<html><head></head><body>hello</body></html>"));
     assertEquals("a hello b", Chatter.stripDocumentTags("a <html>hello</html> b"));
+  }
+
+  /**
+   * A {@code <head>} is removed whole. Stripping only its tags would leave its contents in the message,
+   * and those are not always invisible: Swing's HTML reader drops the text of a {@code <title>}, but
+   * inserts the body of a {@code <style>} as ordinary text.
+   */
+  @Test
+  public void testRemovesTheWholeHeadElement() {
+    assertEquals("hello",
+      Chatter.stripDocumentTags("<html><head><title>t</title></head><body>hello</body></html>"));
+    assertEquals("hello",
+      Chatter.stripDocumentTags("<html><head><style>b{color:red}</style></head><body>hello</body></html>"));
+    assertEquals("hello",
+      Chatter.stripDocumentTags("<head><meta charset=\"utf-8\"></head>hello"));
+    assertEquals("hello",
+      Chatter.stripDocumentTags("<HEAD><TITLE>t</TITLE></HEAD>hello"));
+    assertEquals("hello",
+      Chatter.stripDocumentTags("<head profile=\"x\"><title>t</title></head >hello"));
+    // The contents may span lines
+    assertEquals("hello",
+      Chatter.stripDocumentTags("<html>\n<head>\n  <style>\n    b { color: red }\n  </style>\n</head>\nhello</html>").trim());
+    // An unpaired tag has no contents to take with it, but still must not reach the document
+    assertEquals("hello", Chatter.stripDocumentTags("<head>hello"));
+    assertEquals("hello", Chatter.stripDocumentTags("hello</head>"));
+    // Not a head, merely something which starts with the same letters
+    assertEquals("<header>x</header>", Chatter.stripDocumentTags("<header>x</header>"));
+  }
+
+  /**
+   * The same thing end to end: the body of a {@code <style>} in the head must not appear in the
+   * conversation pane's text.
+   */
+  @Test
+  public void testHeadContentsDoNotReachTheDocument() throws Exception {
+    final String message =
+      "<html><head><style>b{color:red}</style></head><body>* A unit moved to 1204</body></html>";
+
+    final String text = textAfter(Chatter.stripDocumentTags(message));
+    assertTrue(text.contains("A unit moved to 1204"), "the message itself must still be shown");
+    assertFalse(text.contains("b{color:red}"), "the style body must not be shown as text");
   }
 
   /**
@@ -97,6 +139,22 @@ public class ChatterTest {
       kit.insertHTML(doc, doc.getLength(), "\n<div class=\"msg\">" + message + "</div>", 0, 0, null); //NON-NLS
     }
     return depth(doc.getDefaultRootElement(), 1);
+  }
+
+  /**
+   * Inserts one message into a fresh conversation pane the way {@code Chatter.doShow} does, and returns
+   * the text of the resulting document.
+   */
+  private String textAfter(String message) throws Exception {
+    final JTextPane pane = new JTextPane();
+    pane.setContentType("text/html"); //NON-NLS
+    final HTMLEditorKit kit = new HTMLEditorKit();
+    pane.setEditorKit(kit);
+
+    final HTMLDocument doc = (HTMLDocument) pane.getDocument();
+    kit.insertHTML(doc, doc.getLength(), "<br>", 0, 0, null); //NON-NLS
+    kit.insertHTML(doc, doc.getLength(), "\n<div class=\"msg\">" + message + "</div>", 0, 0, null); //NON-NLS
+    return doc.getText(0, doc.getLength());
   }
 
   private int depth(Element e, int d) {
