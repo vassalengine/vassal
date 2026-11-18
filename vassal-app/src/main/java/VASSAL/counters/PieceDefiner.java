@@ -68,10 +68,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -514,7 +514,11 @@ public class PieceDefiner extends JPanel {
     final JPanel availablePanel = new JPanel(new MigLayout("ins 0, fill")); // NON-NLS
     availableList = new JList<>();
     availableList.setName(AVAILABLE);
-    availableList.setDragEnabled(true);
+    // setDragEnabled(true) throws HeadlessException, and drag and drop means nothing
+    // without a display. Guarded the same way as StringConfigurer and TextConfigurer.
+    if (!GraphicsEnvironment.isHeadless()) {
+      availableList.setDragEnabled(true);
+    }
     availableList.setTransferHandler(transferHandler);
     availableList.setModel(availableModel);
     availableList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -609,7 +613,9 @@ public class PieceDefiner extends JPanel {
     final JPanel inUsePanel = new JPanel(new MigLayout("ins 0,wrap 1,fill", "[]", "[]rel[]0[]")); // NON-NLS
     inUseList = new JList<>();
     inUseList.setName(INUSE);
-    inUseList.setDragEnabled(true);
+    if (!GraphicsEnvironment.isHeadless()) {
+      inUseList.setDragEnabled(true);
+    }
     inUseList.setDropMode(DropMode.INSERT);
     inUseList.setTransferHandler(transferHandler);
     inUseList.setVisibleRowCount(99);
@@ -906,7 +912,7 @@ public class PieceDefiner extends JPanel {
    * @return OS specific name.
    */
   private String getCtrlKeyName(char c) {
-    return KeyNamer.getKeyString(SwingUtils.genericToSystem(KeyStroke.getKeyStroke(c, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx())));
+    return KeyNamer.getKeyString(SwingUtils.genericToSystem(KeyStroke.getKeyStroke(c, SwingUtils.getMenuShortcutKeyMask())));
   }
 
   private void doCopy() {

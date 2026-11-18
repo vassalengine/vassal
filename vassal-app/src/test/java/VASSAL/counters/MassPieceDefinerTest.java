@@ -17,10 +17,15 @@
 
 package VASSAL.counters;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.JList;
 
 import VASSAL.build.AbstractConfigurable;
@@ -126,6 +131,17 @@ public class MassPieceDefinerTest {
     }
   }
 
+  private static byte[] onePixelPng() {
+    try {
+      final ByteArrayOutputStream out = new ByteArrayOutputStream();
+      ImageIO.write(new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB), "png", out);
+      return out.toByteArray();
+    }
+    catch (IOException e) {
+      throw new AssertionError(e);
+    }
+  }
+
   /** Enough of a GameModule for PieceDefiner to build itself and to create pieces. */
   private static GameModule stubModule() {
     final GameModule gm = mock(GameModule.class);
@@ -134,10 +150,22 @@ public class MassPieceDefinerTest {
     when(prefs.getValue(anyString())).thenReturn(4);
     when(gm.getPrefs()).thenReturn(prefs);
 
+    // The available-traits list instantiates every trait, and a few of them load their
+    // default icon on the way. Answer with a real (if tiny) image: a name the archive
+    // cannot open is reported through ErrorDialog, which then tries to open a dialog.
     final ResourcePathFinder rpf = mock(ResourcePathFinder.class);
     when(rpf.findImagePath(anyString())).thenReturn("dummy.png");
     when(gm.getResourcePathFinder()).thenReturn(rpf);
-    when(gm.getDataArchive()).thenReturn(mock(DataArchive.class));
+
+    final DataArchive archive = mock(DataArchive.class);
+    try {
+      when(archive.getInputStream(anyString()))
+        .thenAnswer(i -> new ByteArrayInputStream(onePixelPng()));
+    }
+    catch (IOException e) {
+      throw new AssertionError(e);
+    }
+    when(gm.getDataArchive()).thenReturn(archive);
 
     final BasicCommandEncoder encoder = new BasicCommandEncoder();
     when(gm.createPiece(anyString()))

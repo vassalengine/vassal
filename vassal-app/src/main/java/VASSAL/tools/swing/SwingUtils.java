@@ -514,6 +514,24 @@ public class SwingUtils {
   }
 
   /**
+   * Return the platform's menu shortcut modifier, or plain Ctrl if operating in headless mode.
+   *
+   * In a perfect world, no gui code would ever run in headless mode, but some tests
+   * can force some parts of the gui to try and initialise, and
+   * Toolkit.getMenuShortcutKeyMaskEx() throws HeadlessException.
+   *
+   * @return menu shortcut modifier mask
+   */
+  public static int getMenuShortcutKeyMask() {
+    if (GraphicsEnvironment.isHeadless()) {
+      return InputEvent.CTRL_DOWN_MASK;
+    }
+    else {
+      return Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+    }
+  }
+
+  /**
    * Return the current screen insets, or dummy screen insets if operating in headless mode.
    *
    * In a perfect world, no gui code would ever run in headless mode, but some tests
