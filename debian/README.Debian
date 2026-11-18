@@ -12,4 +12,42 @@ Reminder: To make new Debian release, do
 
    DEBEMAIL=... \
       dch -release-heuristic log --no-auto-nmu -i "..."
-      
+
+Installing a downloaded .deb
+----------------------------
+
+Install it with apt, not with dpkg:
+
+   sudo apt install ./vassal_3.8.0-1_all.deb
+
+The leading "./" matters: without it, apt reads the argument as the name
+of a package to fetch from the archive rather than as a file.
+
+"dpkg -i vassal_3.8.0-1_all.deb" installs only the file it is handed.  It
+reports any unmet dependencies, but it leaves the package on the system
+in that state, so VASSAL starts and looks healthy until it first needs a
+class from the library that is missing.
+
+Since 3.8.0 the library this is most likely to be is libxz-java, used for
+the XZ-compressed saved-game format.  It is needed as soon as any module
+is opened, so a 3.8.0 installed without it fails on opening any module
+with
+
+   java.lang.NoClassDefFoundError: org/tukaani/xz/FilterOptions
+
+and nothing before that point says a package is missing: the jars outside
+/usr/share/vassal/lib are reached through Vengine.jar's Class-Path, whose
+entries are symlinks into /usr/share/java, and the JVM silently ignores a
+Class-Path entry that does not resolve.
+
+To repair an installation already in that state:
+
+   sudo apt --fix-broken install
+
+Nothing needs reinstalling or reconfiguring afterwards; the symlink the
+package already placed starts resolving as soon as the library is there.
+
+This catches people upgrading from 3.7 in particular, because libxz-java
+is the only dependency 3.8.0 added: every other library the package needs
+is already present from the older version, so dpkg -i had always been
+good enough before.
