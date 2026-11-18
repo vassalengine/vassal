@@ -2,8 +2,32 @@
 
 * 15116: Flatten trait chain encoding
 
-3.8.1 - ???
+3.8.3 - ???
 
+3.8.2 - 17 November 2026 
+
+* 15355: Upgraded logback-classic 1.6.7
+* 15354: Stop reporting every tiling failure as running out of memory
+* 15352: Only take the panel apart for the map which is in it
+* 15345: Read a field-access method handle as a field descriptor
+* 15347: Upgraded maven-artifact to 3.10.1
+* 15346: Upgraded apache-maven to 3.10.1
+* 15340: Use real elapsed time in Swing Timer animations
+* 15334: Let a Region grid without a container be removed and its regions moved
+* 15329: Report a corrupt module prefs file as a read error instead of a bug
+* 15247: Prevent pieces vanishing when a move is undone
+* 15327: Set the ancestor before building pasted, cloned and copy-dragged
+    components
+* 15321: Added tiling diagnostics
+* 15320: Fix count and sum expressions when invoked from Report Action trait
+* 15325: Upgraded license-maven-plugin to 2.9.0
+* 15318: Draw nothing, rather than crash, when a board scales to no pixels
+* 15313: Create parent folders when unpacking an HTML Help File
+* 15267: Disable Return to Deck on pieces not on a map
+
+3.8.1 - 13 November 2026
+
+* 15317: Upgraded exec-maven-plugin to 3.7.0
 * 15302: Upgraded commons-lang3 to 3.22.0
 * 15294: Upgraded license-maven-plugin to 2.8.0
 * 15283: Snapshot piece state only when Dynamic Property / Layer handle the

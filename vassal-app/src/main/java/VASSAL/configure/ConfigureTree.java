@@ -72,6 +72,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import javax.swing.AbstractAction;
@@ -899,7 +900,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           if (clone != null) {
-            clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
+            buildAsChildOf(clone, copyBase.getBuildElement(Builder.createNewDocument()), target);
             insert(target, clone, getTreeNode(target).getChildCount());
             updateGpIds(clone);
             postPasteFixups(clone);
@@ -941,6 +942,22 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
 
   protected boolean isValidPasteTarget(Configurable target) {
     return isValidPasteTarget(target, cutData) || isValidPasteTarget(target, copyData);
+  }
+
+  /**
+   * Builds a component from its XML element before it is inserted under its parent. The ancestor is set first,
+   * as {@link Builder#create(Element, Buildable)} does, so that a child inside a folder can find its first
+   * non-folder ancestor while the component's own children are built and added to it.
+   *
+   * @param child the component to build
+   * @param e the XML element to build from, or null for an empty component
+   * @param parent the component the child will be inserted under
+   */
+  protected static void buildAsChildOf(Configurable child, Element e, Configurable parent) {
+    if (child instanceof AbstractBuildable) {
+      ((AbstractBuildable) child).setAncestor(parent);
+    }
+    child.build(e);
   }
 
   /**
@@ -1165,14 +1182,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         return;
       }
 
-      //BR// We do an early & extra set of the ancestor before build so that if, during the addTo() sequence,
-      //BR// an item in an AbstractFolder needs to know its "first non-folder ancestor", it can walk up the
-      //BR// tree as necessary.
-      if (child instanceof AbstractBuildable) {
-        ((AbstractBuildable) child).setAncestor(target);
-      }
-
-      child.build((duplicate != null) ? duplicate.getBuildElement(Builder.createNewDocument()) : null);
+      buildAsChildOf(child, (duplicate != null) ? duplicate.getBuildElement(Builder.createNewDocument()) : null, target);
 
       if (child instanceof PieceSlot) {
         ((PieceSlot) child).updateGpId(GameModule.getGameModule());
@@ -1276,9 +1286,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
           }
 
           if (clone != null) {
-            clone.build(target.getBuildElement(Builder.createNewDocument()));
-            insert(getParent(targetNode), clone,
-              targetNode.getParent().getIndex(targetNode) + 1);
+            final Configurable parent = getParent(targetNode);
+            buildAsChildOf(clone, target.getBuildElement(Builder.createNewDocument()), parent);
+            insert(parent, clone, targetNode.getParent().getIndex(targetNode) + 1);
           }
         }
       };
@@ -3683,7 +3693,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
 
         if (clone != null) {
-          clone.build(copyBase.getBuildElement(Builder.createNewDocument()));
+          buildAsChildOf(clone, copyBase.getBuildElement(Builder.createNewDocument()), target);
           insert(target, clone, childIndex);
           postInsertProcessing(target, clone);
           updateGpIds(clone);
