@@ -560,7 +560,9 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
             
       final String imageName = dice.get(diceNo).getImageName(face);
 
-      if (imageName.length() <= 0) return null;
+      // SpecialDieFace.imageName has no initial value, so a face whose image has
+      // never been set reports null rather than the empty string.
+      if (imageName == null || imageName.isEmpty()) return null;
             
       final ImageOp sop = Op.load(imageName);
             
@@ -574,11 +576,11 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
      * result. May return null.
      */
     protected ImageOp getResultIcon(int diceNo, int result) {
-      final ImageOp img = getFaceImage(diceNo, result);
-            
-      if (img.getImage() == null) return null;
-            
-      return img;
+      // getFaceImage() has already returned null if there is no face, no image
+      // name, or no such image in the module, so there is nothing left to test
+      // here --- and testing it was the one thing that could throw, because null
+      // is precisely the answer it had to cope with. See vassalengine/vassal#15368.
+      return getFaceImage(diceNo, result);
     }
 
     /**
@@ -767,12 +769,29 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
      * dice.
      */
     private List<Integer> getFrameNos(int diceNo, int result)  throws UnsupportedOperationException {
-      final int           nfaces   = dice.get(diceNo).getFaceCount();
-      final List<Integer> possible = new ArrayList<>(nfaces - 1);
+      // setResults() warns when it is handed more results than there are dice ---
+      // a ShowAnimResults command carries whatever number of results the sender's
+      // copy of the module produced --- and then calls us anyway, so the surplus
+      // has to be tolerated here rather than indexing off the end of the list.
+      final int           nfaces   = diceNo < dice.size() ?
+                                     dice.get(diceNo).getFaceCount() : 0;
+      final List<Integer> possible = new ArrayList<>(Math.max(nfaces - 1, 0));
       for (int i = 0; i < nfaces; i++) {
         if (i != result) possible.add(i);
       }
       final List<Integer> sub = new ArrayList<>(steps);
+
+      // A die with no faces at all, or with only the face that was rolled, has
+      // nothing to animate through. Hold the result for every step rather than
+      // spinning: the loop below never advances `cur` over an empty list, and
+      // sizing the pool at nfaces - 1 would itself throw for a die with no faces.
+      if (possible.isEmpty()) {
+        for (int i = 0; i < steps; i++) {
+          sub.add(result);
+        }
+        return sub;
+      }
+
       int cur = 0;
 
       while (cur < steps) {
@@ -816,10 +835,19 @@ public class AnimatedDiceButton extends SpecialDiceButton  {
         int                 k      = 0;
         for (final int j : frames) {
           final ImageOp curr;
-          if (j == results[i])
-            curr = icons[k++][i] = icon;
-          else 
-            curr = icons[k++][i] = rotateImage(getFaceImage(i, j));
+          if (j == results[i]) {
+            curr = icon;
+          }
+          else {
+            // Op.rotate() throws IllegalArgumentException on a null source, so a
+            // face whose image is missing has to be left out rather than rotated.
+            final ImageOp face = getFaceImage(i, j);
+            curr = face == null ? null : rotateImage(face);
+          }
+          icons[k++][i] = curr;
+          if (curr == null) {
+            continue;
+          }
           widths[i]   = Math.max(widths[i],  curr.getWidth());
           heights[i]  = Math.max(heights[i], curr.getHeight());
         }
