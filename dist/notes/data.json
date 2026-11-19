@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15372, "desc": "Ensure that HTTP POSTs are in UTF-8" },
         { "num": 15370, "desc": "Take a Stack off the map before forgetting which map it was on" },
         { "num": 15369, "desc": "Fix NPE when a die face image is missing" },
         { "num": 15365, "desc": "Apply every Multi-Piece Editor change to every piece at the same position" },
