@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15364, "desc": "Do not let a zoom-to-fit on a boardless map set an infinite zoom" }
       ],
       "improvements": [
       ],

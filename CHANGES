@@ -1,5 +1,7 @@
 3.8.3 - ???
 
+* 15364: Do not let a zoom-to-fit on a boardless map set an infinite zoom
+
 3.8.2 - 17 November 2026 
 
 * 15355: Upgraded logback-classic 1.6.7
