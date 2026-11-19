@@ -1324,6 +1324,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
         m.addPiece(this);
       }
       else {
+        // As in Stack.setState(), which this is a copy of: leave the map before
+        // forgetting it. See vassalengine/vassal#12033.
+        final Map oldMap = getMap();
+        if (oldMap != null) {
+          oldMap.removePiece(this);
+        }
         setMap(null);
       }
     }
