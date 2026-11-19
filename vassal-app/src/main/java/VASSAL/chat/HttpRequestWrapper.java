@@ -117,7 +117,10 @@ public class HttpRequestWrapper {
       final String value = props.getProperty(key);
       params.add(new BasicNameValuePair(key, value));
     }
-    httpPost.setEntity(new UrlEncodedFormEntity(params));
+    httpPost.setEntity(new UrlEncodedFormEntity(
+      params,
+      StandardCharsets.UTF_8
+    ));
     return httpPost;
   }
 

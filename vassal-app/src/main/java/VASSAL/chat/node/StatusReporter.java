@@ -19,6 +19,7 @@ package VASSAL.chat.node;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import VASSAL.chat.HttpRequestWrapper;
 import VASSAL.chat.SimpleStatus;
@@ -29,6 +30,9 @@ import VASSAL.tools.PropertiesEncoder;
  * Date: Jun 7, 2003
  */
 public class StatusReporter implements Runnable {
+  private static final Logger logger =
+    Logger.getLogger(StatusReporter.class.getName());
+
   private final HttpRequestWrapper reportStatus;
   private String lastReportedContents;
   private String currentContents;
@@ -75,6 +79,7 @@ public class StatusReporter implements Runnable {
     if (currentContents != null
         && !currentContents.equals(lastReportedContents)) {
       try {
+        logger.info("updating connections");
         final Properties props = new Properties();
         props.put("STATUS", currentContents); //$NON-NLS-1$
         reportStatus.doPost("updateConnections", props); //$NON-NLS-1$
@@ -82,6 +87,7 @@ public class StatusReporter implements Runnable {
       }
       // FIXME: review error message
       catch (IOException e) {
+        logger.severe(e.toString());
         sleepInterval = Math.min(2 * sleepInterval, MAX_SLEEP);
       }
       lastReportedContents = currentContents;
