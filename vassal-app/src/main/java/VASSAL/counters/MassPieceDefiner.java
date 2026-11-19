@@ -94,14 +94,6 @@ public class MassPieceDefiner extends PieceDefiner {
   }
 
   @Override
-  protected void addTrait(Decorator c) {
-    super.addTrait(c);
-    for (final Entry e : definers) {
-      e.definer.addTrait(c);
-    }
-  }
-
-  @Override
   protected void addTrait(Decorator c, int insertIndex) {
     super.addTrait(c, insertIndex);
     for (final Entry e : definers) {
@@ -134,10 +126,32 @@ public class MassPieceDefiner extends PieceDefiner {
   }
 
   @Override
-  protected void paste() {
-    super.paste();
+  protected void moveDecoratorTop(int index) {
+    super.moveDecoratorTop(index);
     for (final Entry e : definers) {
-      e.definer.paste();
+      e.definer.moveDecoratorTop(index);
+    }
+  }
+
+  @Override
+  protected void moveDecoratorBottom(int index) {
+    super.moveDecoratorBottom(index);
+    for (final Entry e : definers) {
+      e.definer.moveDecoratorBottom(index);
+    }
+  }
+
+  @Override
+  protected void paste() {
+    // Resolve where the trait goes once, from the list the user can see, and give that
+    // position to every piece. Calling the no-argument paste() on the others made each of
+    // them read its own hidden list instead, whose selection is still wherever setPiece()
+    // left it, so the pasted trait landed at a different depth in every piece and the
+    // trait lists --- which the whole dialog assumes are identical --- drifted apart.
+    final int insertIndex = getSelectedTraitIndex();
+    super.paste(insertIndex);
+    for (final Entry e : definers) {
+      e.definer.paste(insertIndex);
     }
   }
 
@@ -176,8 +190,24 @@ public class MassPieceDefiner extends PieceDefiner {
       if (!(o instanceof EditablePiece)) {
         return false;
       }
+
+      // Every piece being edited together starts with the same list of traits, and each
+      // structural change is applied to all of them at the same position, so the trait at
+      // this position is the same kind of trait in every piece. If that has nonetheless
+      // stopped being true, feeding one trait's type string to a different kind of trait
+      // would either corrupt the piece or --- more usually --- throw out of the receiving
+      // trait's own decoder, which is what vassalengine/vassal#15027, #13607 and #12377
+      // report. Leave a piece that does not match alone rather than damage it.
+      if (index >= this.inUseModel.size()) {
+        return false;
+      }
+      final Object mine = this.inUseModel.elementAt(index);
+      if (mine.getClass() != o.getClass()) {
+        return false;
+      }
+
       final PieceEditor template = ((EditablePiece) o).getEditor();
-      final EditablePiece myPiece = (EditablePiece) this.inUseModel.elementAt(index);
+      final EditablePiece myPiece = (EditablePiece) mine;
       myPiece.mySetType(template.getType());
       if (myPiece instanceof Decorator) {
         ((Decorator) myPiece).mySetState(template.getState());
