@@ -206,7 +206,7 @@ get_temurin_jdk() {
     filename=$(basename "$url")
 
     if [ "x$url" = "x" ] ; then
-        echo "Failed get to Temurin download URL for ${release}/${os}/${arch}" > /dev/stderr
+        echo "Failed to get Temurin download URL for ${release}/${os}/${arch}" > /dev/stderr
         exit 1
     fi
 
