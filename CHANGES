@@ -4,6 +4,11 @@
 
 3.8.3 - ???
 
+* 15370: Take a Stack off the map before forgetting which map it was on
+* 15369: Fix NPE when a die face image is missing
+* 15364: Do not let a zoom-to-fit on a boardless map set an infinite zoom
+* 15362: Change the Module Manager's tree only on the Event Dispatch Thread
+
 3.8.2 - 17 November 2026 
 
 * 15355: Upgraded logback-classic 1.6.7

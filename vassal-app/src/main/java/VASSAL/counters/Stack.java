@@ -659,6 +659,17 @@ public class Stack extends AbstractImageFinder implements GamePiece, StateMergea
         m.addPiece(this);
       }
       else {
+        // Take the Stack off the map it is on before forgetting which one that
+        // was. Nothing else does it, and a Stack left in a Map's collection with
+        // no map of its own is still drawn and still found by Map.findPiece(),
+        // while every piece in it reports no map --- which is what makes
+        // Map.positionOf() throw for a piece the map itself just handed over.
+        // BasicPiece.setState() has always removed itself here. See
+        // vassalengine/vassal#12033.
+        final Map oldMap = getMap();
+        if (oldMap != null) {
+          oldMap.removePiece(this);
+        }
         setMap(null);
       }
     }

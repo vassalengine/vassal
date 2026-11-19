@@ -921,6 +921,10 @@ public class ModuleManagerWindow extends JFrame {
   /**
    * A File has been saved or created by the Player or the Editor. Update
    * the display as necessary.
+   *
+   * <p>Call only on the Event Dispatch Thread; see {@link #addModule}.
+   * {@link #updateRequest} is the way in from any other thread.</p>
+   *
    * @param f The file
    */
   public void update(File f) {
@@ -987,6 +991,18 @@ public class ModuleManagerWindow extends JFrame {
     this.selectedModule = selectedModule;
   }
 
+  /**
+   * Adds a module to the tree, if it is not in it already.
+   *
+   * <p>Call only on the Event Dispatch Thread. This changes the structure of
+   * the tree, which the tree's own layout cache mirrors; doing it from any
+   * other thread leaves the two disagreeing. Being confined to the EDT is
+   * also what makes the test-then-insert below safe, so repeat launches of
+   * one module cannot each add a row for it. See
+   * vassalengine/vassal#15104.</p>
+   *
+   * @param f the module file
+   */
   public void addModule(File f) {
     if (!rootNode.contains(f)) {
       final ModuleInfo moduleInfo = new ModuleInfo(f);
@@ -1004,6 +1020,16 @@ public class ModuleManagerWindow extends JFrame {
     }
   }
 
+  /**
+   * Removes a module from the tree.
+   *
+   * <p>Call only on the Event Dispatch Thread; see {@link #addModule}. This
+   * is the direction which detaches a node, and a view which still holds a
+   * row for a detached node is exactly what
+   * vassalengine/vassal#15104 is.</p>
+   *
+   * @param f the module file
+   */
   public void removeModule(File f) {
     final MyTreeNode moduleNode = rootNode.findNode(f);
     treeModel.removeNodeFromParent(moduleNode);
