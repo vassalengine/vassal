@@ -617,7 +617,12 @@ public class TilingHandler {
     }
 
     // ensure that the tile directories exist
-    makeHashDirs();
+    try {
+      makeHashDirs();
+    }
+    catch (IOException e) {
+      throw new TileCacheException(cdir, e);
+    }
 
     // Fix the max heap
     final int max_data_mbytes = (int)((4 * (long) s.second) >> 20);
@@ -647,7 +652,14 @@ public class TilingHandler {
       }
     }
     catch (CancellationException | IOException e) {
-      cleanup();
+      try {
+        cleanup();
+      }
+      catch (IOException ce) {
+        // why slicing failed matters more than why the cleanup did
+        logger.warn("Could not remove " + cdir, ce); //NON-NLS
+        e.addSuppressed(ce);
+      }
       throw e;
     }
   }
