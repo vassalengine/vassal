@@ -101,7 +101,7 @@ public class AsynchronousServerNode extends ServerNode {
       }
       while (modules.hasNext()) {
         final Node module = modules.next();
-        logger.fine("Sending contents of " + module.getId()); //$NON-NLS-1$
+        logger.info("Sending contents of " + module.getId()); //$NON-NLS-1$
         final Node[] players = module.getLeafDescendants();
         final Node[] rooms = module.getChildren();
 
@@ -135,7 +135,7 @@ public class AsynchronousServerNode extends ServerNode {
     }
 
     public synchronized void markChanged(Node module) {
-      logger.fine(module + " has changed"); //$NON-NLS-1$
+      logger.info(module + " has changed"); //$NON-NLS-1$
       changed.add(module);
       notifyAll();
     }
