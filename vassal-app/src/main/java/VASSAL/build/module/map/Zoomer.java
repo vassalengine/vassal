@@ -153,10 +153,14 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
     }
 
     public void setZoom(double z) {
-      if (z <= 0.0) {
-        // This should never happen, it's just a kludge to make sure that
-        // we continue having valid data even if our caller is wrong.
-        z = Double.MIN_VALUE;
+      if (!Double.isFinite(z) || z <= 0.0) {
+        // This should never happen; it is here to make sure that we continue having
+        // valid data even if our caller is wrong. Keeping the zoom we already have is
+        // the only sane answer: there is no zoom an infinite or NaN factor could
+        // sensibly be coerced to, and storing one breaks every later repaint, because
+        // (int) (width * Infinity) is Integer.MAX_VALUE. It also leaves cur past the
+        // end of levels, since binarySearch reports an insertion point there.
+        return;
       }
 
       cur = Arrays.binarySearch(levels, z);
@@ -775,26 +779,38 @@ public class Zoomer extends AbstractConfigurable implements GameComponent {
         }
       }
       // FIXME: should be map.getSize() for consistency?
+      // Each of these divides a view extent by a map extent. A Map with no boards
+      // measures (0, 0) --- mapSize() unions the boards into an empty rectangle --- and
+      // these are double divisions, so a zero extent gives Infinity rather than an
+      // exception. Nothing can be fitted to a map with no extent, so do not try.
       else if (FIT_WIDTH.equals(cmd)) {
         final Dimension vd = map.getView().getVisibleRect().getSize();
         final Dimension md = map.mapSize();
-        setZoomFactor(vd.getWidth() / md.getWidth());
+        if (md.width > 0) {
+          setZoomFactor(vd.getWidth() / md.getWidth());
+        }
       }
       else if (FIT_HEIGHT.equals(cmd)) {
         // A single pass (see WIDTH above) results in a poor fit for HEIGHT (issue #13635)
         // Repeating the sequence corrects the issue. FIXME: This is a workaround
         Dimension vd = map.getView().getVisibleRect().getSize();
         Dimension md = map.mapSize();
-        setZoomFactor(vd.getHeight() / md.getHeight());
-        vd = map.getView().getVisibleRect().getSize();
-        md = map.mapSize();
-        setZoomFactor(vd.getHeight() / md.getHeight());
+        if (md.height > 0) {
+          setZoomFactor(vd.getHeight() / md.getHeight());
+          vd = map.getView().getVisibleRect().getSize();
+          md = map.mapSize();
+          if (md.height > 0) {
+            setZoomFactor(vd.getHeight() / md.getHeight());
+          }
+        }
       }
       else if (FIT_VISIBLE.equals(cmd)) {
         final Dimension vd = map.getView().getVisibleRect().getSize();
         final Dimension md = map.mapSize();
-        setZoomFactor(Math.min(vd.getWidth() / md.getWidth(),
-                               vd.getHeight() / md.getHeight()));
+        if (md.width > 0 && md.height > 0) {
+          setZoomFactor(Math.min(vd.getWidth() / md.getWidth(),
+                                 vd.getHeight() / md.getHeight()));
+        }
       }
       else {
         // this should not happen!
