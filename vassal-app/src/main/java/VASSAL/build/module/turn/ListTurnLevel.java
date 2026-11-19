@@ -39,6 +39,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -278,6 +282,11 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     configDialog = new ConfigDialog();
+    final Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    final int x = Math.max(0, Math.min(mouseLocation.x, screenSize.width - configDialog.getWidth()));
+    final int y = Math.max(0, Math.min(mouseLocation.y, screenSize.height - configDialog.getHeight()));
+    configDialog.setLocation(x, y);
     configDialog.setVisible(true);
   }
 
@@ -285,17 +294,18 @@ public class ListTurnLevel extends TurnLevel implements ActionListener {
   protected Component getSetControl() {
 
     final StringEnumConfigurer config = new StringEnumConfigurer("", " " + getConfigureName() + ":  ", list); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-    config.setValue(list[current]);
-    config.addPropertyChangeListener(e -> {
-      final String option = ((StringEnumConfigurer) e.getSource()).getValueString();
-      for (int i = 0; i < list.length; i++) {
-        if (option.equals(list[i])) {
-          current = i;
-          myValue.setPropertyValue(getValueString());
+    if (list.length > 0) {
+      config.setValue(list[current]);
+      config.addPropertyChangeListener(e -> {
+        final String option = ((StringEnumConfigurer) e.getSource()).getValueString();
+        for (int i = 0; i < list.length; i++) {
+          if (option.equals(list[i])) {
+            current = i;
+            myValue.setPropertyValue(getValueString());
+          }
         }
-      }
-    });
-
+      });
+    }
     return config.getControls();
   }
 
