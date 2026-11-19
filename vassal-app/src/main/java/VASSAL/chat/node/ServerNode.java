@@ -199,7 +199,7 @@ public class ServerNode extends Node {
         s.addAll(modules);
       }
       for (final Node module : s) {
-        logger.fine("Sending contents of " + module.getId()); //$NON-NLS-1$
+        logger.info("Sending contents of " + module.getId()); //$NON-NLS-1$
         final Node[] players = module.getLeafDescendants();
         final Node[] rooms = module.getChildren();
         final String listCommand = Protocol.encodeListCommand(players);
