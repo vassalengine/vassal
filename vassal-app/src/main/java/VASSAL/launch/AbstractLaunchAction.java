@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.awt.Dimension;
 import java.awt.Window;
@@ -465,11 +466,21 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         }
       }
 
+      // We are on a worker thread. The Module Manager's tree model and the
+      // tree's own layout cache are Swing state, so both of these have to go
+      // to the Event Dispatch Thread; structurally changing the tree from
+      // here races whatever the EDT is doing to the same tree, and the tree
+      // is left with a row for a node the model no longer holds. The next
+      // click over that row dies in DefaultTreeTableModel.isLeaf with
+      // "node must be a TreeTableNode managed by this model".
+      // See vassalengine/vassal#15104.
       final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
-      if (lr.module != null) {
-        mmw.addModule(lr.module);
-      }
-      mmw.setWaitCursor(false);
+      SwingUtilities.invokeLater(() -> {
+        if (lr.module != null) {
+          mmw.addModule(lr.module);
+        }
+        mmw.setWaitCursor(false);
+      });
 
       try {
         proc.future.get();
