@@ -12,6 +12,7 @@
 * 15364: Do not let a zoom-to-fit on a boardless map set an infinite zoom
 * 15363: Quote a value ending with a backslash so it keeps its delimiter
 * 15362: Change the Module Manager's tree only on the Event Dispatch Thread
+* 15360: Encode subprocess arguments the ANSI code page cannot carry
 
 3.8.2 - 17 November 2026 
 
