@@ -38,6 +38,7 @@
         { "num": 15370, "desc": "Take a Stack off the map before forgetting which map it was on" },
         { "num": 15369, "desc": "Fix NPE when a die face image is missing" },
         { "num": 15364, "desc": "Do not let a zoom-to-fit on a boardless map set an infinite zoom" },
+        { "num": 15363, "desc": "Quote a value ending with a backslash so it keeps its delimiter" },
         { "num": 15362, "desc": "Change the Module Manager's tree only on the Event Dispatch Thread" }
       ],
       "improvements": [

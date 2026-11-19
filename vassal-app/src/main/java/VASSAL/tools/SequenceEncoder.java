@@ -99,7 +99,16 @@ public class SequenceEncoder {
       return this;
     }
 
+    // A value is enclosed in quotes when escaping the delimiters inside it is not enough to
+    // read it back unaltered. The decoder treats a delimiter as escaped when the character
+    // before it is a backslash, so a value ENDING with a backslash would otherwise swallow the
+    // delimiter which follows it --- and with it every remaining token, since the decoder goes
+    // on looking for the end of the value. Quoting moves the quote into that position instead,
+    // and unquote() takes it off again. A value STARTING with a backslash is quoted for the
+    // mirror-image reason, and a value already enclosed in quotes so that unquote() does not
+    // strip quotes which are part of the value. See vassalengine/vassal#15337.
     if (s.charAt(0) == '\\' ||
+        s.charAt(s.length() - 1) == '\\' ||
         (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'')) {
       buffer.append('\'');
       appendEscapedString(s);

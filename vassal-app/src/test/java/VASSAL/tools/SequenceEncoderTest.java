@@ -359,4 +359,73 @@ public class SequenceEncoderTest {
     assertEquals("d", sd3.nextToken());
     assertEquals("e", sd3.nextToken());
   }
+
+  /**
+   * A value ending with a backslash used to swallow the delimiter after it, and with it every
+   * remaining token: the decoder reads a delimiter as escaped when the character before it is a
+   * backslash, and the encoder protected a value which *starts* with one but not a value which
+   * *ends* with one. See vassalengine/vassal#15337.
+   */
+  @Test
+  public void testEncodeDecodeStringEndingWithBackslashBug15337() {
+    final String VALUE = "abc\\";
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE).append("next");
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextToken());
+    assertEquals("next", sd.nextToken());
+  }
+
+  @Test
+  public void testEncodeDecodeStringEndingWithTwoBackslashesBug15337() {
+    final String VALUE = "abc\\\\";
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE).append("next");
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextToken());
+    assertEquals("next", sd.nextToken());
+  }
+
+  @Test
+  public void testEncodeDecodeStringOfOneBackslashBug15337() {
+    // This one was always safe, because a lone backslash also *starts* with a backslash
+    // and so was already enclosed in quotes. Here to keep it that way.
+    final String VALUE = "\\";
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE).append("next");
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextToken());
+    assertEquals("next", sd.nextToken());
+  }
+
+  @Test
+  public void testEncodeDecodeStringEndingWithBackslashAndContainingDelimBug15337() {
+    final String VALUE = "a,b\\";
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE).append("next");
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextToken());
+    assertEquals("next", sd.nextToken());
+  }
+
+  @Test
+  public void testEncodeDecodeQuotedStringEndingWithBackslashBug15337() {
+    final String VALUE = "'abc\\";
+    final SequenceEncoder se = new SequenceEncoder(',').append(VALUE).append("next");
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(se.getValue(), ',');
+    assertEquals(VALUE, sd.nextToken());
+    assertEquals("next", sd.nextToken());
+  }
+
+  /**
+   * How the fault reaches a game: this is the shape Decorator.getState() builds, a trait's own
+   * state joined to the states of the traits below it with a TAB. Losing the delimiter loses
+   * every inner trait's state, and Decorator.setState() then reports
+   * "No state for trait=&lt;type&gt;".
+   */
+  @Test
+  public void testEncodeDecodeNestedStateEndingWithBackslashBug15337() {
+    final String inner = new SequenceEncoder("inner1", '\t').append("inner2").getValue();
+    final String state = new SequenceEncoder("abc\\", '\t').append(inner).getValue();
+
+    final SequenceEncoder.Decoder sd = new SequenceEncoder.Decoder(state, '\t');
+    assertEquals("abc\\", sd.nextToken());
+    assertEquals(inner, sd.nextToken());
+  }
 }
