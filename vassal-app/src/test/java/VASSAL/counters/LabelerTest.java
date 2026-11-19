@@ -54,4 +54,20 @@ public class LabelerTest extends DecoratorTest {
     serializeTest("Complex Label", t2); // NON-NLS
   }
 
+  @Test
+  public void testStateOfLabelEndingWithBackslashBug15337() {
+    // A label is free text, and on a UK keyboard the backslash key sits beside the left shift,
+    // so a label ending with one is easily typed. The piece's state is each trait's state joined
+    // with TABs; a token ending with a backslash used to swallow the delimiter after it, taking
+    // every inner trait's state with it, and reading the state back threw
+    // IllegalStateException: No state for trait=label;... See vassalengine/vassal#15337.
+    final Labeler saved = new Labeler(Labeler.ID, createBasicPiece());
+    saved.setLabel("test\\");
+
+    final Labeler loaded = new Labeler(Labeler.ID, createBasicPiece());
+    loaded.setState(saved.getState());
+
+    assertThat(loaded.getState(), is(equalTo(saved.getState())));
+  }
+
 }
