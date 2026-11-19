@@ -30,6 +30,7 @@ import VASSAL.counters.MenuSeparator;
 import VASSAL.counters.MultiLocationCommand;
 import VASSAL.counters.PieceFinder;
 import VASSAL.counters.Properties;
+import VASSAL.counters.Stack;
 import VASSAL.tools.NamedKeyManager;
 
 import org.w3c.dom.Document;
@@ -269,7 +270,24 @@ public class MenuDisplayer extends MouseAdapter implements Buildable {
       // FIXME: workaround for https://github.com/vassalengine/vassal/issues/12033
       // Undo sometimes corrupts a pieces Map.
       if (!map.equals(p.getMap())) {
-        p.setMap(map);
+        // A piece in a Stack reports the Stack's map and ignores its own, so
+        // setting the piece's map leaves getMap() exactly as it was --- and a
+        // piece in a Stack is the only thing the finder above returns, apart
+        // from a Deck. Repair the Stack, which repairs every piece in it.
+        final Stack parent = p.getParent();
+        if (parent != null) {
+          parent.setMap(map);
+        }
+        else {
+          p.setMap(map);
+        }
+      }
+
+      // If it still does not belong to this map there is no position to measure
+      // the click against, and positionOf() below would throw rather than return
+      // one. Leave the click alone instead.
+      if (!map.equals(p.getMap())) {
+        return;
       }
 
       final Point epos = e.getPoint();
