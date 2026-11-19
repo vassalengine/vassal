@@ -128,7 +128,7 @@ public class HttpRequestWrapper {
                              Properties props) throws IOException {
     final HttpPost httpPost = buildPost(path, props);
     try (CloseableHttpClient client = HttpClients.createDefault()) {
-      return client.execute(httpPost, response -> getLinesOk(response, 201));
+      return client.execute(httpPost, response -> getLinesOk(response, 200));
     }
   }
 
