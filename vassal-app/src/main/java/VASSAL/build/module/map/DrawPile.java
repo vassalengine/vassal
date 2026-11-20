@@ -19,6 +19,7 @@ package VASSAL.build.module.map;
 
 import VASSAL.build.AbstractFolder;
 import VASSAL.build.AutoConfigurable;
+import VASSAL.build.BadDataReport;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.GameComponent;
@@ -52,6 +53,7 @@ import VASSAL.counters.Stack;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.Resources;
 import VASSAL.i18n.TranslatableConfigurerFactory;
+import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.NamedKeyStroke;
 import VASSAL.tools.UniqueIdManager;
 
@@ -992,9 +994,17 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
 
   public Point getPosition() {
     final Point p = new Point(pos);
-    final Board b = getMap().getBoardByName(owningBoardName);
+
+    // A Deck which is not under a Map has nothing to offset the position
+    // against. See vassalengine/vassal#14185.
+    final Map map = getMap();
+    if (map == null) {
+      return p;
+    }
+
+    final Board b = map.getBoardByName(owningBoardName);
     if (b == null) {
-      p.translate(getMap().getEdgeBuffer().width, getMap().getEdgeBuffer().height);
+      p.translate(map.getEdgeBuffer().width, map.getEdgeBuffer().height);
     }
     else {
       p.translate(b.bounds().x, b.bounds().y);
@@ -1024,8 +1034,20 @@ public class DrawPile extends SetupStack implements PropertySource, PropertyName
     if ((myDeck != null) && checkAccessibility && !myDeck.isAccessible()) {
       return new NullCommand();
     }
+    // A Deck which is not under a Map has nowhere to put the piece. That is
+    // not something the player can be left to discover from a crash, so say
+    // which Deck it was and do nothing. See vassalengine/vassal#14185.
+    final Map map = getMap();
+    if (map == null) {
+      ErrorDialog.dataWarning(new BadDataReport(
+        Resources.getString("Error.deck_has_no_map", getConfigureName()), //NON-NLS
+        getConfigureName()
+      ));
+      return new NullCommand();
+    }
+
     // Merge it in
-    return getMap().placeOrMerge(p, myDeck == null ? getPosition() : myDeck.getPosition());
+    return map.placeOrMerge(p, myDeck == null ? getPosition() : myDeck.getPosition());
   }
 
   public Deck makeDeck() {

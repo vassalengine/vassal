@@ -107,7 +107,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -507,17 +506,18 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   protected boolean isOwningBoardActive() {
-    boolean active = false;
-    if (owningBoardName == null) {
-      active = true;
+    // The map has to be tested whichever branch is taken below. It used to be
+    // tested only in the second one --- which is the branch that does not then
+    // go on to dereference it --- so a Stack with no owning board and no map
+    // answered true here and setup() dereferenced the null.
+    // See vassalengine/vassal#13610.
+    final Map map = getMap();
+    if (map == null) {
+      return false;
     }
-    else {
-      final Map map = getMap();
-      if ((map != null) && (map.getBoardByName(owningBoardName) != null)) {
-        active = true;
-      }
-    }
-    return active;
+
+    return owningBoardName == null ||
+           map.getBoardByName(owningBoardName) != null;
   }
 
   /**
@@ -710,9 +710,18 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   protected PieceSlot getTopPiece() {
-    final Iterator<PieceSlot> i =
-      getAllDescendantComponentsOf(PieceSlot.class).iterator();
-    return i.hasNext() ? i.next() : null;
+    // The first slot which actually holds a piece. A slot whose piece has not
+    // been defined, or whose definition cannot be read, holds none, and says
+    // so by returning null from getPiece(). Both callers of this method guard
+    // against there being no slot at all and not against the slot being
+    // empty, so an empty first slot used to reach clonePiece(null) and throw
+    // in AddPiece's constructor. See vassalengine/vassal#14405.
+    for (final PieceSlot slot : getAllDescendantComponentsOf(PieceSlot.class)) {
+      if (slot.getPiece() != null) {
+        return slot;
+      }
+    }
+    return null;
   }
 
 
