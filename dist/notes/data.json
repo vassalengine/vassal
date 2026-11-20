@@ -23,6 +23,7 @@
       ],
       "bug_fixes": [
         { "num": 15379, "desc": "Skip an empty slot when looking for an At-Start Stack's top piece" },
+        { "num": 13578, "desc": "Don't crash the Editor search on a component with an unset field" },
         { "num": 15377, "desc": "Stop crashing on a Deck which is not on a Map" },
         { "num": 15376, "desc": "Don't open a popup on a PieceSlot with no piece when the press is the popup trigger" },
         { "num": 15374, "desc": "Expected response code for updateConnections is now 200, not 201" },
