@@ -229,15 +229,44 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    */
   public GamePiece getPiece() {
     if (c == null && pieceDefinition != null) {
-      final Command raw = GameModule.getGameModule().decode(pieceDefinition);
-      final AddPiece comm = (raw instanceof AddPiece) ? (AddPiece) raw : null;  // In a "bad data" situation this can happen too.
-      if ((comm == null) || comm.isNull()) {
-        ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));  //NON-NLS
+      GamePiece built = null;
+
+      // Guarded: the two statements which turn the definition into a piece.
+      // decode() reads the type string, and a trait's mySetType() can throw on
+      // it --- FreeRotator sizes an array from a parsed facing count. setState()
+      // reads the state string, which is where every reported case lands.
+      // Nothing below this point reads the definition, so nothing below it is
+      // in here: an exception from the panel or the map would be a bug in
+      // VASSAL, and reporting that as bad data in the module would be a lie.
+      try {
+        final Command raw = GameModule.getGameModule().decode(pieceDefinition);
+        final AddPiece comm = (raw instanceof AddPiece) ? (AddPiece) raw : null;  // In a "bad data" situation this can happen too.
+        if ((comm == null) || comm.isNull()) {
+          ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));  //NON-NLS
+          pieceDefinition = null;
+        }
+        else {
+          built = comm.getTarget();
+          built.setState(comm.getState());
+        }
+      }
+      catch (RuntimeException e) {
+        // A definition can fail to build by throwing as well as by decoding to
+        // nothing, and the commonest way is a state with fewer fields than the
+        // type has traits: Decorator.setState() runs out and throws
+        // IllegalStateException. The branch above already treats a definition
+        // which will not build as bad data in the module; this is the same
+        // thing arriving by a different route, and it used to escape all the
+        // way out of the buildFile walk and stop the module loading at all.
+        // The exception goes into the report, so the error log still names it.
+        // See vassalengine/vassal#14939.
+        ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition, e));  //NON-NLS
+        built = null;
         pieceDefinition = null;
       }
-      else {
-        c = comm.getTarget();
-        c.setState(comm.getState());
+
+      if (built != null) {
+        c = built;
 
         //BR// A slot's piece should NOT come attached to a map.
         final Map map = c.getMap();
