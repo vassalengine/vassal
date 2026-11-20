@@ -22,6 +22,9 @@ import VASSAL.build.module.Map;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.command.ChangeTracker;
 import VASSAL.command.Command;
+import VASSAL.tools.RecursionLimitException;
+import VASSAL.tools.RecursionLimiter;
+import VASSAL.tools.RecursionLimiter.Loopable;
 
 import static VASSAL.counters.Decorator.putOldProperties;
 
@@ -164,7 +167,22 @@ public interface EditablePiece extends GamePiece {
     if (afterburner) {
       final Map map = outer.getMap();
       if (map != null && map.getMoveKey() != null) {
-        c = c.append(outer.keyEvent(map.getMoveKey()));
+        // The apply-on-move key is dispatched back into this piece's own trait chain, so a trait
+        // which moves a piece in response to it arrives here again, and nothing bounded that: a
+        // Mat whose rotation moves its Cargo, or a Send to Location fired by a Trigger Action, ran
+        // until the stack gave out. Limit it like every other trait-to-trait dispatch, so a module
+        // which loops gets VASSAL's infinite loop report naming the trait instead of a
+        // StackOverflowError naming whatever happened to be executing. See #15209.
+        try {
+          RecursionLimiter.startExecution(this instanceof Loopable ? (Loopable) this : null);
+          c = c.append(outer.keyEvent(map.getMoveKey()));
+        }
+        catch (RecursionLimitException e) {
+          RecursionLimiter.infiniteLoop(e);
+        }
+        finally {
+          RecursionLimiter.endExecution();
+        }
       }
     }
 

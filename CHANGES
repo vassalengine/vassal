@@ -21,9 +21,12 @@
 * 15364: Do not let a zoom-to-fit on a boardless map set an infinite zoom
 * 15363: Quote a value ending with a backslash so it keeps its delimiter
 * 15362: Change the Module Manager's tree only on the Event Dispatch Thread
+* 15361: Tell .deb users to install with apt rather than dpkg
 * 15360: Encode subprocess arguments the ANSI code page cannot carry
 * 15353: Let preferences be saved when the file on disk is corrupt
 * 15351: Hand out a snapshot of a room's players, not a live view
+* 15350: Bound the apply-on-move key, which can re-enter the trait that moved
+* 15349: Clear the fast-forward flag even when the fast-forward fails
 * 15312: Build the Module Manager window on request, not during class init
 
 3.8.2 - 17 November 2026 

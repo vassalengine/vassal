@@ -38,6 +38,7 @@ import VASSAL.i18n.TranslatablePiece;
 import VASSAL.property.PersistentPropertyContainer;
 import VASSAL.script.expression.AuditTrail;
 import VASSAL.script.expression.Auditable;
+import VASSAL.tools.RecursionLimiter;
 import VASSAL.script.expression.Expression;
 import VASSAL.script.expression.FormattedStringExpression;
 import VASSAL.search.AbstractImageFinder;
@@ -79,7 +80,7 @@ import static VASSAL.counters.Mat.MAT_NAME;
  * BasicPiece.
  */
 public abstract class Decorator extends AbstractImageFinder implements EditablePiece, StateMergeable, PropertyNameSource, PersistentPropertyContainer,
-  PropertyExporter, SearchTarget, ImageSearchTarget {
+  PropertyExporter, SearchTarget, ImageSearchTarget, RecursionLimiter.Loopable {
 
   protected GamePiece piece;
   private GamePiece innermost;
