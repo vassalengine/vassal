@@ -113,6 +113,14 @@ public class ExtensionElement implements Buildable, ImageSearchTarget {
     final Buildable target = getTarget();
     extension.addTo(target);
     target.add(extension);
+
+    // The component is now a real child of a module component, which is what
+    // makes the extension work. Mark it as the extension's so the module does
+    // not save it as its own -- see GameModule.addExtensionComponent.
+    final GameModule g = GameModule.getGameModule();
+    if (g != null) {
+      g.addExtensionComponent(extension);
+    }
   }
 
   @Override
