@@ -57,7 +57,8 @@ import VASSAL.i18n.Resources;
  * Close button.</li>
  * </ul>
  *
- * The image is shown above the name (in bold) and the version lines. Images
+ * The image is shown above the name (in bold) and the version lines, which
+ * are rendered as HTML (so module info may contain e.g. &lt;br&gt;). Images
  * larger than {@link #MAX_IMAGE_WIDTH} x {@link #MAX_IMAGE_HEIGHT} are scaled
  * down to fit; smaller ones are shown at their own size.
  *
@@ -118,11 +119,14 @@ public class AboutDialog extends JDialog {
     text.add(title);
     text.add(Box.createVerticalStrut(6));
 
-    for (final String line : lines) {
-      final JLabel l = new JLabel(line);
-      l.setAlignmentX(CENTER_ALIGNMENT);
-      text.add(l);
-    }
+    // Lines are rendered as HTML in one centred block, as the old About
+    // screen did, so module info such as "Additional module info" may use
+    // <br> and the like
+    final JLabel info = new JLabel(
+      "<html><center>" + String.join("<br>", lines) + "</center></html>"); //NON-NLS
+    info.setHorizontalAlignment(SwingConstants.CENTER);
+    info.setAlignmentX(CENTER_ALIGNMENT);
+    text.add(info);
     content.add(text, BorderLayout.CENTER);
 
     final AbstractAction close = new AbstractAction() {
