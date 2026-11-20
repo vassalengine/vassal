@@ -107,7 +107,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -710,9 +709,18 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   protected PieceSlot getTopPiece() {
-    final Iterator<PieceSlot> i =
-      getAllDescendantComponentsOf(PieceSlot.class).iterator();
-    return i.hasNext() ? i.next() : null;
+    // The first slot which actually holds a piece. A slot whose piece has not
+    // been defined, or whose definition cannot be read, holds none, and says
+    // so by returning null from getPiece(). Both callers of this method guard
+    // against there being no slot at all and not against the slot being
+    // empty, so an empty first slot used to reach clonePiece(null) and throw
+    // in AddPiece's constructor. See vassalengine/vassal#14405.
+    for (final PieceSlot slot : getAllDescendantComponentsOf(PieceSlot.class)) {
+      if (slot.getPiece() != null) {
+        return slot;
+      }
+    }
+    return null;
   }
 
 
