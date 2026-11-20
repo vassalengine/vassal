@@ -299,18 +299,20 @@ for arch in $ARCHS ; do
                 "windows-aarch64"
             ;;
         macos-x86_64|macintel)
-            get_temurin_jdk 			\
-                "${TEMURIN_RELEASE}" 		\
-                mac 				\
-                x64 				\
-                "macos-x86_64/Contents/Home/jmods"
+            get_liberica_jdk 			\
+                "${LIBERICA_RELEASE}" 		\
+                macos 				\
+                x86 				\
+                64 \
+                "macos-x86_64"
             ;;
         macos-aarch64|mac)
-            get_temurin_jdk 			\
-                "${TEMURIN_RELEASE}" 		\
-                mac 				\
-                aarch64 			\
-                "macos-aarch64/Contents/Home/jmods"
+            get_liberica_jdk 			\
+                "${LIBERICA_RELEASE}" 		\
+                macos 				\
+                arm 			\
+                64 \
+                "macos-aarch64"
             ;;
         *)
             echo "Unknown architecture: ${arch} - ignored" > /dev/stderr
