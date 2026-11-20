@@ -229,25 +229,41 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
    */
   public GamePiece getPiece() {
     if (c == null && pieceDefinition != null) {
-      final Command raw = GameModule.getGameModule().decode(pieceDefinition);
-      final AddPiece comm = (raw instanceof AddPiece) ? (AddPiece) raw : null;  // In a "bad data" situation this can happen too.
-      if ((comm == null) || comm.isNull()) {
-        ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));  //NON-NLS
-        pieceDefinition = null;
-      }
-      else {
-        c = comm.getTarget();
-        c.setState(comm.getState());
-
-        //BR// A slot's piece should NOT come attached to a map.
-        final Map map = c.getMap();
-        if (map != null) {
-          map.removePiece(c);
-          c.setMap(null);
+      try {
+        final Command raw = GameModule.getGameModule().decode(pieceDefinition);
+        final AddPiece comm = (raw instanceof AddPiece) ? (AddPiece) raw : null;  // In a "bad data" situation this can happen too.
+        if ((comm == null) || comm.isNull()) {
+          ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition));  //NON-NLS
+          pieceDefinition = null;
         }
+        else {
+          c = comm.getTarget();
+          c.setState(comm.getState());
 
-        final Dimension size = panel.getSize();
-        c.setPosition(new Point(size.width / 2, size.height / 2));
+          //BR// A slot's piece should NOT come attached to a map.
+          final Map map = c.getMap();
+          if (map != null) {
+            map.removePiece(c);
+            c.setMap(null);
+          }
+
+          final Dimension size = panel.getSize();
+          c.setPosition(new Point(size.width / 2, size.height / 2));
+        }
+      }
+      catch (RuntimeException e) {
+        // A definition can fail to build by throwing as well as by decoding to
+        // nothing, and the commonest way is a state with fewer fields than the
+        // type has traits: Decorator.setState() runs out and throws
+        // IllegalStateException. The branch above already treats a definition
+        // which will not build as bad data in the module; this is the same
+        // thing arriving by a different route, and it used to escape all the
+        // way out of the buildFile walk and stop the module loading at all.
+        // The exception goes into the report, so the error log still names it.
+        // See vassalengine/vassal#14939.
+        ErrorDialog.dataWarning(new BadDataReport("GamePiece - couldn't build piece -", pieceDefinition, e));  //NON-NLS
+        c = null;
+        pieceDefinition = null;
       }
     }
 
