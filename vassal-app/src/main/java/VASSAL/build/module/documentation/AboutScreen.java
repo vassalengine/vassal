@@ -26,21 +26,35 @@ import VASSAL.build.module.ModuleExtension;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
-import VASSAL.tools.menu.MenuManager;
-import VASSAL.tools.swing.AboutWindow;
+import VASSAL.launch.AboutVASSALAction;
+import VASSAL.tools.swing.AboutDialog;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import java.awt.Image;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * Places an entry in the <code>Help</code> menu.  Selecting the entry
- * displays a window with a stored image on it.  Good for a splash
- * screen or an "about" screen.
+ * Legacy Help menu component, kept only so that modules and extensions made
+ * before 3.8.3 still load. The About image is set on the top-level Module
+ * ({@link GameModule#ABOUT_IMAGE}); this component can no longer be added,
+ * and opening a module in the Editor moves its image onto the Module and
+ * removes it. An AboutScreen's image is still used as a fallback, e.g. in
+ * extensions.
+ *
+ * <p>VASSAL shows one About entry, "About &lt;module name&gt;", following
+ * platform conventions: in the application menu on macOS, and as the last
+ * entry of the Help menu on Windows and Linux (see {@link AboutVASSALAction}).
+ * It shows the module's About image (see {@link #getModuleAboutImage}) or
+ * the VASSAL splash above the module, extension and VASSAL versions. This
+ * component's image is used only if the Module has none; its Menu command
+ * is no longer used.</p>
  */
 public class AboutScreen extends AbstractConfigurable {
   protected ImageOp op;
@@ -72,12 +86,46 @@ public class AboutScreen extends AbstractConfigurable {
     final GameModule g = GameModule.getGameModule();
     if (g == null) return;
 
+    AboutDialog.show(g.getPlayerWindow(), g.getLocalizedGameName(), op.getImage(), getAboutLines(g));
+  }
+
+  /**
+   * @return the image for the module's About screen: the module's own About
+   * image (set on the top-level Module component) if any; otherwise, for
+   * modules made before 3.8.3, the first legacy AboutScreen (including
+   * extensions) that has an image; otherwise null
+   */
+  public static BufferedImage getModuleAboutImage(GameModule g) {
+    if (g == null) return null;
+    final ImageOp moduleOp = g.getAboutImageOp();
+    if (moduleOp != null) {
+      return moduleOp.getImage();
+    }
+    for (final AboutScreen a : g.getAllDescendantComponentsOf(AboutScreen.class)) {
+      if (a.op != null) {
+        return a.op.getImage();
+      }
+    }
+    return null;
+  }
+
+  /**
+   * @return the menu text for the module's About entry: "About &lt;module name&gt;"
+   */
+  public static String getModuleAboutMenuText(GameModule g) {
+    return Resources.getString("AboutScreen.about_module_name", g.getLocalizedGameName()); //$NON-NLS-1$
+  }
+
+  /**
+   * @return the HTML text shown below the About image: module version and
+   * other info, loaded extensions, and the VASSAL version
+   */
+  public static String getAboutText(GameModule g) {
     final StringBuilder sb = new StringBuilder("<html><center>"); //NON-NLS
 
     sb.append(
       Resources.getString("AboutScreen.module_version",  //$NON-NLS-1$
         g.getLocalizedGameName(), g.getGameVersion()));
-
 
     final String o1 = g.getModuleOther1();
     if ((o1 != null) && !o1.isEmpty()) {
@@ -105,10 +153,35 @@ public class AboutScreen extends AbstractConfigurable {
       )
       .append("</center></html>"); //NON-NLS
 
-    final AboutWindow w =
-      new AboutWindow(g.getPlayerWindow(), op.getImage(), sb.toString());
-    w.setVisible(true);
-    w.toFront();
+    return sb.toString();
+  }
+
+  /**
+   * @return the lines shown under the module name in its About box: module
+   * version, Additional module info 1 and 2, loaded extensions, VASSAL version
+   */
+  public static List<String> getAboutLines(GameModule g) {
+    final List<String> lines = new ArrayList<>();
+    lines.add(Resources.getString("AboutScreen.version", g.getGameVersion())); //$NON-NLS-1$
+    final String o1 = g.getModuleOther1();
+    if (o1 != null && !o1.isEmpty()) lines.add(o1);
+    final String o2 = g.getModuleOther2();
+    if (o2 != null && !o2.isEmpty()) lines.add(o2);
+    for (final ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
+      lines.add(Resources.getString("AboutScreen.extension_version", ext.getName(), ext.getVersion())); //$NON-NLS-1$
+    }
+    lines.add(Resources.getString("AboutScreen.vassal_version", Info.getVersion())); //$NON-NLS-1$
+    return lines;
+  }
+
+  /**
+   * Shows the module's About box: the module's About image, or the VASSAL
+   * splash if it has none, with the module name and {@link #getAboutLines}.
+   */
+  public static void showModuleAbout(Window owner, GameModule g) {
+    final BufferedImage moduleImg = getModuleAboutImage(g);
+    final BufferedImage img = moduleImg != null ? moduleImg : AboutVASSALAction.getSplashImage();
+    AboutDialog.show(owner, g.getLocalizedGameName(), img, getAboutLines(g));
   }
 
   public static String getConfigureTypeName() {
@@ -207,16 +280,15 @@ public class AboutScreen extends AbstractConfigurable {
 
   @Override
   public void removeFrom(Buildable b) {
-    MenuManager.getInstance().removeAction("Documentation.about_module");
   }
 
   /**
-   * Expects to be added to a {@link Documentation}.  Adds an entry
-   * to the <code>Help</code> menu
+   * Expects to be added to a {@link Documentation}. Does not add a menu
+   * entry of its own; it only supplies a fallback image for the single
+   * About entry. See {@link AboutVASSALAction}.
    */
   @Override
   public void addTo(Buildable b) {
-    MenuManager.getInstance().addAction("Documentation.about_module", launch);
   }
 
   @Override

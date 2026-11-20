@@ -130,8 +130,9 @@ public class PlayerWindow extends JFrame {
     helpMenu.addSeparator();
     helpMenu.add(mm.addMarker("Documentation.VASSAL.end"));  //NON-NLS
 
-    helpMenu.add(mm.addKey("Documentation.about_module"));
-
+    // One About entry: last in Help on Windows and Linux; on macOS the
+    // About handler puts it in the application menu instead. Its action is
+    // set by GameModule once the module is built.
     if (!SystemUtils.IS_OS_MAC) {
       helpMenu.add(mm.addKey("AboutScreen.about_vassal"));
     }
@@ -175,8 +176,6 @@ public class PlayerWindow extends JFrame {
     catch (MalformedURLException e) {
       ErrorDialog.bug(e);
     }
-
-    mm.addAction("AboutScreen.about_vassal", new AboutVASSALAction(this));
 
     mb.add(fileMenu);
     mb.add(toolsMenu);
