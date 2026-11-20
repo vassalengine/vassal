@@ -4,8 +4,14 @@
 
 3.8.3 - ???
 
-* 15377: Stop crashing on a Deck which is not on a Map
+* 15380: An unreadable piece definition should not prevent opening the module
 * 15379: Skip an empty slot when looking for an At-Start Stack's top piece
+* 15378: Don't crash the Editor search on a component with an unset field
+* 15377: Stop crashing on a Deck which is not on a Map
+* 15376: Don't open a popup on a PieceSlot with no piece when the press is
+    the popup trigger
+* 15375: Say which part of creating a component failed, and treat a bad
+    attribute value as bad data
 * 15374: Expected response code for updateConnections is now 200, not 201
 * 15372: Ensure that HTTP POSTs are in UTF-8
 * 15370: Take a Stack off the map before forgetting which map it was on
@@ -17,6 +23,7 @@
 * 15362: Change the Module Manager's tree only on the Event Dispatch Thread
 * 15360: Encode subprocess arguments the ANSI code page cannot carry
 * 15353: Let preferences be saved when the file on disk is corrupt
+* 15351: Hand out a snapshot of a room's players, not a live view
 * 15312: Build the Module Manager window on request, not during class init
 
 3.8.2 - 17 November 2026 

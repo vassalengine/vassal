@@ -35,8 +35,12 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15380, "desc": "An unreadable piece definition should not prevent opening the module" },
         { "num": 15379, "desc": "Skip an empty slot when looking for an At-Start Stack's top piece" },
+        { "num": 13578, "desc": "Don't crash the Editor search on a component with an unset field" },
         { "num": 15377, "desc": "Stop crashing on a Deck which is not on a Map" },
+        { "num": 15376, "desc": "Don't open a popup on a PieceSlot with no piece when the press is the popup trigger" },
+        { "num": 15375, "desc": "Say which part of creating a component failed, and treat a bad attribute value as bad data" },
         { "num": 15374, "desc": "Expected response code for updateConnections is now 200, not 201" },
         { "num": 15372, "desc": "Ensure that HTTP POSTs are in UTF-8" },
         { "num": 15370, "desc": "Take a Stack off the map before forgetting which map it was on" },
@@ -45,7 +49,8 @@
         { "num": 15364, "desc": "Do not let a zoom-to-fit on a boardless map set an infinite zoom" },
         { "num": 15363, "desc": "Quote a value ending with a backslash so it keeps its delimiter" },
         { "num": 15362, "desc": "Change the Module Manager's tree only on the Event Dispatch Thread" },
-        { "num": 15360, "desc": "Encode subprocess arguments the ANSI code page cannot carry" }
+        { "num": 15360, "desc": "Encode subprocess arguments the ANSI code page cannot carry" },
+        { "num": 15351, "desc": "Hand out a snapshot of a room's players, not a live view" }
       ],
       "improvements": [
         { "num": 15353, "desc": "Let preferences be saved when the file on disk is corrupt" },

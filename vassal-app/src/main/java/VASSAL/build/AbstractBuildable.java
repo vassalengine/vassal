@@ -21,10 +21,12 @@ import VASSAL.build.module.properties.PropertyNameSource;
 import VASSAL.configure.ValidationReport;
 import VASSAL.configure.ValidityChecker;
 import VASSAL.i18n.Localization;
+import VASSAL.i18n.Resources;
 import VASSAL.i18n.Translatable;
 import VASSAL.script.expression.Auditable;
 import VASSAL.search.AbstractImageFinder;
 import VASSAL.search.ImageSearchTarget;
+import VASSAL.tools.ErrorDialog;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -89,7 +91,25 @@ public abstract class AbstractBuildable extends AbstractImageFinder implements B
     final NamedNodeMap n = e.getAttributes();
     for (int i = 0; i < n.getLength(); ++i) {
       final Attr att = (Attr) n.item(i);
-      setAttribute(att.getName(), att.getValue().intern());
+
+      try {
+        setAttribute(att.getName(), att.getValue().intern());
+      }
+      catch (NumberFormatException ex) {
+        // A buildFile attribute which is not a number where the component
+        // needs one is bad data in the module, not a bug in VASSAL. Report it
+        // as such --- naming the component, the attribute and the value, none
+        // of which the bug report it used to raise carried --- and keep the
+        // rest of the component instead of losing the whole of it.
+        // See vassalengine/vassal#14560.
+        ErrorDialog.dataWarning(new BadDataReport(
+          Resources.getString(
+            "Error.bad_attribute_value", getClass().getName(), att.getName(), att.getValue() //NON-NLS
+          ),
+          getClass().getName() + ": " + att.getName() + "=" + att.getValue(), //NON-NLS
+          ex
+        ));
+      }
 
       /*
        * Save a record of all Attributes for later translation. Need to save
