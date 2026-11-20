@@ -52,6 +52,7 @@ import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.StartupGlobalKeyCommand;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
+import VASSAL.build.module.documentation.AboutScreen;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.folder.ModuleSubFolder;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
@@ -2055,6 +2056,7 @@ public class GameModule extends AbstractConfigurable
      */
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
       theModule.checkGpIds();
+      theModule.migrateAboutScreens();
     }
 
     /*
@@ -2134,6 +2136,31 @@ public class GameModule extends AbstractConfigurable
     }
 
     checker.fixErrors();
+  }
+
+  /**
+   * When editing a module made before 3.9: if the Module has no About screen
+   * image, move the first legacy {@link AboutScreen} image onto it, then
+   * remove all legacy AboutScreen components. The change is saved with the
+   * module like any other edit.
+   */
+  private void migrateAboutScreens() {
+    boolean changed = false;
+    for (final Documentation doc : getComponentsOf(Documentation.class)) {
+      for (final AboutScreen about : doc.getComponentsOf(AboutScreen.class)) {
+        final String file = about.getAttributeValueString(AboutScreen.FILE);
+        if ((aboutImageFile == null || aboutImageFile.isEmpty())
+            && file != null && !file.isBlank()) {
+          setAttribute(ABOUT_IMAGE, file);
+        }
+        about.removeFrom(doc);
+        doc.remove(about);
+        changed = true;
+      }
+    }
+    if (changed) {
+      setDirty(true);
+    }
   }
 
   /**
