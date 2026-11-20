@@ -19,7 +19,6 @@
 package VASSAL.tools.swing;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
@@ -115,13 +114,13 @@ public class AboutDialog extends JDialog {
 
     final JLabel title = new JLabel(name);
     title.setFont(title.getFont().deriveFont(Font.BOLD, title.getFont().getSize2D() + 6f));
-    title.setAlignmentX(Component.CENTER_ALIGNMENT);
+    title.setAlignmentX(CENTER_ALIGNMENT);
     text.add(title);
     text.add(Box.createVerticalStrut(6));
 
     for (final String line : lines) {
       final JLabel l = new JLabel(line);
-      l.setAlignmentX(Component.CENTER_ALIGNMENT);
+      l.setAlignmentX(CENTER_ALIGNMENT);
       text.add(l);
     }
     content.add(text, BorderLayout.CENTER);
