@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15379, "desc": "Skip an empty slot when looking for an At-Start Stack's top piece" },
         { "num": 15374, "desc": "Expected response code for updateConnections is now 200, not 201" },
         { "num": 15372, "desc": "Ensure that HTTP POSTs are in UTF-8" },
         { "num": 15370, "desc": "Take a Stack off the map before forgetting which map it was on" },
