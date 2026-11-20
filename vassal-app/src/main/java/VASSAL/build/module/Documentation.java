@@ -20,9 +20,7 @@ package VASSAL.build.module;
 import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
-import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.AboutScreen;
 import VASSAL.build.module.documentation.BrowserHelpFile;
 import VASSAL.build.module.documentation.BrowserPDFFile;
 import VASSAL.build.module.documentation.HelpFile;
@@ -37,7 +35,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import java.io.File;
 import java.net.MalformedURLException;
-import java.util.Arrays;
 
 /**
  * Represents the <code>Help</code> menu of the controls window
@@ -69,18 +66,6 @@ public class Documentation extends AbstractConfigurable {
     else {
       super.build(el);
     }
-  }
-
-  /**
-   * Legacy {@link AboutScreen}s are hidden in the Editor: they are written
-   * from the Module's About screen image and name (interim for 3.8.x, to be
-   * removed in 3.9).
-   */
-  @Override
-  public Configurable[] getConfigureComponents() {
-    return Arrays.stream(super.getConfigureComponents())
-      .filter(c -> !(c instanceof AboutScreen))
-      .toArray(Configurable[]::new);
   }
 
   public static File getDocumentationBaseDir() {

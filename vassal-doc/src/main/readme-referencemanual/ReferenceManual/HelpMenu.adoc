@@ -73,12 +73,10 @@ Selecting the menu displays a new window with the contents of a plain text file.
 [#AboutScreen]
 ==== About Screen (legacy)
 
-From VASSAL 3.8.3, the About screen image is set on the <<GameModule.adoc#top,Module>> itself (*About screen image*).
-The About Screen component can no longer be added, and no longer appears in the Editor.
+Since VASSAL 3.8.3 the About screen image is set on the <<GameModule.adoc#top,Module>> itself (*About screen image*), and the About Screen component can no longer be added.
 
-When you open a module made with an earlier version in the Editor, its About Screen image is copied to the Module automatically.
-The old component is kept, hidden, so that players on VASSAL 3.8.2 or earlier still see the image. If a module has an About screen image but no About Screen component (for example a new module), VASSAL creates a hidden one when you save. Either way, VASSAL keeps its image and title in step with the Module when you save.
-It will be removed in VASSAL 3.9.
+When you open a module that still contains an About Screen component in the Editor, its image is copied to the Module (if the Module has none) and the component is removed; save the module to keep the change.
+VASSAL 3.8.x kept a hidden copy of the component so that players on 3.8.0 to 3.8.2 saw the image; from 3.9 it is no longer kept.
 
 VASSAL shows a single About entry, "About _module name_", at the top of the application menu on macOS and as the last item of the Help menu on Windows and Linux.
 It always shows the current version of the VASSAL engine, your module and any loaded extensions.
