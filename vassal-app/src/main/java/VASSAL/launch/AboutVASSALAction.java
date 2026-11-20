@@ -22,6 +22,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 
@@ -31,7 +32,7 @@ import VASSAL.build.module.documentation.AboutScreen;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.image.ImageUtils;
-import VASSAL.tools.swing.AboutWindow;
+import VASSAL.tools.swing.AboutDialog;
 
 /**
  * The single About entry of a VASSAL process. On macOS it is the About
@@ -86,16 +87,11 @@ public class AboutVASSALAction extends AbstractAction {
       return;
     }
 
-    final BufferedImage img = getSplashImage();
-    if (img == null) return;
-
-    final AboutWindow about = new AboutWindow(
+    AboutDialog.show(
       window,
-      img,
-      Resources.getString("AboutScreen.vassal_version", Info.getVersion())
+      "VASSAL", //NON-NLS
+      getSplashImage(),
+      List.of(Resources.getString("AboutScreen.version", Info.getVersion())) //NON-NLS
     );
-
-    about.setVisible(true);
-    about.toFront();
   }
 }

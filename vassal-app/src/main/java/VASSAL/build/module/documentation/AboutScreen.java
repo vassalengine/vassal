@@ -27,7 +27,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.launch.AboutVASSALAction;
-import VASSAL.tools.swing.AboutWindow;
+import VASSAL.tools.swing.AboutDialog;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -36,6 +36,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -85,7 +86,7 @@ public class AboutScreen extends AbstractConfigurable {
     final GameModule g = GameModule.getGameModule();
     if (g == null) return;
 
-    show(g.getPlayerWindow(), op.getImage(), getAboutText(g));
+    AboutDialog.show(g.getPlayerWindow(), g.getLocalizedGameName(), op.getImage(), getAboutLines(g));
   }
 
   /**
@@ -156,20 +157,31 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   /**
-   * Shows the module's About screen: the module's AboutScreen image, or the
-   * VASSAL splash if the module has none, above {@link #getAboutText}.
+   * @return the lines shown under the module name in its About box: module
+   * version, Additional module info 1 and 2, loaded extensions, VASSAL version
+   */
+  public static List<String> getAboutLines(GameModule g) {
+    final List<String> lines = new ArrayList<>();
+    lines.add(Resources.getString("AboutScreen.version", g.getGameVersion())); //$NON-NLS-1$
+    final String o1 = g.getModuleOther1();
+    if (o1 != null && !o1.isEmpty()) lines.add(o1);
+    final String o2 = g.getModuleOther2();
+    if (o2 != null && !o2.isEmpty()) lines.add(o2);
+    for (final ModuleExtension ext : g.getComponentsOf(ModuleExtension.class)) {
+      lines.add(Resources.getString("AboutScreen.extension_version", ext.getName(), ext.getVersion())); //$NON-NLS-1$
+    }
+    lines.add(Resources.getString("AboutScreen.vassal_version", Info.getVersion())); //$NON-NLS-1$
+    return lines;
+  }
+
+  /**
+   * Shows the module's About box: the module's About image, or the VASSAL
+   * splash if it has none, with the module name and {@link #getAboutLines}.
    */
   public static void showModuleAbout(Window owner, GameModule g) {
     final BufferedImage moduleImg = getModuleAboutImage(g);
     final BufferedImage img = moduleImg != null ? moduleImg : AboutVASSALAction.getSplashImage();
-    if (img == null) return;
-    show(owner, img, getAboutText(g));
-  }
-
-  private static void show(Window owner, BufferedImage img, String text) {
-    final AboutWindow w = new AboutWindow(owner, img, text);
-    w.setVisible(true);
-    w.toFront();
+    AboutDialog.show(owner, g.getLocalizedGameName(), img, getAboutLines(g));
   }
 
   public static String getConfigureTypeName() {
