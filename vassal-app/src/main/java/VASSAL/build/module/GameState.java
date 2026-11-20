@@ -891,51 +891,58 @@ public class GameState implements CommandEncoder {
    */
   private void loadFastForward(boolean append) {
     fastForwarding = true;
-    final GameModule g = GameModule.getGameModule();
+    // In a finally, because anything which escapes this method would otherwise leave the flag set
+    // for the rest of the session: sounds would stay suppressed and no game started afterwards
+    // would prompt for a new logfile.
+    try {
+      final GameModule g = GameModule.getGameModule();
 
-    final boolean success = loadGame(g, false, true); // First load the old game or log, forcing it to all happen foreground
+      final boolean success = loadGame(g, false, true); // First load the old game or log, forcing it to all happen foreground
 
-    if (success) {
-      final BasicLogger bl = g.getBasicLogger();
-      if (bl.isReplaying()) {
-        if (!bl.isLogging() && append) {
-          bl.queryNewLogFile(true, true); // We begin logging a new file immediately w/ the starting state of the old log
-        }
+      if (success) {
+        final BasicLogger bl = g.getBasicLogger();
+        if (bl.isReplaying()) {
+          if (!bl.isLogging() && append) {
+            bl.queryNewLogFile(true, true); // We begin logging a new file immediately w/ the starting state of the old log
+          }
 
-        // Replay all the commands in the game -- since we're logging they will be picked up in the new log
-        while (bl.isReplaying()) {
-          final Command c = bl.logInput.get(bl.nextInput++);
-          c.execute();
-          g.sendAndLog(c);
-        }
-        bl.stepAction.setEnabled(false);
+          // Replay all the commands in the game -- since we're logging they will be picked up in the new log
+          while (bl.isReplaying()) {
+            final Command c = bl.logInput.get(bl.nextInput++);
+            c.execute();
+            g.sendAndLog(c);
+          }
+          bl.stepAction.setEnabled(false);
 
-        if (append) {
-          if (!bl.isLogging()) {
-            g.warn(Resources.getString("GameState.fast_forward_only"));
+          if (append) {
+            if (!bl.isLogging()) {
+              g.warn(Resources.getString("GameState.fast_forward_only"));
+            }
+            else {
+              g.warn(Resources.getString("GameState.fast_forward_and_append"));
+            }
           }
           else {
-            g.warn(Resources.getString("GameState.fast_forward_and_append"));
+            if (!bl.isLogging()) {
+              bl.queryNewLogFile(false, true);
+            }
+
+            if (!bl.isLogging()) {
+              g.warn(Resources.getString("GameState.fast_forward"));
+            }
+            else {
+              g.warn(Resources.getString("GameState.fast_forward_new_log"));
+            }
           }
         }
         else {
-          if (!bl.isLogging()) {
-            bl.queryNewLogFile(false, true);
-          }
-
-          if (!bl.isLogging()) {
-            g.warn(Resources.getString("GameState.fast_forward"));
-          }
-          else {
-            g.warn(Resources.getString("GameState.fast_forward_new_log"));
-          }
+          g.warn(Resources.getString("GameState.simple_save_append"));
         }
       }
-      else {
-        g.warn(Resources.getString("GameState.simple_save_append"));
-      }
     }
-    fastForwarding = false;
+    finally {
+      fastForwarding = false;
+    }
   }
 
   /**
