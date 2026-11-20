@@ -101,6 +101,7 @@ import VASSAL.i18n.I18nResourcePathFinder;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.AboutVASSALAction;
 import VASSAL.launch.PlayerWindow;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
@@ -740,6 +741,13 @@ public class GameModule extends AbstractConfigurable
     MenuManager.getInstance().addAction(
       "Prefs.edit_preferences", //NON-NLS
       getPrefs().getEditor().getEditAction()
+    );
+
+    // The About entry (application menu on macOS, end of Help elsewhere),
+    // registered now so that it can take the module's name and AboutScreen
+    MenuManager.getInstance().addAction(
+      "AboutScreen.about_vassal", //NON-NLS
+      new AboutVASSALAction(frame)
     );
 
     // Our counter refresher
