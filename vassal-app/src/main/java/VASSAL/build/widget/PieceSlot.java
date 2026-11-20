@@ -406,7 +406,9 @@ public class PieceSlot extends Widget implements MouseListener, KeyListener {
   @Override
   public void mousePressed(MouseEvent e) {
     if (e.isPopupTrigger()) {
-      doPopup(e);
+      if (getPiece() != null) {
+        doPopup(e);
+      }
     }
     else if (SwingUtils.isMainMouseButtonDown(e)) {
       //KeyBuffer.getBuffer().clear();
