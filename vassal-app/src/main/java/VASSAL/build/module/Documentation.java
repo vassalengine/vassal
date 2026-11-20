@@ -21,7 +21,6 @@ import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
 import VASSAL.build.GameModule;
-import VASSAL.build.module.documentation.AboutScreen;
 import VASSAL.build.module.documentation.BrowserHelpFile;
 import VASSAL.build.module.documentation.BrowserPDFFile;
 import VASSAL.build.module.documentation.HelpFile;
@@ -55,13 +54,6 @@ public class Documentation extends AbstractConfigurable {
   @Override
   public void build(Element el) {
     if (el == null) {
-      final AboutScreen about = new AboutScreen();
-      about.setAttribute(AboutScreen.TITLE,
-        Resources.getString("Documentation.about_module")); //$NON-NLS-1$
-      about.setAttribute(AboutScreen.FILE, "/images/Splash.png"); //$NON-NLS-1$
-      about.addTo(this);
-      add(about);
-
       final HelpFile intro = new HelpFile();
       intro.setAttribute(HelpFile.TITLE,
         Resources.getString("Documentation.quick_start")); //$NON-NLS-1$
@@ -110,7 +102,6 @@ public class Documentation extends AbstractConfigurable {
       BrowserPDFFile.class,
       BrowserHelpFile.class,
       HelpFile.class,
-      AboutScreen.class,
       Tutorial.class,
     };
   }
