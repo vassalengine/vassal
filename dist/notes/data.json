@@ -33,7 +33,8 @@
         { "num": 15364, "desc": "Do not let a zoom-to-fit on a boardless map set an infinite zoom" },
         { "num": 15363, "desc": "Quote a value ending with a backslash so it keeps its delimiter" },
         { "num": 15362, "desc": "Change the Module Manager's tree only on the Event Dispatch Thread" },
-        { "num": 15360, "desc": "Encode subprocess arguments the ANSI code page cannot carry" }
+        { "num": 15360, "desc": "Encode subprocess arguments the ANSI code page cannot carry" },
+        { "num": 15351, "desc": "Hand out a snapshot of a room's players, not a live view" }
       ],
       "improvements": [
         { "num": 15353, "desc": "Let preferences be saved when the file on disk is corrupt" },
