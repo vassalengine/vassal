@@ -38,13 +38,17 @@ import java.io.RandomAccessFile;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A set of preferences. Each set of preferences is identified by a name, and different sets may share a common editor,
@@ -53,6 +57,8 @@ import org.apache.commons.lang3.SystemUtils;
  * <br>{@link VASSAL.build.module.GlobalOptions} - main nexus for preferences being added
  */
 public class Prefs implements Closeable {
+  private static final Logger logger = LoggerFactory.getLogger(Prefs.class);
+
   /** Preferences key for the directory containing modules */
   public static final String MODULES_DIR_KEY = "modulesDir"; //NON-NLS
   public static final String DISABLE_D3D = "disableD3d"; //NON-NLS
@@ -200,6 +206,34 @@ public class Prefs implements Closeable {
   }
 
   /**
+   * Copies the preferences file we are about to overwrite to {@code <name>.corrupted}, so that a
+   * file nobody could parse is not simply discarded. It may hold settings the user would like
+   * back, and it is the only evidence of what went wrong.
+   *
+   * <p>The copy is taken through the channel {@link #save} already holds rather than by opening
+   * the file a second time: save() holds an exclusive {@link FileLock} over it, and on Windows
+   * that would block the second handle from reading it.
+   *
+   * <p>Best effort. Failing to keep the copy must not fail the save, which is the part that gets
+   * the user working again.
+   *
+   * @param ch the locked channel on the preferences file, positioned anywhere
+   */
+  private void keepCorrupted(FileChannel ch) {
+    final Path to = file.toPath().resolveSibling(file.getName() + ".corrupted"); //NON-NLS
+    try {
+      ch.position(0);
+      try (OutputStream out = Files.newOutputStream(to)) {
+        Channels.newInputStream(ch).transferTo(out);
+      }
+      logger.warn("Kept the unreadable preferences file as {}", to); //NON-NLS
+    }
+    catch (IOException e) {
+      logger.warn("Could not keep a copy of the unreadable preferences file", e); //NON-NLS
+    }
+  }
+
+  /**
    * Store this set of preferences
    */
   public synchronized void save() throws IOException {
@@ -218,7 +252,18 @@ public class Prefs implements Closeable {
       try (FileLock lock = ch.lock()) { // NOPMD
         // read the old key-value pairs
         final InputStream in = new BufferedInputStream(Channels.newInputStream(ch));
-        storedValues.load(in);
+        try {
+          storedValues.load(in);
+        }
+        catch (IllegalArgumentException e) {
+          // The file on disk is not a properties file, so there is nothing to merge with --- but
+          // refusing to save would leave the user unable to change any preference for as long as
+          // the bad file sat there, which is worse than losing whatever was in it. Keep a copy of
+          // it and write the values we do have, replacing it with a readable file.
+          logger.warn("Corrupted prefs file {}: rewriting it", file, e); //NON-NLS
+          keepCorrupted(ch);
+          storedValues.clear();
+        }
 
         // merge in the current key-value pairs
         for (final Configurer c : options.values()) {
