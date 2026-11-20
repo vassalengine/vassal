@@ -6,6 +6,8 @@
 * 15377: Stop crashing on a Deck which is not on a Map
 * 15376: Don't open a popup on a PieceSlot with no piece when the press is
     the popup trigger
+* 15375: Say which part of creating a component failed, and treat a bad
+    attribute value as bad data
 * 15374: Expected response code for updateConnections is now 200, not 201
 * 15372: Ensure that HTTP POSTs are in UTF-8
 * 15370: Take a Stack off the map before forgetting which map it was on
