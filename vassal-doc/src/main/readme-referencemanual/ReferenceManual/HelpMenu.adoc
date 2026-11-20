@@ -71,29 +71,23 @@ Selecting the menu displays a new window with the contents of a plain text file.
 |===
 
 [#AboutScreen]
-==== About Screen
+==== About Screen (legacy)
 
-You may use any image you wish as an 'About' screen for your module.
-Feel free to include text in the image that credits you and any other contributors to the module.
+From VASSAL 3.9, the About screen image is set on the <<GameModule.adoc#top,Module>> itself (*About screen image*), and this component can no longer be added.
 
-The About Screen will always display the current version of both the VASSAL engine and your module, and of any loaded extensions.
+Modules made with earlier versions may still contain an About Screen component.
+Its image is still used, as long as the Module has no About screen image of its own, and still serves as the start-up wizard background.
+Its *Menu command* is no longer used: VASSAL shows a single About entry, "About _module name_", at the top of the application menu on macOS and as the last item of the Help menu on Windows and Linux.
+To move to the new arrangement, set the image on the Module and delete the About Screen component.
 
-VASSAL shows a single About entry, placed where each operating system expects it:
-
-* On macOS, it is the *About* item at the top of the application menu (the menu named after your module, next to the Apple menu).
-* On Windows and Linux, it is the last item of the *Help* menu.
-
-The About Screen component supplies the image for that entry; it does not add a separate menu item.
-If your module has no About Screen, the VASSAL splash image is shown instead, with the same version information.
-
-The About Screen image is also used as a "Splash Screen" when starting your module.
+The About screen always shows the current version of the VASSAL engine, your module and any loaded extensions.
 
 [width="100%",cols="50%a,^50%a",]
 |===
 |
-*Menu command:*::  The text of the About item at the end of the Help menu on Windows and Linux (for example, "About My Game"). If left blank, or left as the default "About Module", "About" followed by the module name is used. On macOS the application menu names the item itself.
+*Menu command:*::  No longer used.
 
-*Image:*::  The image to display.
+*Image:*::  The image to display, if the Module has no About screen image.
 
 |image:images/AboutScreen.png[]
 |===

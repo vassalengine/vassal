@@ -103,6 +103,8 @@ import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
 import VASSAL.launch.AboutVASSALAction;
 import VASSAL.launch.PlayerWindow;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.Op;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.script.expression.Expression;
@@ -153,7 +155,9 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
+import java.awt.Image;
 import java.io.File;
+import java.util.Collection;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -217,6 +221,8 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_DESCRIPTION_PROPERTY = "ModuleDescription"; //NON-NLS
   public static final String MODULE_OTHER1_PROPERTY = "ModuleOther1"; //NON-NLS
   public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2"; //NON-NLS
+  /** buildFile attribute: image shown on the module's About screen and as the setup wizard background */
+  public static final String ABOUT_IMAGE = "aboutImage"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning"; //NON-NLS
   public static final String MODULE_CURRENT_LOCALE = "CurrentLanguage"; //NON-NLS
@@ -271,6 +277,8 @@ public class GameModule extends AbstractConfigurable
   private String vassalVersionCreated = "0.0";  //$NON-NLS-1$
   private String moduleOther1 = "";
   private String moduleOther2 = "";
+  private String aboutImageFile;
+  private ImageOp aboutImageOp;
   private String gameName = DEFAULT_NAME;
   private String localizedGameName = null;
   private String description = "";
@@ -1067,6 +1075,34 @@ public class GameModule extends AbstractConfigurable
     else if (MODULE_OTHER2_PROPERTY.equals(name)) {
       moduleOther2 = (String) value;
     }
+    else if (ABOUT_IMAGE.equals(name)) {
+      if (value instanceof File) {
+        value = ((File) value).getName();
+      }
+      aboutImageFile = value == null ? null : ((String) value).trim();
+      aboutImageOp = null;
+      if (aboutImageFile != null && !aboutImageFile.isEmpty()) {
+        final ImageOp op = Op.load(aboutImageFile);
+        if (op.getImage() != null) {
+          aboutImageOp = op;
+          getWizardSupport().setBackgroundImage(op.getImage());
+        }
+      }
+    }
+  }
+
+  /**
+   * @return the module's About screen image, or null if none is set on the module
+   */
+  public ImageOp getAboutImageOp() {
+    return aboutImageOp;
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (aboutImageFile != null && !aboutImageFile.isEmpty()) {
+      s.add(aboutImageFile);
+    }
   }
 
   /**
@@ -1098,6 +1134,9 @@ public class GameModule extends AbstractConfigurable
     }
     else if (MODULE_OTHER2_PROPERTY.equals(name)) {
       return moduleOther2;
+    }
+    else if (ABOUT_IMAGE.equals(name)) {
+      return aboutImageFile;
     }
     return null;
   }
@@ -1150,6 +1189,7 @@ public class GameModule extends AbstractConfigurable
       DESCRIPTION,
       MODULE_OTHER1_PROPERTY,
       MODULE_OTHER2_PROPERTY,
+      ABOUT_IMAGE,
       VASSAL_VERSION_CREATED,
       NEXT_PIECESLOT_ID,
     };
@@ -1168,7 +1208,8 @@ public class GameModule extends AbstractConfigurable
       Resources.getString("Editor.GameModule.version_label"), //$NON-NLS-1$
       Resources.getString("Editor.GameModule.description_label"),    //NON-NLS
       Resources.getString("Editor.GameModule.module_other_1_label"), //NON-NLS
-      Resources.getString("Editor.GameModule.module_other_2_label") //NON-NLS
+      Resources.getString("Editor.GameModule.module_other_2_label"), //NON-NLS
+      Resources.getString("Editor.GameModule.about_image_label") //NON-NLS
     };
   }
 
@@ -1187,7 +1228,8 @@ public class GameModule extends AbstractConfigurable
       String.class,
       String.class,
       String.class,
-      String.class
+      String.class,
+      Image.class
     };
   }
 

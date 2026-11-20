@@ -27,8 +27,6 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.imageop.ImageOp;
 import VASSAL.tools.imageop.Op;
 import VASSAL.launch.AboutVASSALAction;
-import VASSAL.tools.menu.MenuItemProxy;
-import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.AboutWindow;
 
 import javax.swing.AbstractAction;
@@ -42,16 +40,18 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Supplies the module-specific image for the single About screen.
+ * Legacy Help menu component, kept so that modules made before 3.9 still
+ * load and keep their About image. New modules set the About image on the
+ * top-level Module component instead ({@link GameModule#ABOUT_IMAGE}), and
+ * this component can no longer be added in the Editor.
  *
- * <p>VASSAL shows one About screen per window, following platform
- * conventions: in the application menu on macOS, and as the last entry
- * of the Help menu on Windows and Linux (see {@link AboutVASSALAction}).
- * When a module is loaded, that About screen shows the module's
- * AboutScreen image (or the VASSAL splash if it has none) above the
- * module, extension and VASSAL versions. The Menu command of this
- * component, if set, becomes the label of that menu entry on Windows
- * and Linux. This component no longer adds a separate Help menu entry.</p>
+ * <p>VASSAL shows one About entry, "About &lt;module name&gt;", following
+ * platform conventions: in the application menu on macOS, and as the last
+ * entry of the Help menu on Windows and Linux (see {@link AboutVASSALAction}).
+ * It shows the module's About image (see {@link #getModuleAboutImage}) or
+ * the VASSAL splash above the module, extension and VASSAL versions. This
+ * component's image is used only if the Module has none; its Menu command
+ * is no longer used.</p>
  */
 public class AboutScreen extends AbstractConfigurable {
   protected ImageOp op;
@@ -87,32 +87,29 @@ public class AboutScreen extends AbstractConfigurable {
   }
 
   /**
-   * @return the AboutScreen whose image the module's About screen uses: the
-   * first one in the module (including extensions) that has an image, or
-   * null if there is none
+   * @return the image for the module's About screen: the module's own About
+   * image (set on the top-level Module component) if any; otherwise, for
+   * modules made before 3.9, the first legacy AboutScreen (including
+   * extensions) that has an image; otherwise null
    */
-  public static AboutScreen getModuleAboutScreen(GameModule g) {
+  public static BufferedImage getModuleAboutImage(GameModule g) {
     if (g == null) return null;
+    final ImageOp moduleOp = g.getAboutImageOp();
+    if (moduleOp != null) {
+      return moduleOp.getImage();
+    }
     for (final AboutScreen a : g.getAllDescendantComponentsOf(AboutScreen.class)) {
       if (a.op != null) {
-        return a;
+        return a.op.getImage();
       }
     }
     return null;
   }
 
   /**
-   * @return the menu text for the module's About entry: the Menu command of
-   * the module's AboutScreen if it has one other than the default "About Module",
-   * else "About &lt;module name&gt;"
+   * @return the menu text for the module's About entry: "About &lt;module name&gt;"
    */
   public static String getModuleAboutMenuText(GameModule g) {
-    final AboutScreen a = getModuleAboutScreen(g);
-    // a blank Menu command, or the default "About Module", gives "About <module name>"
-    if (a != null && a.title != null && !a.title.isBlank()
-        && !a.title.equals(Resources.getString("Documentation.about_module"))) { //$NON-NLS-1$
-      return a.title;
-    }
     return Resources.getString("AboutScreen.about_module_name", g.getLocalizedGameName()); //$NON-NLS-1$
   }
 
@@ -161,8 +158,8 @@ public class AboutScreen extends AbstractConfigurable {
    * VASSAL splash if the module has none, above {@link #getAboutText}.
    */
   public static void showModuleAbout(Window owner, GameModule g) {
-    final AboutScreen a = getModuleAboutScreen(g);
-    final BufferedImage img = a != null ? a.op.getImage() : AboutVASSALAction.getSplashImage();
+    final BufferedImage moduleImg = getModuleAboutImage(g);
+    final BufferedImage img = moduleImg != null ? moduleImg : AboutVASSALAction.getSplashImage();
     if (img == null) return;
     show(owner, img, getAboutText(g));
   }
@@ -171,27 +168,6 @@ public class AboutScreen extends AbstractConfigurable {
     final AboutWindow w = new AboutWindow(owner, img, text);
     w.setVisible(true);
     w.toFront();
-  }
-
-  /**
-   * Updates the label of the About entry in the Help menu (Windows and
-   * Linux; on macOS the OS names the application-menu entry itself).
-   */
-  private static void refreshAboutMenuText() {
-    final GameModule g = GameModule.getGameModule();
-    if (g == null) return;
-
-    final List<MenuItemProxy> items =
-      MenuManager.getInstance().getItems("AboutScreen.about_vassal"); //NON-NLS
-    if (items == null) return;
-
-    final String text = getModuleAboutMenuText(g);
-    for (final MenuItemProxy i : items) {
-      final Action a = i.getAction();
-      if (a != null) {
-        a.putValue(Action.NAME, text);
-      }
-    }
   }
 
   public static String getConfigureTypeName() {
@@ -256,7 +232,6 @@ public class AboutScreen extends AbstractConfigurable {
 
       setConfigureName(title);
       launch.putValue(Action.NAME, title);
-      refreshAboutMenuText();
     }
     else if (FILE.equals(key)) {
       if (val instanceof File) {
@@ -291,17 +266,15 @@ public class AboutScreen extends AbstractConfigurable {
 
   @Override
   public void removeFrom(Buildable b) {
-    refreshAboutMenuText();
   }
 
   /**
    * Expects to be added to a {@link Documentation}. Does not add a menu
-   * entry of its own: it supplies the image (and, on Windows and Linux,
-   * the menu text) for the single About entry. See {@link AboutVASSALAction}.
+   * entry of its own; it only supplies a fallback image for the single
+   * About entry. See {@link AboutVASSALAction}.
    */
   @Override
   public void addTo(Buildable b) {
-    refreshAboutMenuText();
   }
 
   @Override
