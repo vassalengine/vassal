@@ -40,10 +40,12 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Legacy Help menu component, kept so that modules made before 3.9 still
- * load and keep their About image. New modules set the About image on the
- * top-level Module component instead ({@link GameModule#ABOUT_IMAGE}), and
- * this component can no longer be added in the Editor.
+ * Legacy Help menu component, kept so that modules made before 3.8.3 still
+ * load and players on 3.8.0 to 3.8.2 still see their About image. The About
+ * image is now set on the top-level Module ({@link GameModule#ABOUT_IMAGE}).
+ * This component can no longer be added, and is hidden in the Editor: its
+ * image and title are always written from the Module's About screen image
+ * and name. To be removed in 3.9.
  *
  * <p>VASSAL shows one About entry, "About &lt;module name&gt;", following
  * platform conventions: in the application menu on macOS, and as the last
@@ -89,7 +91,7 @@ public class AboutScreen extends AbstractConfigurable {
   /**
    * @return the image for the module's About screen: the module's own About
    * image (set on the top-level Module component) if any; otherwise, for
-   * modules made before 3.9, the first legacy AboutScreen (including
+   * modules made before 3.8.3, the first legacy AboutScreen (including
    * extensions) that has an image; otherwise null
    */
   public static BufferedImage getModuleAboutImage(GameModule g) {
