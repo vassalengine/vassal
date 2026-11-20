@@ -182,11 +182,17 @@ public class ModuleManagerWindow extends JFrame {
     doubleClickInterval = dci instanceof Integer ? (Integer) dci : 200L;
   }
 
+  private static ModuleManagerWindow instance;
+
+  /**
+   * @return the Module Manager window, built on first request
+   */
   public static ModuleManagerWindow getInstance() {
+    if (instance == null) {
+      instance = new ModuleManagerWindow();
+    }
     return instance;
   }
-
-  private static final ModuleManagerWindow instance = new ModuleManagerWindow();
 
   public ModuleManagerWindow() {
     setTitle("VASSAL " + Info.getVersion()); //NON-NLS
