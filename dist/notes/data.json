@@ -38,7 +38,8 @@
         { "num": 15362, "desc": "Change the Module Manager's tree only on the Event Dispatch Thread" },
         { "num": 15360, "desc": "Encode subprocess arguments the ANSI code page cannot carry" },
         { "num": 15351, "desc": "Hand out a snapshot of a room's players, not a live view" },
-        { "num": 15350, "desc": "Bound the apply-on-move key, which can re-enter the trait that moved"
+        { "num": 15350, "desc": "Bound the apply-on-move key, which can re-enter the trait that moved" },
+        { "num": 15349, "desc": "Clear the fast-forward flag even when the fast-forward fails" }
       ],
       "improvements": [
         { "num": 15353, "desc": "Let preferences be saved when the file on disk is corrupt" },
