@@ -437,7 +437,8 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
    */
   @Override
   public List<String> getPropertyList() {
-    return List.of(property.getName());
+    final String name = property.getName();
+    return name == null ? List.of() : List.of(name);
   }
 
   /**
