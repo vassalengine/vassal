@@ -73,24 +73,15 @@ Selecting the menu displays a new window with the contents of a plain text file.
 [#AboutScreen]
 ==== About Screen (legacy)
 
-From VASSAL 3.9, the About screen image is set on the <<GameModule.adoc#top,Module>> itself (*About screen image*), and this component can no longer be added.
+From VASSAL 3.8.3, the About screen image is set on the <<GameModule.adoc#top,Module>> itself (*About screen image*).
+The About Screen component can no longer be added, and no longer appears in the Editor.
 
-Modules made with earlier versions may still contain an About Screen component.
-Its image is still used, as long as the Module has no About screen image of its own, and still serves as the start-up wizard background.
-Its *Menu command* is no longer used: VASSAL shows a single About entry, "About _module name_", at the top of the application menu on macOS and as the last item of the Help menu on Windows and Linux.
-To move to the new arrangement, set the image on the Module and delete the About Screen component.
+When you open a module made with an earlier version in the Editor, its About Screen image is copied to the Module automatically.
+The old component is kept, hidden, so that players on VASSAL 3.8.2 or earlier still see the image. If a module has an About screen image but no About Screen component (for example a new module), VASSAL creates a hidden one when you save. Either way, VASSAL keeps its image and title in step with the Module when you save.
+It will be removed in VASSAL 3.9.
 
-The About screen always shows the current version of the VASSAL engine, your module and any loaded extensions.
-
-[width="100%",cols="50%a,^50%a",]
-|===
-|
-*Menu command:*::  No longer used.
-
-*Image:*::  The image to display, if the Module has no About screen image.
-
-|image:images/AboutScreen.png[]
-|===
+VASSAL shows a single About entry, "About _module name_", at the top of the application menu on macOS and as the last item of the Help menu on Windows and Linux.
+It always shows the current version of the VASSAL engine, your module and any loaded extensions.
 
 
 [#Tutorial]

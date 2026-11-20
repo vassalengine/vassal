@@ -2139,28 +2139,68 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
-   * When editing a module made before 3.9: if the Module has no About screen
-   * image, move the first legacy {@link AboutScreen} image onto it, then
-   * remove all legacy AboutScreen components. The change is saved with the
-   * module like any other edit.
+   * When editing a module made before 3.8.3: if the Module has no About
+   * screen image, copy the first legacy {@link AboutScreen} image onto it.
+   * Legacy AboutScreens are then kept in step with the Module, see
+   * {@link #syncLegacyAboutScreens}.
    */
   private void migrateAboutScreens() {
-    boolean changed = false;
-    for (final Documentation doc : getComponentsOf(Documentation.class)) {
-      for (final AboutScreen about : doc.getComponentsOf(AboutScreen.class)) {
+    final List<AboutScreen> legacy = getAllDescendantComponentsOf(AboutScreen.class);
+    if (legacy.isEmpty()) return;
+
+    if (aboutImageFile == null || aboutImageFile.isEmpty()) {
+      for (final AboutScreen about : legacy) {
         final String file = about.getAttributeValueString(AboutScreen.FILE);
-        if ((aboutImageFile == null || aboutImageFile.isEmpty())
-            && file != null && !file.isBlank()) {
+        if (file != null && !file.isBlank()) {
           setAttribute(ABOUT_IMAGE, file);
+          break;
         }
-        about.removeFrom(doc);
-        doc.remove(about);
+      }
+    }
+
+    if (syncLegacyAboutScreens()) {
+      setDirty(true);
+    }
+  }
+
+  /**
+   * Interim for 3.8.x (legacy AboutScreen is to be removed in 3.9): legacy
+   * AboutScreens are kept in the module, and one is created if the Module has
+   * an About image but no AboutScreen, so that players on 3.8.0 to 3.8.2
+   * still see the About image. They are hidden in the Editor and always
+   * written from the Module's About screen image and name.
+   *
+   * @return true if any AboutScreen changed
+   */
+  private boolean syncLegacyAboutScreens() {
+    final String file = aboutImageFile == null ? "" : aboutImageFile;
+    final String title = Resources.getString("AboutScreen.about_module_name", gameName); //NON-NLS
+    boolean changed = false;
+
+    // a module with an About image always carries one hidden AboutScreen,
+    // created here if it has none (e.g. a new module)
+    if (!file.isEmpty() && getAllDescendantComponentsOf(AboutScreen.class).isEmpty()) {
+      final List<Documentation> docs = getComponentsOf(Documentation.class);
+      if (!docs.isEmpty()) {
+        final Documentation doc = docs.get(0);
+        final AboutScreen about = new AboutScreen();
+        about.addTo(doc);
+        doc.add(about);
         changed = true;
       }
     }
-    if (changed) {
-      setDirty(true);
+
+    for (final AboutScreen about : getAllDescendantComponentsOf(AboutScreen.class)) {
+      if (!file.equals(about.getAttributeValueString(AboutScreen.FILE))) {
+        about.setAttribute(AboutScreen.FILE, file);
+        changed = true;
+      }
+      if (!title.equals(about.getAttributeValueString(AboutScreen.TITLE))) {
+        about.setAttribute(AboutScreen.TITLE, title);
+        changed = true;
+      }
     }
+    return changed;
   }
 
   /**
@@ -2271,6 +2311,8 @@ public class GameModule extends AbstractConfigurable
     catch (IOException e) {
       WriteErrorDialog.error(e, writer.getName());
     }
+
+    syncLegacyAboutScreens();
 
     try {
       final String save = buildString();
