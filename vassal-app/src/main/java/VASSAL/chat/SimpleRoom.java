@@ -22,7 +22,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A simple Room bean
+ * A simple Room bean.
+ *
+ * <p>Instances are shared between threads: a chat client's network thread adds and removes
+ * players while the event dispatch thread paints the room list, so every method which touches
+ * the player list is synchronized and {@link #getPlayerList()} hands back a snapshot rather
+ * than a live view. A live view could, and did, change size between a caller's size check and
+ * its next read. See vassalengine/vassal#15107.</p>
  */
 public class SimpleRoom implements Room {
   private String name;
@@ -46,15 +52,15 @@ public class SimpleRoom implements Room {
   }
 
   @Override
-  public String getName() {
+  public synchronized String getName() {
     return name;
   }
 
-  public void setName(String name) {
+  public synchronized void setName(String name) {
     this.name = name;
   }
 
-  public void setPlayers(Player[] players) {
+  public synchronized void setPlayers(Player[] players) {
     this.players.clear();
     for (final Player p : players) {
       addPlayer(p);
@@ -62,7 +68,7 @@ public class SimpleRoom implements Room {
   }
 
   @Override
-  public void addPlayer(Player p) {
+  public synchronized void addPlayer(Player p) {
     final int index = players.indexOf(p);
     if (index < 0) {
       players.add(p);
@@ -72,7 +78,7 @@ public class SimpleRoom implements Room {
     }
   }
 
-  public Player getPlayer(String id) {
+  public synchronized Player getPlayer(String id) {
     for (final Player player : players) {
       if (player.getId().equals(id)) {
         return player;
@@ -82,40 +88,48 @@ public class SimpleRoom implements Room {
   }
 
   @Override
-  public void removePlayer(Player p) {
+  public synchronized void removePlayer(Player p) {
     players.remove(p);
   }
 
-  public boolean contains(Player p) {
+  public synchronized boolean contains(Player p) {
     return players.contains(p);
   }
 
   @Override
-  public String toString() {
+  public synchronized String toString() {
     return name;
   }
 
-  public int numPlayers() {
+  public synchronized int numPlayers() {
     return players.size();
   }
 
   @Override
-  public int hashCode() {
+  public synchronized int hashCode() {
     return name.hashCode();
   }
 
   @Override
   public boolean equals(Object o) {
     if (o instanceof SimpleRoom) {
-      return name != null && name.equals(((SimpleRoom) o).name);
+      final String n = getName();
+      return n != null && n.equals(((SimpleRoom) o).getName());
     }
     else {
       return false;
     }
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * <p>The returned list is an unmodifiable <i>snapshot</i>: it does not change when players
+   * subsequently join or leave, so a caller may check its size and then index it without the
+   * room emptying underneath.</p>
+   */
   @Override
-  public List<Player> getPlayerList() {
-    return Collections.unmodifiableList(players);
+  public synchronized List<Player> getPlayerList() {
+    return Collections.unmodifiableList(new ArrayList<>(players));
   }
 }
