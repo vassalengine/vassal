@@ -230,7 +230,10 @@ public class AboutScreen extends AbstractConfigurable {
    */
   @Override
   public List<String> getFormattedStringList() {
-    return List.of(title);
+    // An About Screen need not have been given a title, and List.of() rejects
+    // a null. setAttribute() and addLocalImageNames() both allow for it three
+    // lines from here. See vassalengine/vassal#14198.
+    return title == null ? List.of() : List.of(title);
   }
 
   @Override
