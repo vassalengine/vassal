@@ -95,7 +95,7 @@ The Module Editor menu bar has the following menus:
 . *Quick Start:* Displays a short text file for VASSAL newbies.
 
 [loweralpha, start=15]
-. *About Module:* Displays the module splash screen, with information about the module name and version.
+. *About _module name_:* Displays the module's About screen: its About screen image with the module, extension and VASSAL versions. On macOS this item is in the application menu instead.
 
 *The Module Editor Toolbar*
 
