@@ -71,10 +71,24 @@ public class ExtensionElement implements Buildable, ImageSearchTarget {
     // find and build first child which is an element
     for (Node n = e.getFirstChild(); n != null; n = n.getNextSibling()) {
       if (n.getNodeType() == Node.ELEMENT_NODE) {
-        extension = Builder.create((Element) n);
+        // Build it as a child of the component it is destined for, the same
+        // one addTo() grafts it onto below. An ExtensionElement is not an
+        // AbstractBuildable and so has no ancestor of its own to pass on, and
+        // building with no parent at all left the component --- and everything
+        // under it --- with a null ancestor, which is a null getMap() for
+        // anything that has one. See vassalengine/vassal#13610.
+        extension = Builder.create((Element) n, getTarget());
         break;
       }
     }
+  }
+
+  /**
+   * @return the component of the parent module this element grafts onto
+   */
+  private Buildable getTarget() {
+    return targetPath.length == 0 ?
+      GameModule.getGameModule() : targetPath[targetPath.length - 1];
   }
 
   public Buildable getExtension() {
@@ -96,8 +110,7 @@ public class ExtensionElement implements Buildable, ImageSearchTarget {
 
   @Override
   public void addTo(Buildable parent) {
-    final Configurable target = targetPath.length == 0 ?
-      GameModule.getGameModule() : targetPath[targetPath.length - 1];
+    final Buildable target = getTarget();
     extension.addTo(target);
     target.add(extension);
   }

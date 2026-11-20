@@ -507,17 +507,18 @@ public class SetupStack extends AbstractConfigurable implements GameComponent, U
   }
 
   protected boolean isOwningBoardActive() {
-    boolean active = false;
-    if (owningBoardName == null) {
-      active = true;
+    // The map has to be tested whichever branch is taken below. It used to be
+    // tested only in the second one --- which is the branch that does not then
+    // go on to dereference it --- so a Stack with no owning board and no map
+    // answered true here and setup() dereferenced the null.
+    // See vassalengine/vassal#13610.
+    final Map map = getMap();
+    if (map == null) {
+      return false;
     }
-    else {
-      final Map map = getMap();
-      if ((map != null) && (map.getBoardByName(owningBoardName) != null)) {
-        active = true;
-      }
-    }
-    return active;
+
+    return owningBoardName == null ||
+           map.getBoardByName(owningBoardName) != null;
   }
 
   /**
