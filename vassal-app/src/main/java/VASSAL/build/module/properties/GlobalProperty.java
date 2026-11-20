@@ -36,6 +36,7 @@ import VASSAL.tools.ToolBarComponent;
 
 import javax.swing.JToolBar;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -428,7 +429,21 @@ public class GlobalProperty extends AbstractConfigurable implements ToolBarCompo
    */
   @Override
   public List<String> getExpressionList() {
-    return List.of(initialValue, minValue, maxValue);
+    // None of the three has an initial value, and none of the three attributes
+    // has to be in the buildFile --- a Global Property with no numeric range
+    // set has nulls in all but the first, which List.of() rejects. ZoneProperty
+    // inherits this. See vassalengine/vassal#14198.
+    final List<String> l = new ArrayList<>(3);
+    if (initialValue != null) {
+      l.add(initialValue);
+    }
+    if (minValue != null) {
+      l.add(minValue);
+    }
+    if (maxValue != null) {
+      l.add(maxValue);
+    }
+    return l;
   }
 
   /**

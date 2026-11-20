@@ -231,7 +231,10 @@ public class GlobalTranslatableMessage extends AbstractConfigurable implements T
    */
   @Override
   public List<String> getPropertyList() {
-    return List.of(property.getName());
+    // The property is named after the component, and a component the user has
+    // not named yet has no name. As in GlobalProperty.
+    final String name = property.getName();
+    return name == null ? List.of() : List.of(name);
   }
 
   /**
