@@ -107,58 +107,97 @@ public class Builder {
      * of the {@link GameModule}.
      *
      * @throws IllegalBuildException if something goes wrong when loading
-     * the class or creating an instance of it
+     * the class, constructing an instance of it, or building it. The message
+     * says which of the three it was.
      */
   public static Buildable create(Element e, Buildable parent) throws IllegalBuildException {
     final GameModule mod = GameModule.getGameModule();
     final String name = e.getTagName();
 
+    final Class<?> cl;
+
     try {
-      final Buildable b = (Buildable) (mod == null ?  Class.forName(name) :
-        mod.getDataArchive().loadClass(name)).getConstructor().newInstance();
-
-      //BR// We do an early & extra set of the ancestor during build so that if, during the addTo() sequence,
-      //BR// an item in an AbstractFolder needs to know its "first non-folder ancestor", it can walk up the
-      //BR// tree as necessary.
-      //BE// NOTE: Since we haven't actually checked if the child is an allowed component of the parent, it's
-      //BE// possible the parent may be a completely invalid ancestor. This can cause an IllegalBuildException
-      //BE// before we check for child legitimacy. This is caught at the level above.
-      if (b instanceof AbstractBuildable) {
-        ((AbstractBuildable)b).setAncestor(parent);
-      }
-
-      b.build(e);
-      return b;
+      cl = mod == null ?
+        Class.forName(name) : mod.getDataArchive().loadClass(name);
     }
     catch (Throwable t) {
-      // find and rethrow causes which are not bugs
-      ThrowableUtils.throwRecent(OutOfMemoryError.class, t);
+      throw failure("failed to load class " + name, t);
+    }
 
-      if (t instanceof ClassCastException ||
-          t instanceof ClassNotFoundException ||
-          t instanceof IllegalAccessException ||
-          t instanceof IllegalArgumentException ||
-          t instanceof InstantiationException ||
-          t instanceof InvocationTargetException ||
-          t instanceof NoSuchMethodException ||
-          t instanceof SecurityException ||
-          t instanceof ExceptionInInitializerError ||
-          t instanceof LinkageError) {
-        // one of the standard classloading problems occurred
-        throw new IllegalBuildException("failed to load class " + name, t);
-      }
-      else if (t instanceof Error) {
-        // some unusual problem occurred
-        throw (Error) t;
-      }
-      else if (t instanceof RuntimeException) {
-        // some unusual problem occurred
-        throw (RuntimeException) t;
-      }
-      else {
-        // this should never happen
-        throw new IllegalStateException(t);
-      }
+    final Buildable b;
+
+    try {
+      b = (Buildable) cl.getConstructor().newInstance();
+    }
+    catch (Throwable t) {
+      // The class is there; it is making one of it which failed --- because it
+      // has no no-argument constructor, because that constructor threw, or
+      // because it is not a Buildable at all.
+      throw failure("failed to construct " + name, t);
+    }
+
+    //BR// We do an early & extra set of the ancestor during build so that if, during the addTo() sequence,
+    //BR// an item in an AbstractFolder needs to know its "first non-folder ancestor", it can walk up the
+    //BR// tree as necessary.
+    //BE// NOTE: Since we haven't actually checked if the child is an allowed component of the parent, it's
+    //BE// possible the parent may be a completely invalid ancestor. This can cause an IllegalBuildException
+    //BE// before we check for child legitimacy. This is caught at the level above.
+    if (b instanceof AbstractBuildable) {
+      ((AbstractBuildable)b).setAncestor(parent);
+    }
+
+    try {
+      b.build(e);
+    }
+    catch (Throwable t) {
+      // The class loaded and the instance was constructed, so whatever went
+      // wrong happened while building this component or something beneath it
+      // --- including the addTo() of its descendants. Reporting that as
+      // "failed to load class" names the one class which demonstrably did
+      // load, and names nothing which did not. See vassalengine/vassal#14339.
+      throw failure("failed to build " + name, t);
+    }
+
+    return b;
+  }
+
+  /**
+   * Classify a Throwable raised while creating a component. Returns the
+   * exception to throw, or throws it directly where the type forbids returning
+   * it.
+   *
+   * @param message what was being attempted, for the resulting report
+   * @param t the Throwable which was caught
+   * @return the exception the caller should throw
+   */
+  private static RuntimeException failure(String message, Throwable t) {
+    // find and rethrow causes which are not bugs
+    ThrowableUtils.throwRecent(OutOfMemoryError.class, t);
+
+    if (t instanceof ClassCastException ||
+        t instanceof ClassNotFoundException ||
+        t instanceof IllegalAccessException ||
+        t instanceof IllegalArgumentException ||
+        t instanceof InstantiationException ||
+        t instanceof InvocationTargetException ||
+        t instanceof NoSuchMethodException ||
+        t instanceof SecurityException ||
+        t instanceof ExceptionInInitializerError ||
+        t instanceof LinkageError) {
+      // one of the standard build problems occurred
+      return new IllegalBuildException(message, t);
+    }
+    else if (t instanceof Error) {
+      // some unusual problem occurred
+      throw (Error) t;
+    }
+    else if (t instanceof RuntimeException) {
+      // some unusual problem occurred
+      return (RuntimeException) t;
+    }
+    else {
+      // this should never happen
+      return new IllegalStateException(t);
     }
   }
 
