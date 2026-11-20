@@ -1,5 +1,6 @@
 3.8.3 - ???
 
+* 15377: Stop crashing on a Deck which is not on a Map
 * 15379: Skip an empty slot when looking for an At-Start Stack's top piece
 * 15374: Expected response code for updateConnections is now 200, not 201
 * 15372: Ensure that HTTP POSTs are in UTF-8
