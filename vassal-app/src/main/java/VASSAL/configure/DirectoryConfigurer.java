@@ -57,11 +57,12 @@ public class DirectoryConfigurer extends FileConfigurer {
   @Override
   public void chooseNewValue() {
     getControls();
+    final FileChooser chooser = getFileChooser();
     if (getValue() != null) {
-      fc.setCurrentDirectory((File) getValue());
+      chooser.setCurrentDirectory((File) getValue());
     }
-    if (fc.showOpenDialog(getControls()) == FileChooser.APPROVE_OPTION) {
-      setValue(fc.getSelectedFile());
+    if (chooser.showOpenDialog(getControls()) == FileChooser.APPROVE_OPTION) {
+      setValue(chooser.getSelectedFile());
     }
   }
 }
