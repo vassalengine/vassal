@@ -10,6 +10,7 @@
     attribute value as bad data
 * 15374: Expected response code for updateConnections is now 200, not 201
 * 15372: Ensure that HTTP POSTs are in UTF-8
+* 15371: Don't show empty Turn Window after cancelling from SetDialog
 * 15370: Take a Stack off the map before forgetting which map it was on
 * 15369: Fix NPE when a die face image is missing
 * 15365: Apply every Multi-Piece Editor change to every piece at the same

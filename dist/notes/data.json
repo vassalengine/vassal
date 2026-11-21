@@ -30,6 +30,7 @@
         { "num": 15375, "desc": "Say which part of creating a component failed, and treat a bad attribute value as bad data" },
         { "num": 15374, "desc": "Expected response code for updateConnections is now 200, not 201" },
         { "num": 15372, "desc": "Ensure that HTTP POSTs are in UTF-8" },
+        { "num": 15371, "desc": "Don't show empty Turn Window after cancelling from SetDialog" },
         { "num": 15370, "desc": "Take a Stack off the map before forgetting which map it was on" },
         { "num": 15369, "desc": "Fix NPE when a die face image is missing" },
         { "num": 15365, "desc": "Apply every Multi-Piece Editor change to every piece at the same position" },
