@@ -27,7 +27,7 @@ jobs:
         run: |
           sudo apt update -y
           sudo apt install -y dos2unix genisoimage ghostscript nsis
-          sudo pip install jinja2-cli  --break-system-packages
+          sudo pip install jinja2-cli --break-system-packages
 
       - name: Setup Java - Temurin
         uses: actions/setup-java@v6.3.0
