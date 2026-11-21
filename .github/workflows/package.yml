@@ -154,7 +154,7 @@ jobs:
 
       - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-aarch64
+        run: ./bootstrap.sh -j ${{ env.LIBERICA_VERSION }} windows-aarch64
 
       - name: Build Windows aarch64
         run: make release-windows-aarch64
