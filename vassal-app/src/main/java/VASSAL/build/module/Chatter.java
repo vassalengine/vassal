@@ -72,6 +72,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.regex.Pattern;
 
 /**
  * The chat window component. Displays text messages and accepts input. Also
@@ -80,6 +81,24 @@ import java.nio.file.Files;
  */
 public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTargetListener {
   private static final long serialVersionUID = 1L;
+
+  /**
+   * Matches a complete {@code <head>} element, contents and all. The head holds nothing which belongs in a
+   * chat message, and dropping only its tags would spill what is inside it into the visible text -- the
+   * body of a {@code <style>} element does exactly that. See {@link #stripDocumentTags}.
+   */
+  private static final Pattern HEAD_ELEMENT =
+    Pattern.compile("<head\\b[^>]*>.*?</head\\b[^>]*>",
+                    Pattern.CASE_INSENSITIVE | Pattern.DOTALL); //NON-NLS
+
+  /**
+   * Matches the HTML document-structure tags -- {@code <html>}, {@code <head>}, {@code <body>} and their
+   * closing forms. Each message is inserted into the conversation pane as a <i>fragment</i> of an existing
+   * document, so these tags have nothing to delimit and are stripped before insertion. See
+   * {@link #stripDocumentTags}.
+   */
+  private static final Pattern DOCUMENT_TAGS =
+    Pattern.compile("</?(?:html|head|body)\\b[^>]*>", Pattern.CASE_INSENSITIVE); //NON-NLS
 
   protected JTextPane conversationPane;
   protected HTMLDocument doc;
@@ -438,6 +457,12 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
       s = s.replace(keystring, replace);
     }
 
+    // A message is inserted as a fragment of the conversation pane's existing document, so any
+    // document-structure tags it carries must go: an <html> tag in particular nests everything that
+    // follows it two levels deeper, permanently, and a module which wraps each of its report messages
+    // in <html>...</html> will eventually overflow the stack when the pane is painted. See #15300.
+    s = stripDocumentTags(s);
+
     // Insert a div of the correct style for our line of text. Module designer
     // still free to insert <span> tags and <img> tags and the like in Report
     // messages.
@@ -451,6 +476,41 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     conversationPane.repaint();
 
     //consoleHook(s, style, html_allowed);
+  }
+
+  /**
+   * Removes the HTML document-structure tags -- {@code <html>}, {@code <head>}, {@code <body>} and their
+   * closing forms -- from a chat message.
+   *
+   * <p>Messages are added to the conversation pane with
+   * {@link HTMLEditorKit#insertHTML}, which treats each one as a fragment inserted into the document that
+   * is already there. A {@code <html>} tag in such a fragment does not start a new document; Swing's HTML
+   * reader instead opens two more levels of nesting which are never closed, so everything appended
+   * afterwards sits inside them. Module designers habitually wrap text in {@code <html>...</html>} -- it is
+   * what a Swing label needs -- and a module which does so for its report messages deepens the document by
+   * two levels per message. Painting the pane resolves a style by walking that nesting from the view up to
+   * the root, one stack frame per level, so after a few hundred such messages the paint overflows the stack
+   * and takes the game down with it.
+   *
+   * <p>A {@code <head>} element goes whole, contents included. Removing only its tags would leave what is
+   * inside it in the message, and that is not always invisible: Swing's HTML reader discards the text of a
+   * {@code <title>}, but the body of a {@code <style>} is inserted as ordinary text, so
+   * {@code <head><style>b{color:red}</style></head>} would print {@code b{color:red}} in the chat window.
+   *
+   * <p>{@link VASSAL.tools.swing.DataArchiveTextPane} strips the same wrapper for the same reason.
+   *
+   * @param s message about to be displayed
+   * @return the message with any document-structure tags removed
+   */
+  public static String stripDocumentTags(String s) {
+    // The overwhelming majority of messages carry no such tag, so do not pay for a match unless one might.
+    if ((s == null) || (s.indexOf('<') < 0)) {
+      return s;
+    }
+
+    // The head element first, so that its contents go with it; then any remaining structure tags,
+    // which covers an unpaired <head> or </head> as well as <html> and <body>.
+    return DOCUMENT_TAGS.matcher(HEAD_ELEMENT.matcher(s).replaceAll("")).replaceAll("");
   }
 
   /**
