@@ -100,7 +100,7 @@ jobs:
 
   package_win_aarch64:
     name: Test & Package Windows aarch64
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
@@ -166,7 +166,7 @@ jobs:
 
   package_win_x86_32:
     name: Test & Package Windows x86_32
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
@@ -235,7 +235,7 @@ jobs:
 
   package_debian:
     name: Debian package
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
@@ -349,7 +349,7 @@ jobs:
 
   package_flatpak:
     name: Flatpak recipe
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout
         uses: actions/checkout@v7
