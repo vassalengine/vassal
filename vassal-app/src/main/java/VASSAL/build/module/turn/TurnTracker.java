@@ -65,6 +65,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.LayoutFocusTraversalPolicy;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -72,7 +73,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -251,6 +254,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
     setLaunchToolTip();
     updateTurnDisplay(SET);
+    turnWindow.setFocusable(true);
+    turnWindow.requestFocus();
   }
 
   protected void setLaunchToolTip() {
@@ -812,7 +817,18 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
       setDialog.setTitle(Resources.getString("TurnTracker.set_turn2", getConfigureName())); //$NON-NLS-1$
     }
     setDialog.setControls(this);
+    final Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+    final Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    final int x = Math.max(0, Math.min(mouseLocation.x, screenSize.width - setDialog.getWidth()));
+    final int y = Math.max(0, Math.min(mouseLocation.y, screenSize.height - setDialog.getHeight()));
+    setDialog.setLocation(x, y);
     setDialog.setVisible(true);
+    // Set focus to the first control
+    final LayoutFocusTraversalPolicy policy = new LayoutFocusTraversalPolicy();
+    final Component comp = policy.getFirstComponent(setDialog);
+    if (comp != null) {
+      comp.requestFocusInWindow();
+    }
   }
 
   protected void updateTurnDisplay(String command) {
@@ -821,8 +837,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     turnWidget.setControls();
     turnWidget.repaint();
     turnWindow.pack();
-    turnWindow.setFocusable(true);
-    turnWindow.requestFocus();
   }
 
   public void updateWidget() {
@@ -1136,6 +1150,8 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     item = new JMenuItem(SET_COMMAND);
     item.addActionListener(this);
     popup.add(item);
+    // Enable when the TurnTracker is not empty and at least one item is active.
+    item.setEnabled(getTurnLevelCount() > 0 && levels.stream().anyMatch(level -> level.isActive()));
 
     // Configure List Items
     final JMenu config = new JMenu(Resources.getString("TurnTracker.configure")); //$NON-NLS-1$
@@ -1171,7 +1187,6 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
     protected SetDialog() {
       super(GameModule.getGameModule().getPlayerWindow());
       initComponents();
-      setLocation(100, 100);
       me = this;
     }
 
@@ -1278,13 +1293,17 @@ public class TurnTracker extends TurnComponent implements CommandEncoder, GameCo
 
   protected void cancelSet() {
     setState(savedSetState);
-    turnWindow.setVisible(true);
-    turnWindow.setFocusable(true);
+    if (turnWindow.widget != null) {
+      turnWindow.setVisible(true);
+      turnWindow.setFocusable(true);
+    }
   }
 
   protected void saveSet() {
     save();
     updateTurnDisplay(SET);
+    turnWindow.setFocusable(true);
+    turnWindow.requestFocus();
     doGlobalkeys();
   }
 
