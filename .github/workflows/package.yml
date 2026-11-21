@@ -13,8 +13,8 @@ env:
   LIBERICA_WIN32_VERSION: 21.0.13.1+5
 
 jobs:
-  package:
-    name: Test & Package
+  package_linux_generic:
+    name: Test & Package Linux, Generic
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
@@ -37,7 +37,64 @@ jobs:
         run: sudo apt update
 
       - name: Install dependencies
-        run: sudo apt-get install dos2unix genisoimage ghostscript nsis
+        run: sudo apt-get install ghostscript
+
+      - name: Install Java
+        uses: actions/setup-java@v6.3.0
+        id: setup-java
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.TEMURIN_SEMVER_VERSION }}
+          java-package: jdk
+
+      - name: Cache Maven packages
+        uses: actions/cache@v6
+        id: cache-maven
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Build packages
+        run: make release
+
+      - name: Archive Linux
+        uses: actions/upload-artifact@v7
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
+
+      - name: Archive other
+        uses: actions/upload-artifact@v7
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
+
+  package_win_x86_64:
+    name: Test & Package Windows aarch64
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Set branch
+        if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/release-3.9'
+        # Checking out a detached head for PR means we have to set the branch
+        # name for it to show up later; shallow checkout means the branch
+        # won't exist yet so there's no conflict.
+        run: git checkout -b ${GITHUB_HEAD_REF}
+
+      - name: Store version
+        id: version
+        run: echo "VERSION=$(make version-print)" >> $GITHUB_OUTPUT
+
+      - name: Update container
+        run: sudo apt update
+
+      - name: Install dependencies
+        run: sudo apt-get install dos2unix ghostscript nsis
 
       - name: Install Java
         uses: actions/setup-java@v6.3.0
@@ -60,38 +117,16 @@ jobs:
         uses: actions/cache@v6
         with:
           path: |
-            ./dist/dmg
             ./dist/jdks/windows-x86_64
-            ./dist/jdks/macos-x86_64
-            ./dist/jdks/macos-aarch64
             ./dist/launch4j
-            ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh -j ${{ env.TEMURIN_REAL_VERSION }} windows-x86_64 macos-x86_64 macos-aarch64
+        run: ./bootstrap.sh -j ${{ env.TEMURIN_REAL_VERSION }} windows-x86_64
 
-      - name: Build packages
-        run: make release
-
-      - name: Archive Linux
-        uses: actions/upload-artifact@v7
-        with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-linux.tar.bz2
-
-      - name: Archive MacOS
-        uses: actions/upload-artifact@v7
-        with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
-
-      - name: Archive other
-        uses: actions/upload-artifact@v7
-        with:
-          name: VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
-          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
+      - name: Build Windows x86_64
+        run: make release-windows-x86_64
 
       - name: Archive Windows x86_64
         uses: actions/upload-artifact@v7
@@ -123,7 +158,7 @@ jobs:
         run: sudo apt update
 
       - name: Install dependencies
-        run: sudo apt-get install dos2unix genisoimage ghostscript nsis
+        run: sudo apt-get install dos2unix ghostscript nsis
 
       - name: Install Java
         uses: actions/setup-java@v6.3.0
@@ -146,10 +181,8 @@ jobs:
         uses: actions/cache@v6
         with:
           path: |
-            ./dist/dmg
             ./dist/jdks/windows-aarch64
             ./dist/launch4j
-            ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
@@ -192,7 +225,7 @@ jobs:
         run: sudo apt update
 
       - name: Install dependencies
-        run: sudo apt-get install dos2unix genisoimage ghostscript nsis
+        run: sudo apt-get install dos2unix ghostscript nsis
 
       - name: Install Java
         uses: actions/setup-java@v6.3.0
@@ -215,10 +248,8 @@ jobs:
         uses: actions/cache@v6
         with:
           path: |
-            ./dist/dmg
             ./dist/jdks/windows-x86_32
             ./dist/launch4j
-            ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
@@ -233,6 +264,72 @@ jobs:
         with:
           name: VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
+
+  package_macos:
+    name: Test & Package MacOS
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Set branch
+        if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/release-3.9'
+        # Checking out a detached head for PR means we have to set the branch
+        # name for it to show up later; shallow checkout means the branch
+        # won't exist yet so there's no conflict.
+        run: git checkout -b ${GITHUB_HEAD_REF}
+
+      - name: Store version
+        id: version
+        run: echo "VERSION=$(make version-print)" >> $GITHUB_OUTPUT
+
+      - name: Update container
+        run: sudo apt update
+
+      - name: Install dependencies
+        run: sudo apt-get install genisoimage ghostscript
+
+      - name: Install Java
+        uses: actions/setup-java@v6.3.0
+        id: setup-java
+        with:
+          distribution: 'liberica'
+          java-version: ${{ env.LIBERICA_VERSION }}
+          java-package: jdk
+
+      - name: Cache Maven packages
+        uses: actions/cache@v6
+        id: cache-maven
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Cache packaging dependencies
+        id: cache-bootstrap
+        uses: actions/cache@v6
+        with:
+          path: |
+            ./dist/dmg
+            ./dist/jdks/macos-x86_64
+            ./dist/jdks/macos-aarch64
+            ./dist/lipo
+          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
+
+      - name: Install packaging dependencies
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
+        run: ./bootstrap.sh -j ${{ env.LIBERICA_VERSION }} macos-x86_64 macos-aarch64
+
+      - name: Build MacOS
+        run: make release
+
+      - name: Archive MacOS
+        uses: actions/upload-artifact@v7
+        with:
+          name: VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
+          path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
 
   package_debian:
     name: Debian package

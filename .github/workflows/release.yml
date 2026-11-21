@@ -14,8 +14,8 @@ env:
 
 jobs:
   # Regular packages.  Note, we take the version number from the tag.
-  package:
-    name: Release
+  package_linux_generic:
+    name: Release Linux, Generic
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout
@@ -24,12 +24,14 @@ jobs:
           fetch-depth: 1
 
       - name: Update container
-        run: |
-          sudo apt update -y
-          sudo apt install -y dos2unix genisoimage ghostscript nsis
+        run: sudo apt update
+
+      - name: Install dependencies
+        run |
+          sudo apt-get install ghostscript
           sudo pip install jinja2-cli --break-system-packages
 
-      - name: Setup Java - Temurin
+      - name: Install Java
         uses: actions/setup-java@v6.3.0
         id: setup-java
         with:
@@ -44,25 +46,9 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Cache bootstrap
-        uses: actions/cache@v6
-        with:
-          path: |
-            ./dist/dmg
-            ./dist/jdks/windows-x86_64
-            ./dist/jdks/macos-x86_64
-            ./dist/jdks/macos-aarch64
-            ./dist/launch4
-            ./dist/lipo
-          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
-
-      - name: Bootstrap
-        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh -j ${{ env.TEMURIN_REAL_VERSION }} windows-x86_64 macos-x86_64 macos-aarch64
-
       - name: Make release packages
         run: |
-          make release MAVEN_VERSION=${{ github.ref_name }}
+          make release-linux release-other MAVEN_VERSION=${{ github.ref_name }}
           make javadoc MAVEN_VERSION=${{ github.ref_name }}
           make release-announcements MAVEN_VERSION=${{ github.ref_name }}
           ls
@@ -95,26 +81,24 @@ jobs:
           body_path: tmp/NOTES-gh
           files:  |
             tmp/VASSAL-${{ github.ref_name }}-linux.tar.bz2
-            tmp/VASSAL-${{ github.ref_name }}-macos-universal.dmg
             tmp/VASSAL-${{ github.ref_name }}-other.zip
-            tmp/VASSAL-${{ github.ref_name }}-windows-x86_64.exe
 
-  # Regular packages.  Note, we take the version number from the tag.
-  package_aarch64:
-    name: Release Windows ARM
+  package_macos:
+    name: Release MacOS
     runs-on: ubuntu-26.04
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
       - name: Update container
-        run: |
-          sudo apt update -y
-          sudo apt install -y dos2unix genisoimage ghostscript nsis
+        run: sudo apt update
 
-      - name: Setup Java - liberica
+      - name: Install dependencies
+        run: sudo apt-get install genisoimage ghostscript
+
+      - name: Install Java
         uses: actions/setup-java@v6.3.0
         id: setup-java
         with:
@@ -122,26 +106,82 @@ jobs:
           java-version: ${{ env.LIBERICA_VERSION }}
           java-package: jdk
 
-      - name: Maven cache
+      - name: Cache Maven packages
         uses: actions/cache@v6
+        id: cache-maven
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Cache bootstrap
+      - name: Cache packaging dependencies
+        id: cache-bootstrap
         uses: actions/cache@v6
         with:
           path: |
             ./dist/dmg
-            ./dist/jdks/windows-aarch64
-            ./dist/launch4
+            ./dist/jdks/macos-x86_64
+            ./dist/jdks/macos-aarch64
             ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
-      - name: Bootstrap Windows aarch64
+      - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-aarch64
+        run: ./bootstrap.sh -j ${{ env.LIBERICA_VERSION }} macos-x86_64 macos-aarch64
+
+      - name: Make MacOS release package
+        run: |
+          make release-macos MAVEN_VERSION=${{ github.ref_name }}
+
+      - name: Post Windows aarch64 artefact to release
+        uses: softprops/action-gh-release@v3
+        with:
+          files:  |
+            tmp/VASSAL-${{ github.ref_name }}-macos-universal.dmg
+
+  # Regular packages. Note, we take the version number from the tag.
+  package_win_aarch64:
+    name: Release Windows aarch64
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+       - name: Update container
+         run: sudo apt update
+
+      - name: Install dependencies
+        run: sudo apt-get install dos2unix ghostscript nsis
+
+      - name: Install Java
+        uses: actions/setup-java@v6.3.0
+        id: setup-java
+        with:
+          distribution: 'liberica'
+          java-version: ${{ env.LIBERICA_VERSION }}
+          java-package: jdk
+
+      - name: Cache Maven packages
+        uses: actions/cache@v6
+        id: cache-maven
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Cache packaging dependencies
+        uses: actions/cache@v6
+        with:
+          path: |
+            ./dist/jdks/windows-aarch64
+            ./dist/launch4
+          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
+
+      - name: Install packaging dependencies
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
+        run: ./bootstrap.sh -j ${{ env.LIBERICA_VERSION }} windows-aarch64
 
       - name: Make Windows aarch64 release package
         run: |
@@ -153,9 +193,64 @@ jobs:
           files:  |
             tmp/VASSAL-${{ github.ref_name }}-windows-aarch64.exe
 
-  # Regular packages.  Note, we take the version number from the tag.
-  package_win32:
-    name: Release Windows 32-bit
+  # Regular packages. Note, we take the version number from the tag.
+  package_win_x86_64:
+    name: Release Windows x86_64
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Update container
+        run: sudo apt update
+
+      - name: Install dependencies
+        run: sudo apt-get install dos2unix ghostscript nsis
+
+      - name: Install Java
+        uses: actions/setup-java@v6.3.0
+        id: setup-java
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.TEMURIN_SEMVER_VERSION }}
+          java-package: jdk
+
+      - name: Cache Maven packages
+        uses: actions/cache@v6
+        id: cache-maven
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Cache packaging dependencies
+        id: cache-bootstrap
+        uses: actions/cache@v6
+        with:
+          path: |
+            ./dist/jdks/windows-x86_64
+            ./dist/launch4j
+          key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
+
+      - name: Install packaging dependencies
+        if: steps.cache-bootstrap.outputs.cache-hit != 'true'
+        run: ./bootstrap.sh -j ${{ env.TEMURIN_REAL_VERSION }} windows-x86_64
+
+      - name: Make Windows x86_64 release package
+        run: |
+          make release-windows-x86_64 MAVEN_VERSION=${{ github.ref_name }}
+
+      - name: Post Windows x86_64 artefact to release
+        uses: softprops/action-gh-release@v3
+        with:
+          files:  |
+            tmp/VASSAL-${{ github.ref_name }}-windows-x86_64.exe
+
+  # Regular packages. Note, we take the version number from the tag.
+  package_win_x86_32:
+    name: Release Windows x86_32
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout
@@ -164,11 +259,13 @@ jobs:
           fetch-depth: 1
 
       - name: Update container
-        run: |
-          sudo apt update -y
-          sudo apt install -y dos2unix genisoimage ghostscript nsis
+        run: sudo apt update
 
-      - name: Setup Java - liberica 21
+      - name: Install dependencies
+        run: |
+          sudo apt-get install dos2unix ghostscript nsis
+
+      - name: Install Java
         uses: actions/setup-java@v6.3.0
         id: setup-java
         with:
@@ -176,24 +273,22 @@ jobs:
           java-version: ${{ env.LIBERICA_WIN32_VERSION }}
           java-package: jdk
 
-      - name: Maven cache
+      - name: Cache Maven packages
         uses: actions/cache@v6
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Cache bootstrap
+      - name: Cache packaging dependencies
         uses: actions/cache@v6
         with:
           path: |
-            ./dist/dmg
             ./dist/jdks/windows-x86_32
             ./dist/launch4
-            ./dist/lipo
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
-      - name: Bootstrap Windows x86_32
+      - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
         run: ./bootstrap.sh -j ${{ steps.setup-java.outputs.version }} windows-x86_32
 
@@ -360,7 +455,7 @@ jobs:
         run: |
           sudo apt update -y
 
-      - name: Setup Java
+      - name: Install Java
         uses: actions/setup-java@v6.3.0
         with:
           distribution: 'temurin'
