@@ -7,12 +7,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.map.Flare;
 import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
+import VASSAL.command.FlareCommand;
 import VASSAL.command.NullCommand;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.filechooser.FileChooser;
+import java.awt.Point;
 import java.io.File;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -178,6 +181,54 @@ public class BasicLoggerTest {
       final BasicLogger logger = new BasicLogger();
       logger.log(c);
       verify(gs).setModified(true);
+    }
+  }
+
+  /**
+   * A flare is a chat line plus a FlareCommand, as Flare.sendAndLog() builds it.
+   * Flare is a GameComponent whose getRestoreCommand() returns null -- it says
+   * in its own comment that a flare does not need restoring -- so pointing at
+   * the map changes nothing a save would record.
+   */
+  @Test
+  public void loggingAFlareLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final Flare flare = mock(Flare.class);
+      when(flare.getClickPoint()).thenReturn(new Point(10, 20));
+
+      final Command c = new Chatter.DisplayText(mock(Chatter.class), "* Player flared");
+      c.append(new FlareCommand(flare));
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(c);
+      verify(gs, never()).setModified(true);
+    }
+  }
+
+  /**
+   * Undoing something which was never a change is not a change either: New Game,
+   * chat, undo, close used to ask whether to save a game nobody had touched.
+   */
+  @Test
+  public void undoingChatLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+      when(gm.getServer()).thenReturn(mock(ServerConnection.class));
+
+      final BasicLogger logger = new BasicLogger();
+      when(gm.getBasicLogger()).thenReturn(logger);
+
+      logger.log(new Chatter.DisplayText(mock(Chatter.class), "hello"));
+      logger.undo();
+      verify(gs, never()).setModified(true);
     }
   }
 }

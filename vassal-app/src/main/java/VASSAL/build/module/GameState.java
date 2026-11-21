@@ -128,7 +128,7 @@ public class GameState implements CommandEncoder {
    * of CPU and tens of megabytes of retained heap every time a game was loaded,
    * started or synchronised, to answer a yes/no question.
    */
-  protected boolean modified;
+  private boolean modified;
 
   /**
    * No longer used: the game is no longer compared against a serialised copy of
@@ -556,7 +556,7 @@ public class GameState implements CommandEncoder {
     }
 
     gameStarted |= this.gameStarting;
-    modified = false;
+    setModified(false);
     lastSaveFile = null;
 
     if (gameStarted) {
@@ -1430,7 +1430,7 @@ public class GameState implements CommandEncoder {
       metaData.save(zw);
     }
 
-    modified = false;
+    setModified(false);
     final String msg;
     final String saveComments = metaData.getLocalizedDescription();
     if (!StringUtils.isEmpty(saveComments)) {

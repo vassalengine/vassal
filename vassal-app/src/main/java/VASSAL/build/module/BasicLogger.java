@@ -26,6 +26,7 @@ import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
+import VASSAL.command.FlareCommand;
 import VASSAL.command.Logger;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IconConfigurer;
@@ -612,14 +613,58 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undo.execute();
     GameModule.getGameModule().getServer().sendToOthers(undo);
     logOutput.add(undo);
-    // An undo is a change to the game like any other, but it is added to the
-    // log directly rather than through log(), so it has to say so itself.
-    // Without this, undoing a move after a save left the game looking clean and
-    // closing it threw the undo away with no prompt. An undo received from
-    // another player arrives through CommandDecoder and log(), so only the local
-    // one needs this.
-    markModified();
+    // An undo of a real change is itself a change, but it is added to the log
+    // directly rather than through log(), so it has to say so itself. Without
+    // this, undoing a move after a save left the game looking clean and closing
+    // it threw the undo away with no prompt. An undo received from another
+    // player arrives through CommandDecoder and log(), so only the local one
+    // needs this. Undoing something which was never a change to the saved game
+    // -- a chat message, a flare -- is not one either, which is why this asks
+    // the same question log() does rather than marking unconditionally.
+    if (changesSavedGame(undo)) {
+      markModified();
+    }
     GameModule.getGameModule().refreshVisibleMaps();
+  }
+
+  /**
+   * Commands which are logged, and so travel to the other players and into the
+   * logfile, but change nothing that saving the game would record. A chain made
+   * only of these leaves the game as saveable -- or as already saved -- as it
+   * was.
+   *
+   * <p>The test is what the component behind the command contributes to
+   * {@link GameState#getRestoreCommand()}: {@link Chatter} is not a
+   * {@link GameComponent} at all, and {@link VASSAL.build.module.map.Flare} is
+   * one whose {@code getRestoreCommand()} returns null, saying in its own
+   * comment that a flare does not need restoring. {@link UndoCommand} is the
+   * marker wrapped around an undo rather than the undo itself, and a
+   * {@link VASSAL.command.NullCommand} does nothing by definition.</p>
+   */
+  private static boolean isNotAChange(Command c) {
+    return c.isNull() ||
+           c instanceof Chatter.DisplayText ||
+           c instanceof FlareCommand ||
+           c instanceof UndoCommand;
+  }
+
+  /**
+   * @param c a command, possibly a chain
+   * @return whether any part of it changes something a save would record
+   */
+  private static boolean changesSavedGame(Command c) {
+    if (c == null) {
+      return false;
+    }
+    if (!isNotAChange(c)) {
+      return true;
+    }
+    for (final Command sub : c.getSubCommands()) {
+      if (changesSavedGame(sub)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -660,23 +705,13 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       // executes the restore command directly -- so a freshly loaded game is
       // correctly left unmodified.
       //
-      // Two kinds of command are logged without being a change to the game, and
-      // both have to be let through unmarked to keep the answer the serialised
-      // comparison used to give:
-      //
-      //  - A restore command, whose head is a SetupCommand. It is how a joining
-      //    client is sent the host's game, and it arrives here immediately after
-      //    its own trailing SetupCommand(true) has run setup(), which has just
-      //    decided what the flag should be. Marking it here would overrule that
-      //    and leave a player who joined, synchronised and touched nothing being
-      //    asked whether to save.
-      //  - Chat. Chatter is not a GameComponent, so chat is in the logfile but
-      //    not in getRestoreCommand(), and a chain which is only chat changes
-      //    nothing that a save would record. Startup Global Key Commands which
-      //    report to chat run after setup() has cleared the flag, so without
-      //    this a freshly loaded game in such a module would offer to save.
-      if (!(c instanceof GameState.SetupCommand) &&
-          !c.isNullOrContainsOnly(Chatter.DisplayText.class)) {
+      // A restore command is the exception the chain-walk cannot see. It is how
+      // a joining client is sent the host's game, its head is a SetupCommand,
+      // and it arrives here immediately after its own trailing
+      // SetupCommand(true) has run setup(), which has just decided what the flag
+      // should be. Marking it here would overrule that and leave a player who
+      // joined, synchronised and touched nothing being asked whether to save.
+      if (!(c instanceof GameState.SetupCommand) && changesSavedGame(c)) {
         markModified();
       }
     }
