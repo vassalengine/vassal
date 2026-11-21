@@ -612,7 +612,25 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undo.execute();
     GameModule.getGameModule().getServer().sendToOthers(undo);
     logOutput.add(undo);
+    // An undo is a change to the game like any other, but it is added to the
+    // log directly rather than through log(), so it has to say so itself.
+    // Without this, undoing a move after a save left the game looking clean and
+    // closing it threw the undo away with no prompt. An undo received from
+    // another player arrives through CommandDecoder and log(), so only the local
+    // one needs this.
+    markModified();
     GameModule.getGameModule().refreshVisibleMaps();
+  }
+
+  /**
+   * Records that the game now differs from the last saved copy of it. See
+   * {@link GameState#setModified}.
+   */
+  private void markModified() {
+    final GameModule g = GameModule.getGameModule();
+    if (g != null) {
+      g.getGameState().setModified(true);
+    }
   }
 
   public boolean isUndoInProgress() {
@@ -633,6 +651,33 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       logOutput.add(c);
       if (c.getUndoCommand() != null && !c.getUndoCommand().isNull()) {
         nextUndo = logOutput.size() - 1;
+      }
+      // Every change to the game passes through here: a local one via
+      // GameModule.sendAndLog, one from another player via CommandDecoder, and a
+      // replayed one via step(). Marking the game modified here is what lets
+      // GameState.isModified() answer without serialising the whole game.
+      // Loading a game does not come through here -- loadGameInForeground
+      // executes the restore command directly -- so a freshly loaded game is
+      // correctly left unmodified.
+      //
+      // Two kinds of command are logged without being a change to the game, and
+      // both have to be let through unmarked to keep the answer the serialised
+      // comparison used to give:
+      //
+      //  - A restore command, whose head is a SetupCommand. It is how a joining
+      //    client is sent the host's game, and it arrives here immediately after
+      //    its own trailing SetupCommand(true) has run setup(), which has just
+      //    decided what the flag should be. Marking it here would overrule that
+      //    and leave a player who joined, synchronised and touched nothing being
+      //    asked whether to save.
+      //  - Chat. Chatter is not a GameComponent, so chat is in the logfile but
+      //    not in getRestoreCommand(), and a chain which is only chat changes
+      //    nothing that a save would record. Startup Global Key Commands which
+      //    report to chat run after setup() has cleared the flag, so without
+      //    this a freshly loaded game in such a module would offer to save.
+      if (!(c instanceof GameState.SetupCommand) &&
+          !c.isNullOrContainsOnly(Chatter.DisplayText.class)) {
+        markModified();
       }
     }
     undoAction.setEnabled(nextUndo >= dontUndoPast);
