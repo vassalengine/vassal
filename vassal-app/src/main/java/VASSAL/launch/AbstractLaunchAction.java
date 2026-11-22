@@ -53,6 +53,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -417,36 +418,27 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
       final int initialHeap = maximumHeap;
 
-      final List<String> argumentList = buildArgumentList(moduleName);
-      final String[] args = argumentList.toArray(new String[0]);
+      // On macOS, start the Player through a link named after the module,
+      // since the Dock shows the executable's file name, not -Xdock:name
+      final Path dockLink = SystemUtils.IS_OS_MAC
+        ? DockNameLink.create(Info.getTempDir().toPath(), dockName(moduleName), Info.getJavaBinPath().toPath())
+        : null;
 
-      // try to start a child process with the given heap sizes
-      args[1] = "-Xms" + initialHeap + "M"; //NON-NLS
-      args[2] = "-Xmx" + maximumHeap + "M"; //NON-NLS
-
-      ProcessWrapper proc = new ProcessLauncher().launch(args);
       try {
-        proc.future.get(1000L, TimeUnit.MILLISECONDS);
-      }
-      catch (CancellationException e) {
-        cancel(true);
-        return null;
-      }
-      catch (ExecutionException e) {
-        logger.error("", e);
-      }
-      catch (TimeoutException e) {
-        // this is expected
-      }
+        final List<String> argumentList = buildArgumentList(moduleName, dockLink);
+        final String[] args = argumentList.toArray(new String[0]);
 
-      // if launch failed, use conservative heap sizes
-      if (proc.future.isDone()) {
-        args[1] = "-Xms" + FAILSAFE_MAXIMUM_HEAP + "M"; //NON-NLS
-        args[2] = "-Xmx" + FAILSAFE_MAXIMUM_HEAP + "M"; //NON-NLS
-        proc = new ProcessLauncher().launch(args);
+        // try to start a child process with the given heap sizes
+        args[1] = "-Xms" + initialHeap + "M"; //NON-NLS
+        args[2] = "-Xmx" + maximumHeap + "M"; //NON-NLS
 
+        ProcessWrapper proc = new ProcessLauncher().launch(args);
         try {
           proc.future.get(1000L, TimeUnit.MILLISECONDS);
+        }
+        catch (CancellationException e) {
+          cancel(true);
+          return null;
         }
         catch (ExecutionException e) {
           logger.error("", e);
@@ -455,38 +447,58 @@ public abstract class AbstractLaunchAction extends AbstractAction {
           // this is expected
         }
 
+        // if launch failed, use conservative heap sizes
         if (proc.future.isDone()) {
-          throw new IOException("failed to start child process");
+          args[1] = "-Xms" + FAILSAFE_MAXIMUM_HEAP + "M"; //NON-NLS
+          args[2] = "-Xmx" + FAILSAFE_MAXIMUM_HEAP + "M"; //NON-NLS
+          proc = new ProcessLauncher().launch(args);
+
+          try {
+            proc.future.get(1000L, TimeUnit.MILLISECONDS);
+          }
+          catch (ExecutionException e) {
+            logger.error("", e);
+          }
+          catch (TimeoutException e) {
+            // this is expected
+          }
+
+          if (proc.future.isDone()) {
+            throw new IOException("failed to start child process");
+          }
+          else {
+            FutureUtils.wait(WarningDialog.show(
+              "Warning.maximum_heap_too_large", //NON-NLS
+              FAILSAFE_MAXIMUM_HEAP
+            ));
+          }
         }
-        else {
-          FutureUtils.wait(WarningDialog.show(
-            "Warning.maximum_heap_too_large", //NON-NLS
-            FAILSAFE_MAXIMUM_HEAP
-          ));
+
+        // We are on a worker thread. The Module Manager's tree model and the
+        // tree's own layout cache are Swing state, so both of these have to go
+        // to the Event Dispatch Thread; structurally changing the tree from
+        // here races whatever the EDT is doing to the same tree, and the tree
+        // is left with a row for a node the model no longer holds. The next
+        // click over that row dies in DefaultTreeTableModel.isLeaf with
+        // "node must be a TreeTableNode managed by this model".
+        // See vassalengine/vassal#15104.
+        final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
+        SwingUtilities.invokeLater(() -> {
+          if (lr.module != null) {
+            mmw.addModule(lr.module);
+          }
+          mmw.setWaitCursor(false);
+        });
+
+        try {
+          proc.future.get();
+        }
+        catch (ExecutionException e) {
+          logger.error("", e);
         }
       }
-
-      // We are on a worker thread. The Module Manager's tree model and the
-      // tree's own layout cache are Swing state, so both of these have to go
-      // to the Event Dispatch Thread; structurally changing the tree from
-      // here races whatever the EDT is doing to the same tree, and the tree
-      // is left with a row for a node the model no longer holds. The next
-      // click over that row dies in DefaultTreeTableModel.isLeaf with
-      // "node must be a TreeTableNode managed by this model".
-      // See vassalengine/vassal#15104.
-      final ModuleManagerWindow mmw = ModuleManagerWindow.getInstance();
-      SwingUtilities.invokeLater(() -> {
-        if (lr.module != null) {
-          mmw.addModule(lr.module);
-        }
-        mmw.setWaitCursor(false);
-      });
-
-      try {
-        proc.future.get();
-      }
-      catch (ExecutionException e) {
-        logger.error("", e);
+      finally {
+        DockNameLink.delete(dockLink);
       }
 
       return null;
@@ -547,10 +559,15 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       }
     }
 
-    private List<String> buildArgumentList(String moduleName) {
+    private String dockName(String moduleName) {
+      return moduleName != null && moduleName.length() > 0
+        ? moduleName : Resources.getString("Editor.AbstractLaunchAction.unnamed_module"); //NON-NLS
+    }
+
+    private List<String> buildArgumentList(String moduleName, Path javaLink) {
       final List<String> result = new ArrayList<>();
 
-      result.add(Info.getJavaBinPath().getAbsolutePath());
+      result.add(javaLink != null ? javaLink.toString() : Info.getJavaBinPath().getAbsolutePath());
       result.add("");   // reserved for initial heap
       result.add("");   // reserved for maximum heap
 
@@ -577,8 +594,7 @@ public abstract class AbstractLaunchAction extends AbstractAction {
 
         // use the module name for the dock if we found a module name
 // FIXME: should "Unnamed module" be localized?
-        final String d_name = moduleName != null && moduleName.length() > 0
-          ? moduleName : Resources.getString("Editor.AbstractLaunchAction.unnamed_module"); //NON-NLS
+        final String d_name = dockName(moduleName);
 
         // get the path to the app icon
         final String d_icon = new File(Info.getBaseDir(),
