@@ -27,6 +27,7 @@
 * 15344: Strip document-structure tags from chat messages
 * 15319: Fix InvalidPathException on non-ASCII filenames under a broken locale
 * 15312: Build the Module Manager window on request, not during class init
+* 15308: Work around an NPE when contstructing a file dialog on Windows
 
 3.8.2 - 17 November 2026 
 
