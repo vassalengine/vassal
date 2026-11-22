@@ -52,6 +52,7 @@ import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.SavedGameUpdater;
 import VASSAL.tools.ScrollPane;
+import VASSAL.tools.filechooser.FileChooser;
 
 public class SavedGameUpdaterDialog extends JDialog {
   private static final long serialVersionUID = 1L;
@@ -72,7 +73,7 @@ public class SavedGameUpdaterDialog extends JDialog {
     super(owner, false);
     setTitle(Resources.getString("Editor.SavedGameUpdaterDialog.title"));
     initComponents();
-    fc = new JFileChooser();
+    fc = FileChooser.createJFileChooser();
     fc.setCurrentDirectory(GameModule.getGameModule().getFileChooser().getCurrentDirectory());
   }
 

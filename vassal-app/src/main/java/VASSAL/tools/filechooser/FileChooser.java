@@ -22,6 +22,7 @@ import java.awt.Dialog;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.io.File;
+import java.util.function.Supplier;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -29,6 +30,8 @@ import javax.swing.SwingUtilities;
 
 import VASSAL.i18n.Resources;
 import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import VASSAL.configure.DirectoryConfigurer;
 
@@ -41,6 +44,15 @@ import VASSAL.configure.DirectoryConfigurer;
  * @author Joel Uckelman
  */
 public abstract class FileChooser {
+  private static final Logger logger = LoggerFactory.getLogger(FileChooser.class);
+
+  /**
+   * The client property with which a {@link JFileChooser} can be told not to
+   * use the platform's shell, whatever its {@link
+   * javax.swing.filechooser.FileSystemView} is.
+   */
+  private static final String USE_SHELL_FOLDER = "FileChooser.useShellFolder"; //NON-NLS
+
   protected Component parent;
   protected DirectoryConfigurer prefs;
   public static final int APPROVE_OPTION = JFileChooser.APPROVE_OPTION;
@@ -86,6 +98,50 @@ public abstract class FileChooser {
       fc = new SwingFileChooser(parent, prefs, mode);
     }
     return fc;
+  }
+
+  /**
+   * Creates a {@link JFileChooser}, falling back to one which does not use
+   * the platform's shell if the ordinary one cannot be built.
+   *
+   * <p>A {@code JFileChooser} enumerates the shell's folders as it is
+   * constructed, and on Windows that can throw: when the "Network" shell
+   * folder cannot be reached the JDK dereferences a null and the failure
+   * comes back out of the constructor. It is not ours to fix -- the bug has
+   * been in the JDK since at least Java 8 -- but we do not have to let it
+   * cost the user a file dialog, or, when the chooser is built during
+   * start-up, the application. See vassalengine/vassal#15297 and #15125.</p>
+   *
+   * @return a file chooser
+   */
+  public static JFileChooser createJFileChooser() {
+    return createJFileChooser(JFileChooser::new);
+  }
+
+  /**
+   * @param factory builds the ordinary chooser; a seam for testing the
+   *                fallback, which cannot be provoked on a working shell
+   * @return a file chooser
+   * @see #createJFileChooser()
+   */
+  static JFileChooser createJFileChooser(Supplier<JFileChooser> factory) {
+    try {
+      return factory.get();
+    }
+    catch (RuntimeException | Error e) {
+      // Error as well as RuntimeException: the JDK's own file chooser code
+      // catches InternalError from the shell in two places, so that is a
+      // failure it expects of itself.
+      logger.warn("Could not build a file chooser; retrying without the platform shell", e); //NON-NLS
+
+      final JFileChooser fc =
+        new JFileChooser((File) null, new PlainFileSystemView());
+      // The view alone is enough -- usesShellFolder() falls back to comparing
+      // it against the platform's own -- but say so outright as well, since
+      // the client property is what that test asks first.
+      fc.putClientProperty(USE_SHELL_FOLDER, Boolean.FALSE);
+      return fc;
+    }
   }
 
   public abstract File getCurrentDirectory();
@@ -154,7 +210,7 @@ public abstract class FileChooser {
   }
 
   private static class SwingFileChooser extends FileChooser {
-    private final JFileChooser fc = new JFileChooser();
+    private final JFileChooser fc = createJFileChooser();
 
     public SwingFileChooser(Component parent, DirectoryConfigurer prefs, int mode) {
       super(parent, prefs);
