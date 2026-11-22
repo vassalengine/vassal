@@ -25,6 +25,7 @@
 * 15350: Bound the apply-on-move key, which can re-enter the trait that moved
 * 15349: Clear the fast-forward flag even when the fast-forward fails
 * 15344: Strip document-structure tags from chat messages
+* 15319: Fix InvalidPathException on non-ASCII filenames under a broken locale
 * 15312: Build the Module Manager window on request, not during class init
 
 3.8.2 - 17 November 2026 
