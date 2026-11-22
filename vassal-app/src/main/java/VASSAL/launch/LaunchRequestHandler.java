@@ -20,9 +20,13 @@ import VASSAL.Info;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
+import VASSAL.i18n.Resources;
 import VASSAL.tools.ErrorDialog;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 public final class LaunchRequestHandler implements Runnable {
   private final LaunchRequest lr;
@@ -94,6 +98,10 @@ public final class LaunchRequestHandler implements Runnable {
               }
               return "cannot find module"; //NON-NLS
             }
+
+            if (!extensionsOk(window)) {
+              return "cancelled"; //NON-NLS
+            }
           }
           else {
             // this is a pre 3.1 save file, can't tell the module name
@@ -149,5 +157,58 @@ public final class LaunchRequestHandler implements Runnable {
     }
 
     return null;
+  }
+
+  /**
+   * Warns if the save needs extensions which the chosen module will not
+   * load, or will load only in an older version.
+   *
+   * @return true to go ahead with the launch
+   */
+  private boolean extensionsOk(ModuleManagerWindow window) {
+    final List<SaveExtensions.Extension> needed;
+    try {
+      needed = SaveExtensions.read(lr.game);
+    }
+    catch (IOException e) {
+      // loading the save reports a file it cannot read
+      return true;
+    }
+
+    final List<SaveExtensions.Shortfall> shortfalls =
+      window.checkSaveExtensions(lr.module, needed);
+    if (shortfalls.isEmpty()) {
+      return true;
+    }
+
+    final StringBuilder message = new StringBuilder(
+      Resources.getString("ModuleManager.save_extensions_header", lr.game.getName())
+    ).append("\n\n");
+    for (final SaveExtensions.Shortfall s : shortfalls) {
+      final String key;
+      switch (s.problem) {
+      case INACTIVE:
+        key = "ModuleManager.save_extension_inactive"; //NON-NLS
+        break;
+      case OLDER:
+        key = "ModuleManager.save_extension_older"; //NON-NLS
+        break;
+      default:
+        key = "ModuleManager.save_extension_missing"; //NON-NLS
+        break;
+      }
+      message.append("\u2022 ")
+        .append(Resources.getString(key, s.needed.toString(), s.installedVersion))
+        .append('\n');
+    }
+    message.append('\n')
+      .append(Resources.getString("ModuleManager.save_extensions_trailer"));
+
+    return JOptionPane.showConfirmDialog(
+      window,
+      message.toString(),
+      Resources.getString("ModuleManager.save_extensions_title"),
+      JOptionPane.YES_NO_OPTION,
+      JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
   }
 }

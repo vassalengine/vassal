@@ -1097,6 +1097,49 @@ public class ModuleManagerWindow extends JFrame {
   }
 
   /**
+   * Compares the extensions a save records with those the module will load:
+   * the module's own active extensions and the active global ones.
+   *
+   * @param module the module file chosen for the save
+   * @param needed the extensions recorded in the save
+   * @return the needed extensions which are missing, inactive or older
+   */
+  List<SaveExtensions.Shortfall> checkSaveExtensions(
+      File module, List<SaveExtensions.Extension> needed) {
+    final List<SaveExtensions.Extension> active = new ArrayList<>();
+    final List<SaveExtensions.Extension> installed = new ArrayList<>();
+
+    final MyTreeNode node = rootNode.findNode(module);
+    if (node != null && node.getNodeInfo() instanceof ModuleInfo) {
+      for (final ExtensionInfo ext :
+           ((ModuleInfo) node.getNodeInfo()).getExtensions()) {
+        final SaveExtensions.Extension e = new SaveExtensions.Extension(
+          SaveExtensions.nameOf(ext.getFile()), ext.getVersion());
+        installed.add(e);
+        if (ext.isActive()) active.add(e);
+      }
+    }
+
+    final ExtensionsManager global = new ExtensionsManager("ext"); //NON-NLS
+    for (final File f : global.getActiveExtensions()) {
+      final SaveExtensions.Extension e = globalExtension(f);
+      installed.add(e);
+      active.add(e);
+    }
+    for (final File f : global.getInactiveExtensions()) {
+      installed.add(globalExtension(f));
+    }
+
+    return SaveExtensions.compare(needed, active, installed);
+  }
+
+  private static SaveExtensions.Extension globalExtension(File f) {
+    final AbstractMetaData md = MetaDataFactory.buildMetaData(f);
+    return new SaveExtensions.Extension(
+      SaveExtensions.nameOf(f), md == null ? "" : md.getVersion());
+  }
+
+  /**
    * @param name the module name recorded in a save
    * @return the versions of that module which are installed
    */
