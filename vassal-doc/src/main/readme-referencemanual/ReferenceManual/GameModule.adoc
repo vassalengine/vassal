@@ -36,6 +36,10 @@ The same image is shown, faded, down the left-hand side of the Welcome Wizard (i
 The About screen is "About _module name_", at the top of the application menu on macOS and the last item of the Help menu on Windows and Linux.
 If no image is set, the VASSAL splash image is shown.
 
+On macOS, the About screen image is also the module's icon in the Dock while it is running, with a small VASSAL badge in the corner, so that it can be told apart from the Module Manager and other modules.
+A square image, or one with its interest in the middle, works best, since the image is cropped to fill the icon.
+A module without an About screen image gets a generic icon of game pieces, in a colour picked from the module's name.
+
 image:images/GameModule.png[]
 
 === Editor Window
