@@ -34,12 +34,104 @@ com/DTDs/PropertyList-1.0.dtd">
     <dict>
       <key>CFBundleTypeName</key>
       <string>VASSAL Module</string>
-      <key>CFBundleTypeExtensions</key>
-      <array>
-        <string>vmod</string>
-      </array>
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Owner</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>org.vassalengine.vmod</string>
+      </array>
+    </dict>
+    <dict>
+      <key>CFBundleTypeName</key>
+      <string>VASSAL Saved Game</string>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+      <key>LSHandlerRank</key>
+      <string>Owner</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>org.vassalengine.vsav</string>
+      </array>
+    </dict>
+    <dict>
+      <key>CFBundleTypeName</key>
+      <string>VASSAL Log File</string>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+      <key>LSHandlerRank</key>
+      <string>Owner</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>org.vassalengine.vlog</string>
+      </array>
+    </dict>
+  </array>
+  <key>UTExportedTypeDeclarations</key>
+  <array>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>org.vassalengine.vmod</string>
+      <key>UTTypeDescription</key>
+      <string>VASSAL Module</string>
+      <key>UTTypeIconFile</key>
+      <string>VASSAL.icns</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.data</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>vmod</string>
+        </array>
+        <key>public.mime-type</key>
+        <string>application/x-vassal-module</string>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>org.vassalengine.vsav</string>
+      <key>UTTypeDescription</key>
+      <string>VASSAL Saved Game</string>
+      <key>UTTypeIconFile</key>
+      <string>VASSAL.icns</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.data</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>vsav</string>
+        </array>
+        <key>public.mime-type</key>
+        <string>application/x-vassal-save</string>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>org.vassalengine.vlog</string>
+      <key>UTTypeDescription</key>
+      <string>VASSAL Log File</string>
+      <key>UTTypeIconFile</key>
+      <string>VASSAL.icns</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.data</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>vlog</string>
+        </array>
+        <key>public.mime-type</key>
+        <string>application/x-vassal-log</string>
+      </dict>
     </dict>
   </array>
   <key>LSRequiresNativeExecution</key>
