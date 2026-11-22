@@ -14,7 +14,7 @@ env:
 
 jobs:
   package_linux_generic:
-    name: Test & Package Linux, Generic
+    name: Linux, Generic
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
@@ -71,7 +71,7 @@ jobs:
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
 
   package_win_x86_64:
-    name: Test & Package Windows x86_64
+    name: Windows x86_64
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
@@ -135,7 +135,7 @@ jobs:
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_64.exe
 
   package_win_aarch64:
-    name: Test & Package Windows aarch64
+    name: Windows aarch64
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
@@ -199,7 +199,7 @@ jobs:
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-aarch64.exe
 
   package_win_x86_32:
-    name: Test & Package Windows x86_32
+    name: Windows x86_32
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
@@ -266,7 +266,7 @@ jobs:
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-windows-x86_32.exe
 
   package_macos:
-    name: Test & Package MacOS
+    name: MacOS
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
@@ -332,7 +332,7 @@ jobs:
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-macos-universal.dmg
 
   package_debian:
-    name: Debian package
+    name: Debian
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo

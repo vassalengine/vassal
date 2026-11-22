@@ -15,7 +15,7 @@ env:
 jobs:
   # Regular packages.  Note, we take the version number from the tag.
   package_linux_generic:
-    name: Release Linux, Generic
+    name: Linux, Generic
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout
@@ -84,7 +84,7 @@ jobs:
             tmp/VASSAL-${{ github.ref_name }}-other.zip
 
   package_macos:
-    name: Release MacOS
+    name: MacOS
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
@@ -141,7 +141,7 @@ jobs:
 
   # Regular packages. Note, we take the version number from the tag.
   package_win_aarch64:
-    name: Release Windows aarch64
+    name: Windows aarch64
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
@@ -195,7 +195,7 @@ jobs:
 
   # Regular packages. Note, we take the version number from the tag.
   package_win_x86_64:
-    name: Release Windows x86_64
+    name: Windows x86_64
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
@@ -250,7 +250,7 @@ jobs:
 
   # Regular packages. Note, we take the version number from the tag.
   package_win_x86_32:
-    name: Release Windows x86_32
+    name: Windows x86_32
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout
@@ -303,7 +303,7 @@ jobs:
             tmp/VASSAL-${{ github.ref_name }}-windows-x86_32.exe
 
   package_rpm:
-    name: Release RPM
+    name: RPM
     runs-on: ubuntu-26.04
     needs:
       - package
@@ -350,7 +350,7 @@ jobs:
   package_debian:
     # Debian package build.  Creates new changelog entry from tag, and
     # makes a pull-request.
-    name: Release Debian
+    name: Debian
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout
