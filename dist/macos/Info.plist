@@ -91,7 +91,7 @@ com/DTDs/PropertyList-1.0.dtd">
       <string>VASSAL.icns</string>
       <key>UTTypeConformsTo</key>
       <array>
-        <string>public.data</string>
+        <string>public.zip-archive</string>
       </array>
       <key>UTTypeTagSpecification</key>
       <dict>
@@ -112,7 +112,7 @@ com/DTDs/PropertyList-1.0.dtd">
       <string>VASSAL.icns</string>
       <key>UTTypeConformsTo</key>
       <array>
-        <string>public.data</string>
+        <string>public.zip-archive</string>
       </array>
       <key>UTTypeTagSpecification</key>
       <dict>
@@ -133,7 +133,7 @@ com/DTDs/PropertyList-1.0.dtd">
       <string>VASSAL.icns</string>
       <key>UTTypeConformsTo</key>
       <array>
-        <string>public.data</string>
+        <string>public.zip-archive</string>
       </array>
       <key>UTTypeTagSpecification</key>
       <dict>
@@ -154,7 +154,7 @@ com/DTDs/PropertyList-1.0.dtd">
       <string>VASSAL.icns</string>
       <key>UTTypeConformsTo</key>
       <array>
-        <string>public.data</string>
+        <string>public.zip-archive</string>
       </array>
       <key>UTTypeTagSpecification</key>
       <dict>
