@@ -87,7 +87,9 @@ public class Player extends Launcher {
       createExtensionsLoader().addTo(GameModule.getGameModule());
       Localization.getInstance().translate();
       final GameModule m = GameModule.getGameModule();
-      if (lr.game != null) {
+      // Check the save as File > Load does: report version differences,
+      // and let the user back out of a mismatched module or newer VASSAL.
+      if (lr.game != null && m.getGameState().isSaveMetaDataValid(lr.game)) {
         m.getPlayerWindow().setVisible(true);
         m.setGameFile(lr.game.getName(), GameModule.GameFileMode.LOADED_GAME);
         m.getGameState().loadGameInBackground(lr.game);

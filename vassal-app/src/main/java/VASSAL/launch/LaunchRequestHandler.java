@@ -16,6 +16,7 @@
  */
 package VASSAL.launch;
 
+import VASSAL.Info;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
@@ -67,7 +68,18 @@ public final class LaunchRequestHandler implements Runnable {
             if (lr.module == null) {
               final List<String> installed =
                 window.getModuleVersions(moduleName);
-              if (installed.isEmpty()) {
+              final ModuleManagerWindow.ModuleInfo tooNew =
+                window.findModuleForSave(moduleName, moduleVersion, true);
+              if (tooNew != null) {
+                // the version which fits needs a newer VASSAL
+                ErrorDialog.show(
+                  "Error.module_too_new", //NON-NLS
+                  tooNew.getFile().getPath(),
+                  tooNew.getVassalVersion(),
+                  Info.getVersion()
+                );
+              }
+              else if (installed.isEmpty()) {
                 ErrorDialog.show(
                   "Error.save_module_not_installed", //NON-NLS
                   lr.game.getName(), moduleName

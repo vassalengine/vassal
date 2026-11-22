@@ -1062,10 +1062,22 @@ public class ModuleManagerWindow extends JFrame {
    * @param version the module version recorded in the save
    * @return the module with that name and version if installed, else the
    *         newest newer patch release of the same major.minor version,
-   *         else null
+   *         else null. Versions which need a newer VASSAL than this one are
+   *         skipped.
    * @see ModuleVersionMatcher
    */
   public File getModuleForSave(String name, String version) {
+    final ModuleInfo chosen = findModuleForSave(name, version, false);
+    return chosen == null ? null : chosen.getFile();
+  }
+
+  /**
+   * @param includeTooNew whether to consider module versions which need a
+   *                      newer VASSAL than this one
+   * @return the module chosen as for {@link #getModuleForSave}, or null
+   */
+  ModuleInfo findModuleForSave(String name, String version,
+                               boolean includeTooNew) {
     if (name == null) return null;
 
     final List<ModuleInfo> named = new ArrayList<>();
@@ -1073,13 +1085,15 @@ public class ModuleManagerWindow extends JFrame {
       final ModuleInfo module =
         (ModuleInfo) rootNode.getChild(i).getNodeInfo();
 
-      if (name.equals(module.getModuleName())) named.add(module);
+      if (name.equals(module.getModuleName()) &&
+          (includeTooNew || !module.isModuleTooNew())) {
+        named.add(module);
+      }
     }
 
-    final ModuleInfo chosen = ModuleVersionMatcher.choose(
+    return ModuleVersionMatcher.choose(
       version, named, m -> "?".equals(m.getVersion()) ? null : m.getVersion()
     );
-    return chosen == null ? null : chosen.getFile();
   }
 
   /**
