@@ -53,8 +53,9 @@ public class ModuleManagerMacOSXStartUp extends MacOSXStartUp {
   }
 
   static void openFiles(List<File> files) {
-    // Run on the EDT, queued behind the Module Manager window's creation,
-    // so that a file opened at start up is handled once the window exists.
+    // Run on the EDT. A file opened at start up can arrive before
+    // ModuleManager.launch() has run; ModuleManagerWindow.getInstance()
+    // then creates the window, and launch() shows that same window.
     SwingUtilities.invokeLater(() -> {
       for (final File f : files) {
         openFile(f.getAbsoluteFile());

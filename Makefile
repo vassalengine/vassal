@@ -141,18 +141,36 @@ $(TMPDIR)/module_deps: $(LIBDIR)/Vengine.jar | $(TMPDIR)
 # MacOS
 #
 
-$(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/macos-%
-	mkdir -p $@/Contents/{MacOS,Resources}
+# The app's executable is the native launcher from the JDK's jpackage
+# module. It starts the JVM inside the app's own process, which is
+# what lets macOS deliver files opened from the Finder to VASSAL; a shell
+# script running bin/java cannot receive them. The launcher reads
+# Contents/app/VASSAL.cfg and uses the runtime in Contents/runtime.
+JPACKAGE_LAUNCHER:=classes/jdk/jpackage/internal/resources/jpackageapplauncher
+
+$(TMPDIR)/macos-%-launcher: $(JDKDIR)/macos-%
+	mkdir -p $(TMPDIR)
+	tail -c +5 $(JDKDIR)/macos-$(*)/Contents/Home/jmods/jdk.jpackage.jmod >$@.zip
+	unzip -p $@.zip $(JPACKAGE_LAUNCHER) >$@
+	rm $@.zip
+	file $@ | grep -q Mach-O
+
+$(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/module_deps $(JDKDIR)/macos-% $(TMPDIR)/macos-%-launcher
+	mkdir -p $@/Contents/{MacOS,Resources,app,runtime/Contents/MacOS}
 	cp $(DISTDIR)/macos/{PkgInfo,Info.plist} $@/Contents
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
+	cp $(TMPDIR)/macos-$(*)-launcher $@/Contents/MacOS/VASSAL
 	cp $(DISTDIR)/macos/VASSAL.sh $@/Contents/MacOS
-	jlink --module-path $(JDKDIR)/macos-$(*)/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/MacOS/jre
+	cp $(DISTDIR)/macos/VASSAL.cfg $@/Contents/app
+	jlink --module-path $(JDKDIR)/macos-$(*)/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/runtime/Contents/Home
+	cp $@/Contents/runtime/Contents/Home/lib/libjli.dylib $@/Contents/runtime/Contents/MacOS
+	cp $(DISTDIR)/macos/Runtime-Info.plist $@/Contents/runtime/Contents/Info.plist
+	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' $@/Contents/runtime/Contents/Info.plist
 	cp $(DISTDIR)/macos/VASSAL.icns $@/Contents/Resources
-	cp -a $(LIBDIR) $@/Contents/Resources/Java
+	cp -a $(LIBDIR)/. $@/Contents/app
 	cp -a $(DOCDIR) $@/Contents/Resources/doc
 	cp -a CHANGES LICENSE README.md $@/Contents/Resources/doc
-	cp -a $(LIBDIR)/Vengine.jar $@/Contents/Resources/Java
 
 $(TMPDIR)/macos-universal-$(VERSION)-build/VASSAL.app: $(TMPDIR)/macos-x86_64-$(VERSION)-build/VASSAL.app $(TMPDIR)/macos-aarch64-$(VERSION)-build/VASSAL.app
 	mkdir -p $@
@@ -171,10 +189,11 @@ $(TMPDIR)/macos-%-$(VERSION)-build: $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.ap
 	cp $(DISTDIR)/macos/background.png $@/.background
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
-	chmod 755 $@/VASSAL.app/Contents/MacOS/VASSAL.sh
-	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/bin/{java,keytool}
-	file $@/VASSAL.app/Contents/MacOS/jre/bin/java
-	chmod 755 $@/VASSAL.app/Contents/MacOS/jre/lib/jspawnhelper
+	chmod 755 $@/VASSAL.app/Contents/MacOS/{VASSAL,VASSAL.sh}
+	chmod 755 $@/VASSAL.app/Contents/runtime/Contents/Home/bin/{java,keytool}
+	file $@/VASSAL.app/Contents/MacOS/VASSAL
+	file $@/VASSAL.app/Contents/runtime/Contents/Home/bin/java
+	chmod 755 $@/VASSAL.app/Contents/runtime/Contents/Home/lib/jspawnhelper
 
 $(TMPDIR)/VASSAL-$(VERSION)-macos-%-uncompressed.dmg: $(TMPDIR)/macos-%-$(VERSION)-build
 	genisoimage -V VASSAL -D -R -apple -no-pad -o $@ $<

@@ -42,6 +42,7 @@ public class ModuleManagerUpdateHelper {
       "-classpath", //NON-NLS
       System.getProperty("java.class.path"),
       "-Duser.dir=" + System.getProperty("user.dir"), //NON-NLS
+      "-DVASSAL.baseDir=" + Info.getBaseDir().getAbsolutePath(), //NON-NLS
       "VASSAL.launch.ModuleManager",
       "--update-" + type
     ));

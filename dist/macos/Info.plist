@@ -18,7 +18,7 @@ com/DTDs/PropertyList-1.0.dtd">
   <key>CFBundleIconFile</key>
   <string>VASSAL.icns</string>
   <key>CFBundleExecutable</key>
-  <string>VASSAL.sh</string>
+  <string>VASSAL</string>
   <key>CFBundleAllowMixedLocalizations</key>
   <string>true</string>
   <key>CFBundleDevelopmentRegion</key>

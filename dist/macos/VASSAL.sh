@@ -18,7 +18,7 @@ else
 fi
 
 # --- Find Java and debugger -----------------------------------------
-java=Contents/MacOS/jre/bin/java
+java=Contents/runtime/Contents/Home/bin/java
 cmd="$java"
 
 # --- The various entry points and the JAR ---------------------------
@@ -29,7 +29,7 @@ edt_entry=VASSAL.launch.Editor
 trl_entry=VASSAL.i18n.TranslateVassalWindow
 srv_entry=VASSAL.chat.node.Server
 entry=$mod_entry
-jar="Contents/Resources/Java/Vengine.jar"
+jar="Contents/app/Vengine.jar"
 srv_url=null
 
 # --- Some modus operandi --------------------------------------------
