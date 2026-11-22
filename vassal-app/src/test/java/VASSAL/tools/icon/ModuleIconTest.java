@@ -19,18 +19,22 @@
 package VASSAL.tools.icon;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+
+import VASSAL.tools.image.ImageUtils;
 
 public class ModuleIconTest {
   private static final int SIZE = 512;
@@ -108,5 +112,35 @@ public class ModuleIconTest {
     final Color with = new Color(ModuleIcon.render("Here I Stand", null, SIZE, ModuleIcon.Badge.VASSAL).getRGB(x, y));
     final Color without = new Color(ModuleIcon.render("Here I Stand", null, SIZE, ModuleIcon.Badge.NONE).getRGB(x, y));
     assertNotEquals(with, without);
+  }
+
+  @Test
+  public void stockSplashIsRecognised() throws Exception {
+    final BufferedImage splash = ImageUtils.getImageResource("/images/Splash.png");
+    assertTrue(ModuleIcon.isStockSplash(splash));
+
+    // a resized copy, as a module might carry
+    final BufferedImage small = new BufferedImage(300, 250, BufferedImage.TYPE_INT_RGB);
+    final Graphics2D g = small.createGraphics();
+    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    g.drawImage(splash, 0, 0, 300, 250, null);
+    g.dispose();
+    assertTrue(ModuleIcon.isStockSplash(small));
+
+    // the GIF copy that ships alongside it
+    assertTrue(ModuleIcon.isStockSplash(ImageUtils.getImageResource("/images/Splash.gif")));
+  }
+
+  @Test
+  public void otherImagesAreNotTheSplash() {
+    final BufferedImage plain = new BufferedImage(600, 500, BufferedImage.TYPE_INT_RGB);
+    final Graphics2D g = plain.createGraphics();
+    g.setColor(new Color(0x406030));
+    g.fillRect(0, 0, 600, 500);
+    g.dispose();
+    assertFalse(ModuleIcon.isStockSplash(plain));
+
+    // wrong shape
+    assertFalse(ModuleIcon.isStockSplash(new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB)));
   }
 }

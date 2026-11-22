@@ -98,7 +98,9 @@ public final class ModuleIcon {
 
   /**
    * Draws the icon for a loaded module, from its About image (or a legacy
-   * About Screen's image) if it has one, else from its name.
+   * About Screen's image) if it has one, else from its name. An About image
+   * that is only a copy of the stock VASSAL splash, as many older modules
+   * have, counts as none, so the module gets its own coloured tile.
    *
    * @param module the module
    * @param size   width and height of the icon in pixels
@@ -106,7 +108,81 @@ public final class ModuleIcon {
    * @return the icon
    */
   public static BufferedImage render(GameModule module, int size, Badge badge) {
-    return render(module.getGameName(), AboutScreen.getModuleAboutImage(module), size, badge);
+    BufferedImage about = AboutScreen.getModuleAboutImage(module);
+    if (about != null && isStockSplash(about)) {
+      about = null;
+    }
+    return render(module.getGameName(), about, size, badge);
+  }
+
+  // The stock splash, reduced to THUMB x THUMB, loaded on first use
+  private static final int THUMB = 16;
+  private static int[] splashThumb;
+
+  /**
+   * @return whether the image is (a copy of) the stock VASSAL splash. Compared
+   * at low resolution, so resized or recompressed copies match too.
+   */
+  static boolean isStockSplash(BufferedImage img) {
+    final int[] ref = getSplashThumb();
+    if (ref == null || img.getWidth() == 0 || img.getHeight() == 0) {
+      return false;
+    }
+
+    // the splash is 600x500; a copy keeps its shape
+    final double aspect = (double) img.getWidth() / img.getHeight();
+    if (Math.abs(aspect - 1.2) > 0.03) {
+      return false;
+    }
+
+    final int[] t = thumb(img);
+    long diff = 0;
+    for (int i = 0; i < t.length; ++i) {
+      diff += Math.abs(((t[i] >> 16) & 0xFF) - ((ref[i] >> 16) & 0xFF));
+      diff += Math.abs(((t[i] >> 8) & 0xFF) - ((ref[i] >> 8) & 0xFF));
+      diff += Math.abs((t[i] & 0xFF) - (ref[i] & 0xFF));
+    }
+    // mean difference per channel, out of 255
+    return diff / (t.length * 3.0) < 12;
+  }
+
+  private static synchronized int[] getSplashThumb() {
+    if (splashThumb == null) {
+      try {
+        splashThumb = thumb(ImageUtils.getImageResource("/images/Splash.png")); //NON-NLS
+      }
+      catch (ImageIOException e) {
+        logger.warn("Unable to load the VASSAL splash", e); //NON-NLS
+        splashThumb = new int[0];
+      }
+    }
+    return splashThumb.length == 0 ? null : splashThumb;
+  }
+
+  /** Averages the image down to THUMB x THUMB opaque RGB pixels. */
+  private static int[] thumb(BufferedImage img) {
+    final int w = img.getWidth();
+    final int h = img.getHeight();
+    final int[] px = img.getRGB(0, 0, w, h, null, 0, w);
+    final long[] sum = new long[THUMB * THUMB * 3];
+    final long[] count = new long[THUMB * THUMB];
+    for (int y = 0; y < h; ++y) {
+      final int ty = y * THUMB / h;
+      for (int x = 0; x < w; ++x) {
+        final int c = ty * THUMB + x * THUMB / w;
+        final int p = px[y * w + x];
+        sum[3 * c] += (p >> 16) & 0xFF;
+        sum[3 * c + 1] += (p >> 8) & 0xFF;
+        sum[3 * c + 2] += p & 0xFF;
+        ++count[c];
+      }
+    }
+    final int[] out = new int[THUMB * THUMB];
+    for (int c = 0; c < out.length; ++c) {
+      final long n = Math.max(1, count[c]);
+      out[c] = (int) (sum[3 * c] / n) << 16 | (int) (sum[3 * c + 1] / n) << 8 | (int) (sum[3 * c + 2] / n);
+    }
+    return out;
   }
 
   /**
