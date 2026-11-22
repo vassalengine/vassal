@@ -162,7 +162,7 @@ $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.app: $(LIBDIR)/Vengine.jar $(TMPDIR)/m
 	sed -i -e 's/%NUMVERSION%/$(VNUM)/g' \
          -e 's/%YEAR%/$(YEAR)/g' $@/Contents/Info.plist
 	cp $(TMPDIR)/macos-$(*)-launcher $@/Contents/MacOS/VASSAL
-	cp $(DISTDIR)/macos/VASSAL.sh $@/Contents/MacOS
+	cp $(DISTDIR)/macos/VASSAL.sh $@/Contents/Resources
 	cp $(DISTDIR)/macos/VASSAL.cfg $@/Contents/app
 	jlink --module-path $(JDKDIR)/macos-$(*)/Contents/Home/jmods --no-header-files --no-man-pages --add-modules $(file < $(TMPDIR)/module_deps) --compress=2 --output $@/Contents/runtime/Contents/Home
 	cp $@/Contents/runtime/Contents/Home/lib/libjli.dylib $@/Contents/runtime/Contents/MacOS
@@ -190,7 +190,7 @@ $(TMPDIR)/macos-%-$(VERSION)-build: $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.ap
 	cp $(DISTDIR)/macos/background.png $@/.background
 	find $@ -type f -exec chmod 644 \{\} \+
 	find $@ -type d -exec chmod 755 \{\} \+
-	chmod 755 $@/VASSAL.app/Contents/MacOS/{VASSAL,VASSAL.sh}
+	chmod 755 $@/VASSAL.app/Contents/MacOS/VASSAL $@/VASSAL.app/Contents/Resources/VASSAL.sh
 	chmod 755 $@/VASSAL.app/Contents/runtime/Contents/Home/bin/{java,keytool}
 	file $@/VASSAL.app/Contents/MacOS/VASSAL
 	file $@/VASSAL.app/Contents/runtime/Contents/Home/bin/java
