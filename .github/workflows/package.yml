@@ -71,7 +71,7 @@ jobs:
           path: tmp/VASSAL-${{ steps.version.outputs.VERSION }}-other.zip
 
   package_win_x86_64:
-    name: Test & Package Windows aarch64
+    name: Test & Package Windows x86_64
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout repo
