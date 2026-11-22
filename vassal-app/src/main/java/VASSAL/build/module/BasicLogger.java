@@ -27,6 +27,7 @@ import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
 import VASSAL.command.FlareCommand;
+import VASSAL.command.PlayAudioClipCommand;
 import VASSAL.command.Logger;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IconConfigurer;
@@ -637,15 +638,27 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
    * {@link GameState#getRestoreCommand()}: {@link Chatter} is not a
    * {@link GameComponent} at all, and {@link VASSAL.build.module.map.Flare} is
    * one whose {@code getRestoreCommand()} returns null, saying in its own
-   * comment that a flare does not need restoring. {@link UndoCommand} is the
-   * marker wrapped around an undo rather than the undo itself, and a
+   * comment that a flare does not need restoring. {@link PlayAudioClipCommand}
+   * plays a sound and is gone. {@link UndoCommand} is the marker wrapped
+   * around an undo rather than the undo itself, and a
    * {@link VASSAL.command.NullCommand} does nothing by definition.</p>
+   *
+   * <p>{@code FinishedStartupGlobalKeyCommands} is the other marker: {@link
+   * GameState#doStartupGlobalKeyCommands} sends it after any Startup Global
+   * Key Command has fired, to block undo past that point. It is sent on its
+   * own, so whatever the commands themselves did is judged on its own merits
+   * -- and it is sent from an {@code invokeLater} after {@code setup()} has
+   * already cleared the flag, so without this a module with a startup command
+   * which only reports to chat asked the player to save a game they had just
+   * loaded and not touched.</p>
    */
   private static boolean isNotAChange(Command c) {
     return c.isNull() ||
            c instanceof Chatter.DisplayText ||
            c instanceof FlareCommand ||
-           c instanceof UndoCommand;
+           c instanceof PlayAudioClipCommand ||
+           c instanceof UndoCommand ||
+           c instanceof GameState.FinishedStartupGlobalKeyCommands;
   }
 
   /**

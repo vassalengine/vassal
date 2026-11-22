@@ -470,7 +470,11 @@ public class GameState implements CommandEncoder {
     }
   }
 
-  private static class FinishedStartupGlobalKeyCommands extends Command {
+  /**
+   * Package-private rather than private so that {@link BasicLogger} can tell
+   * this marker apart from a command which actually changes the game.
+   */
+  static class FinishedStartupGlobalKeyCommands extends Command {
     @Override
     protected void executeCommand() {
       final Logger l = GameModule.getGameModule().getLogger();

@@ -2,6 +2,7 @@ package VASSAL.build.module;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +14,7 @@ import VASSAL.command.ChangePiece;
 import VASSAL.command.Command;
 import VASSAL.command.FlareCommand;
 import VASSAL.command.NullCommand;
+import VASSAL.command.PlayAudioClipCommand;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.filechooser.FileChooser;
 import java.awt.Point;
@@ -228,6 +230,77 @@ public class BasicLoggerTest {
 
       logger.log(new Chatter.DisplayText(mock(Chatter.class), "hello"));
       logger.undo();
+      verify(gs, never()).setModified(true);
+    }
+  }
+
+  /**
+   * A Startup Global Key Command which changes nothing must leave the game
+   * unmodified, marker and all.
+   *
+   * <p>When any SGKC fires, GameState.doStartupGlobalKeyCommands() sends a
+   * FinishedStartupGlobalKeyCommands of its own to block undo past that point.
+   * It is sent from an invokeLater which runs after setup() has cleared the
+   * flag, so in a module with a "first launch of session" command -- which
+   * reapplies on every load -- the marker alone was enough to make a freshly
+   * loaded game ask to be saved.</p>
+   */
+  @Test
+  public void loggingTheStartupCommandMarkerLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      // what a startup command which only reports to chat leaves behind
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new Chatter.DisplayText(null, "* Reinforcements have arrived"));
+      logger.log(new GameState.FinishedStartupGlobalKeyCommands());
+
+      verify(gs, never()).setModified(true);
+    }
+  }
+
+  /**
+   * ... but the marker must not cover for the commands it follows. A startup
+   * command which does change something is sent separately from the marker, so
+   * it is judged on its own.
+   */
+  @Test
+  public void aStartupCommandWhichChangesSomethingStillMarksTheGameModified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new ChangePiece("a", "1", "2"));
+      logger.log(new GameState.FinishedStartupGlobalKeyCommands());
+
+      // atLeastOnce, not once: what is being asked is that the real change is
+      // still seen, not how many times the flag was set on the way there
+      verify(gs, atLeastOnce()).setModified(true);
+    }
+  }
+
+  /**
+   * A sound is played and gone: PlayAudioClipCommand contributes nothing to
+   * getRestoreCommand(), and a Do Action Button sends one on its own, so a
+   * button which only makes a noise marked the game modified.
+   */
+  @Test
+  public void loggingAnAudioClipLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new PlayAudioClipCommand("fanfare.wav"));
+
       verify(gs, never()).setModified(true);
     }
   }
