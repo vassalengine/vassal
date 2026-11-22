@@ -67,6 +67,18 @@ com/DTDs/PropertyList-1.0.dtd">
         <string>org.vassalengine.vlog</string>
       </array>
     </dict>
+    <dict>
+      <key>CFBundleTypeName</key>
+      <string>VASSAL Extension</string>
+      <key>CFBundleTypeRole</key>
+      <string>Viewer</string>
+      <key>LSHandlerRank</key>
+      <string>Owner</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>org.vassalengine.vmdx</string>
+      </array>
+    </dict>
   </array>
   <key>UTExportedTypeDeclarations</key>
   <array>
@@ -131,6 +143,27 @@ com/DTDs/PropertyList-1.0.dtd">
         </array>
         <key>public.mime-type</key>
         <string>application/x-vassal-log</string>
+      </dict>
+    </dict>
+    <dict>
+      <key>UTTypeIdentifier</key>
+      <string>org.vassalengine.vmdx</string>
+      <key>UTTypeDescription</key>
+      <string>VASSAL Extension</string>
+      <key>UTTypeIconFile</key>
+      <string>VASSAL.icns</string>
+      <key>UTTypeConformsTo</key>
+      <array>
+        <string>public.data</string>
+      </array>
+      <key>UTTypeTagSpecification</key>
+      <dict>
+        <key>public.filename-extension</key>
+        <array>
+          <string>vmdx</string>
+        </array>
+        <key>public.mime-type</key>
+        <string>application/x-vassal-extension</string>
       </dict>
     </dict>
   </array>

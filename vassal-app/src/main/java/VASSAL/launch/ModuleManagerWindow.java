@@ -1042,6 +1042,79 @@ public class ModuleManagerWindow extends JFrame {
     updateModuleList();
   }
 
+  /**
+   * Copies an extension into a module's active extensions folder and
+   * shows it under the module, as Add Extension does, but leaves the
+   * original file where it is.
+   *
+   * <p>Call only on the Event Dispatch Thread; see {@link #addModule}.</p>
+   *
+   * @param module the module file, as listed in the Module Manager
+   * @param extension the extension file
+   * @return the installed extension file
+   * @throws IOException if the extension cannot be copied
+   */
+  public File installExtension(File module, File extension) throws IOException {
+    final MyTreeNode moduleNode = rootNode.findNode(module);
+    if (moduleNode == null ||
+        !(moduleNode.getNodeInfo() instanceof ModuleInfo)) {
+      throw new IOException("module not in the Module Manager: " + module); //NON-NLS
+    }
+
+    final File dir = ((ModuleInfo) moduleNode.getNodeInfo())
+      .getExtensionsManager().getExtensionsDirectory(true);
+    if (dir == null) {
+      throw new IOException("cannot create the extensions folder for " + module); //NON-NLS
+    }
+
+    final Path target = dir.toPath().resolve(extension.getName());
+    logger.info("Adding {} to {}", extension, module); //NON-NLS
+    if (!Files.exists(target) || !Files.isSameFile(extension.toPath(), target)) {
+      Files.copy(extension.toPath(), target,
+        java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    moduleNode.refresh();
+    tree.repaint();
+    return target.toFile();
+  }
+
+  /**
+   * @param name a module name, or null for every module
+   * @return the files of the listed modules with that name
+   */
+  public List<File> getModulesByName(String name) {
+    final List<File> result = new ArrayList<>();
+    for (int i = 0; i < rootNode.getChildCount(); i++) {
+      final ModuleInfo module =
+        (ModuleInfo) rootNode.getChild(i).getNodeInfo();
+      if (name == null || name.equals(module.getModuleName())) {
+        result.add(module.getFile());
+      }
+    }
+    return result;
+  }
+
+  /**
+   * @param module a module file
+   * @return the module's version as the Module Manager shows it, or ""
+   */
+  public String getModuleVersion(File module) {
+    final MyTreeNode moduleNode = rootNode.findNode(module);
+    return moduleNode == null ? "" : moduleNode.getNodeInfo().getVersion();
+  }
+
+  /**
+   * @param module a module file
+   * @return the module's active extensions folder, or null
+   */
+  public File getExtensionsDirectory(File module) {
+    final MyTreeNode moduleNode = rootNode.findNode(module);
+    return moduleNode != null && moduleNode.getNodeInfo() instanceof ModuleInfo ?
+      ((ModuleInfo) moduleNode.getNodeInfo()).getExtensionsManager()
+        .getExtensionsDirectory(false) : null;
+  }
+
   public File getModuleByName(String name) {
     if (name == null) return null;
 

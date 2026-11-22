@@ -79,6 +79,13 @@ public class ExtensionMetaData extends AbstractMetaData {
     return moduleData == null ? "" : moduleData.getName();
   }
 
+  /**
+   * @return true if the extension can be used with any module
+   */
+  public boolean isUniversal() {
+    return universal;
+  }
+
   public String getModuleVersion() {
     return moduleData == null ? "" : moduleData.getVersion();
   }
