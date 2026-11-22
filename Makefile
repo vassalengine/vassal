@@ -79,6 +79,7 @@ MVN:=./mvnw
 
 DMG:=$(DISTDIR)/dmg/libdmg-hfsplus/build/dmg/dmg
 LIPO:=$(DISTDIR)/lipo/lipo_linux_amd64
+RCODESIGN:=$(DISTDIR)/rcodesign/rcodesign
 
 NSIS:=makensis
 LAUNCH4J:=$(DISTDIR)/launch4j/launch4j/launch4j
@@ -194,6 +195,9 @@ $(TMPDIR)/macos-%-$(VERSION)-build: $(TMPDIR)/macos-%-$(VERSION)-build/VASSAL.ap
 	file $@/VASSAL.app/Contents/MacOS/VASSAL
 	file $@/VASSAL.app/Contents/runtime/Contents/Home/bin/java
 	chmod 755 $@/VASSAL.app/Contents/runtime/Contents/Home/lib/jspawnhelper
+	# ad-hoc sign the whole bundle, so that the launcher's own signature
+	# is not taken as the bundle's (Gatekeeper rejects that as broken)
+	$(RCODESIGN) sign $@/VASSAL.app
 
 $(TMPDIR)/VASSAL-$(VERSION)-macos-%-uncompressed.dmg: $(TMPDIR)/macos-%-$(VERSION)-build
 	genisoimage -V VASSAL -D -R -apple -no-pad -o $@ $<

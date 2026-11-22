@@ -65,6 +65,7 @@ jobs:
             ./dist/jdks/macos-aarch64
             ./dist/launch4j
             ./dist/lipo
+            ./dist/rcodesign
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
@@ -149,6 +150,7 @@ jobs:
             ./dist/jdks/windows-aarch64
             ./dist/launch4j
             ./dist/lipo
+            ./dist/rcodesign
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
@@ -218,6 +220,7 @@ jobs:
             ./dist/jdks/windows-x86_32
             ./dist/launch4j
             ./dist/lipo
+            ./dist/rcodesign
           key: ${{ runner.os }}-bootstrap-${{ hashFiles('bootstrap.sh') }}
 
       - name: Install packaging dependencies
