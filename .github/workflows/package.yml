@@ -323,7 +323,7 @@ jobs:
         run: ./bootstrap.sh -j ${{ env.LIBERICA_VERSION }} macos-x86_64 macos-aarch64
 
       - name: Build MacOS
-        run: make release
+        run: make release-macos
 
       - name: Archive MacOS
         uses: actions/upload-artifact@v7
