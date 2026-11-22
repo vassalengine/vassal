@@ -19,6 +19,9 @@ package VASSAL.launch;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
+import VASSAL.tools.ErrorDialog;
+
+import java.util.List;
 
 public final class LaunchRequestHandler implements Runnable {
   private final LaunchRequest lr;
@@ -54,10 +57,31 @@ public final class LaunchRequestHandler implements Runnable {
         final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.game);
         if (data instanceof SaveMetaData) {
           // we found save metadata
-          final String moduleName = ((SaveMetaData) data).getModuleName();
+          final SaveMetaData saveData = (SaveMetaData) data;
+          final String moduleName = saveData.getModuleName();
           if (moduleName != null && moduleName.length() > 0) {
-            // get the module file by module name
-            lr.module = window.getModuleByName(moduleName);
+            // get the module file by module name and version
+            final String moduleVersion =
+              ModuleVersionMatcher.fullVersion(saveData.getModuleData());
+            lr.module = window.getModuleForSave(moduleName, moduleVersion);
+            if (lr.module == null) {
+              final List<String> installed =
+                window.getModuleVersions(moduleName);
+              if (installed.isEmpty()) {
+                ErrorDialog.show(
+                  "Error.save_module_not_installed", //NON-NLS
+                  lr.game.getName(), moduleName
+                );
+              }
+              else {
+                ErrorDialog.show(
+                  "Error.save_module_version_not_installed", //NON-NLS
+                  lr.game.getName(), moduleName, moduleVersion,
+                  String.join(", ", installed)
+                );
+              }
+              return "cannot find module"; //NON-NLS
+            }
           }
           else {
             // this is a pre 3.1 save file, can't tell the module name

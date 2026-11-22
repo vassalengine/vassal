@@ -1055,6 +1055,50 @@ public class ModuleManagerWindow extends JFrame {
     return null;
   }
 
+  /**
+   * Finds the installed module to open a saved game or log with.
+   *
+   * @param name    the module name recorded in the save
+   * @param version the module version recorded in the save
+   * @return the module with that name and version if installed, else the
+   *         newest newer patch release of the same major.minor version,
+   *         else null
+   * @see ModuleVersionMatcher
+   */
+  public File getModuleForSave(String name, String version) {
+    if (name == null) return null;
+
+    final List<ModuleInfo> named = new ArrayList<>();
+    for (int i = 0; i < rootNode.getChildCount(); i++) {
+      final ModuleInfo module =
+        (ModuleInfo) rootNode.getChild(i).getNodeInfo();
+
+      if (name.equals(module.getModuleName())) named.add(module);
+    }
+
+    final ModuleInfo chosen = ModuleVersionMatcher.choose(
+      version, named, m -> "?".equals(m.getVersion()) ? null : m.getVersion()
+    );
+    return chosen == null ? null : chosen.getFile();
+  }
+
+  /**
+   * @param name the module name recorded in a save
+   * @return the versions of that module which are installed
+   */
+  public List<String> getModuleVersions(String name) {
+    final List<String> versions = new ArrayList<>();
+    if (name == null) return versions;
+
+    for (int i = 0; i < rootNode.getChildCount(); i++) {
+      final ModuleInfo module =
+        (ModuleInfo) rootNode.getChild(i).getNodeInfo();
+
+      if (name.equals(module.getModuleName())) versions.add(module.getVersion());
+    }
+    return versions;
+  }
+
   public void refreshModuleList() {
     refreshModuleList(false);
   }
@@ -1895,18 +1939,7 @@ public class ModuleManagerWindow extends JFrame {
       if (metadata == null)
         return "?";
 
-      final String version = metadata.getVersion();
-      final String extra1 = metadata.getExtra1();
-      final String extra2 = metadata.getExtra2();
-      if (!extra1.isEmpty() && (extra1.charAt(0) >= '0') && (extra1.charAt(0) <= '9')) {
-        if (!extra2.isEmpty() && (extra2.charAt(0) >= '0') && (extra2.charAt(0) <= '9')) {
-          return version + "." + extra1 + "." + extra2;
-        }
-        else {
-          return version + "." + extra1;
-        }
-      }
-      return version;
+      return ModuleVersionMatcher.fullVersion(metadata);
     }
 
     public String getLocalizedDescription() {
