@@ -236,14 +236,13 @@ public class GameLibrary {
       throw new IOException(Resources.getString("LibraryBrowser.missing_sha256")); //NON-NLS
 
     try (InputStream in = new DigestInputStream(getRequest(url, null),
-                                                digest)) {
-      try (OutputStream out  = Files.newOutputStream(outname.toPath())) {
-        final long read = in.transferTo(out);
+                                                digest);
+         OutputStream out  = Files.newOutputStream(outname.toPath())) {
+      final long read = in.transferTo(out);
       
-        if (read != size)  {
-          throw new IOException(Resources.getString("LibraryBrowser.inconsistent_read", //NON-NLS
+      if (read != size)  {
+        throw new IOException(Resources.getString("LibraryBrowser.inconsistent_read", //NON-NLS
                                                     read, size));
-        }
       }
     }
       
@@ -334,7 +333,7 @@ public class GameLibrary {
   /**
    * Write cached projects to disk.  The cache is written to the users
    * Vassal configuration directory (e.g., ~/.VASSAL/projects.json on
-   * Linux, ~/Library/Application Support/VASSAL/projecs.json on MacOS,
+   * Linux, ~/Library/Application Support/VASSAL/projects.json on MacOS,
    * %HOMEDRIVE%\Users\%USER%\AppData\Local\... on Windows).
    *
    * @param ret Map from slug to project to write to disk 
@@ -535,8 +534,7 @@ public class GameLibrary {
     // Destination and temporary file
     final String fn     = file.getFileName();
     final File   target = new File(outputDir, fn);
-    final File   tmp    = File.createTempFile(fn, ".part",
-                                              Info.getTempDir()); //NON-NLS
+    final File   tmp    = File.createTempFile(fn, ".part", outputDir); //NON-NLS
 
     try {
       final URL url = encodeURL(file.getURL());
