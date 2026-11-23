@@ -27,7 +27,7 @@ Alternatively, you may get better image quality for your rotations by creating s
 |
 *Description:*:: A short description of this trait for your own reference.
 
-*Rotator name:*:: A name that is used to define the names of the <<#RotatorProperties,properties>> that expose the internal state of this rotation trait.
+*Rotator name:*:: A name that is used to define the names of the <<#RotatorProperties,properties>> that expose the internal state of this rotation trait. Give each Can Rotate trait on a piece a unique name so that the <<GameRefresher.adoc#top,Game Refresher>> can match it after changes.
 +
 NOTE: It is advisable to avoid including spaces or other special characters in this field.
 

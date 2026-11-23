@@ -13,7 +13,7 @@ The text of the label can be fixed or specifiable by a player at game time.
 [width="100%",cols="50%a,^50%a",]
 |===
 |
-*Description:*  A description of the purpose of this label that is displayed in the Piece Definer.
+*Description:*  A description of the purpose of this label that is displayed in the Piece Definer. Give each Text Label on a piece a unique description so that the <<GameRefresher.adoc#top,Game Refresher>> can match it after changes.
 
 *Label Text:*  The starting value for the label text. The string entered in the _Label Text_ field is evaluated as follows:
 
