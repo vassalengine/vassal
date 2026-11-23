@@ -17,11 +17,14 @@
  */
 package VASSAL.build.widget;
 
+import java.awt.image.BufferedImage;
 import java.awt.Component;
 import java.util.Arrays;
 
 import javax.swing.JPanel;
 
+import VASSAL.tools.imageop.ImageSourceOpBitmapImpl;
+import VASSAL.tools.imageop.Op;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +39,7 @@ import VASSAL.build.GameModule;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.DataArchive;
 
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -68,6 +72,12 @@ public class MapWidgetTest {
 
   private MockedStatic<GameModule> staticGm;
 
+  // Provide a dummy image for the launch button.
+  // This prevents an IllegalArgument exception in the IconConfigurer for the launch button.
+  // This occurs in the build phase and is unrelated to the exception under test.
+  private MockedStatic<Op> op;
+  private final ImageSourceOpBitmapImpl image = new ImageSourceOpBitmapImpl(new BufferedImage(1,1,TYPE_INT_RGB));
+
   /** A WidgetMap registers key listeners and a preference as it builds. */
   @BeforeEach
   public void mockModule() {
@@ -82,11 +92,14 @@ public class MapWidgetTest {
     // Window has none of its internals, which throws on the event dispatch thread.
     when(gm.getPlayerWindow()).thenReturn(null);
     staticGm.when(GameModule::getGameModule).thenReturn(gm);
+    op = Mockito.mockStatic(Op.class);
+    op.when(() -> Op.load(anyString())).thenReturn(image);
   }
 
   @AfterEach
   public void releaseModule() {
     staticGm.close();
+    op.close();
   }
 
   /**
