@@ -891,6 +891,9 @@ public class ModuleManagerWindow extends JFrame {
     final MenuManager mm = MenuManager.getInstance();    
     mm.addAction("Main.find",
       new AbstractAction(Resources.getString("Main.find")) {
+        {
+          putValue(MNEMONIC_KEY, (int) Resources.getString("Main.find.shortcut").charAt(0)); //NON-NLS
+        }
         @Override
         public void actionPerformed(ActionEvent e) {
           SearchFactory.getInstance().showFindDialog(tree,
