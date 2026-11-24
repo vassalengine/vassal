@@ -75,6 +75,7 @@
         { "num": 15247, "desc": "Prevent pieces vanishing when a move is undone" }
       ],
       "improvements": [
+        { "num": 15394, "desc": "Report a class the module does not contain as bad module data" },
         { "num": 15329, "desc": "Report a corrupt module prefs file as a read error instead of a bug" }
       ],
       "other": [
