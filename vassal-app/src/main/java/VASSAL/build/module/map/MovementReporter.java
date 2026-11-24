@@ -199,6 +199,7 @@ public class MovementReporter {
         break;
       }
       format.setProperty(Map.PIECE_NAME, ms.getPieceName());
+      format.setProperty(Map.PIECE_COUNT, ms.getPieceCount());
       final String loc = getLocation(toMap, ms.getNewPosition());
       format.setProperty(Map.LOCATION, loc);
       if (fromMap != null) {
@@ -367,6 +368,10 @@ public class MovementReporter {
         }
       }
       return names.toString();
+    }
+
+    public String getPieceCount() {
+      return String.valueOf(pieces.size());
     }
   }
 

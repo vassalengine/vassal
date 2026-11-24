@@ -18,6 +18,7 @@
 package VASSAL.build;
 
 import VASSAL.Info;
+import VASSAL.build.module.AnimatedDiceButton;
 import VASSAL.build.module.BasicCommandEncoder;
 import VASSAL.build.module.BasicLogger;
 import VASSAL.build.module.ChartWindow;
@@ -126,7 +127,6 @@ import VASSAL.tools.menu.MenuItemProxy;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.SwingUtils;
 import VASSAL.tools.version.VersionUtils;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -218,10 +218,8 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning"; //NON-NLS
-
   public static final String MODULE_CURRENT_LOCALE = "CurrentLanguage"; //NON-NLS
   public static final String MODULE_CURRENT_LOCALE_NAME = "CurrentLanguageName"; //NON-NLS
-
   public static final String DRAWING_MOUSEOVER_PROPERTY = "DrawingMouseover"; //NON-NLS
   public static final String DRAWING_MOUSEOVER_INDEX_PROPERTY = "DrawingMouseoverIndex"; //NON-NLS
 
@@ -773,7 +771,7 @@ public class GameModule extends AbstractConfigurable
      */
     if (e != null) {
       gameName = e.getAttribute(MODULE_NAME).strip();
-      if (e.getAttribute(VASSAL_VERSION_CREATED).isEmpty()) {
+      if (!e.getAttribute(VASSAL_VERSION_CREATED).isEmpty()) {
         vassalVersionCreated = e.getAttribute(VASSAL_VERSION_CREATED);
       }
     }
@@ -1133,7 +1131,7 @@ public class GameModule extends AbstractConfigurable
    * Lists all the buildFile (XML) attribute names for this component.
    * If this component is ALSO an {@link AbstractConfigurable}, then this list of attributes determines the appropriate
    * attribute order for {@link AbstractConfigurable#getAttributeDescriptions()} and {@link AbstractConfigurable#getAttributeTypes()}.
-   * @return a list of all buildFile (XML) attribute names for this component
+   * @return an array of all buildFile (XML) attribute names for this component
    * @see AbstractBuildable
    */
   @Override
@@ -1188,7 +1186,7 @@ public class GameModule extends AbstractConfigurable
   /**
    * List of subcomponents which can be added to a GameModule.
    *
-   * @return a list of valid sub-component Classes.  If a Class
+   * @return an array of valid subcomponent Classes.  If a Class
    * appears in this list, then instances of that class may be added
    * to this component from the Editor's {@link ConfigureTree} window by
    * right-clicking on the component and selecting the appropriate "Add"
@@ -1211,6 +1209,7 @@ public class GameModule extends AbstractConfigurable
 //                  InternetDiceButton.class,   // Disable internet dice button until Bones server can prevent email spamming
       RandomTextButton.class,
       SpecialDiceButton.class,
+      AnimatedDiceButton.class,
       PredefinedSetup.class,
       ChartWindow.class,
       PrivateMap.class,
@@ -2288,6 +2287,9 @@ public class GameModule extends AbstractConfigurable
     else if (MODULE_CURRENT_LOCALE_NAME.equals(key)) {
       return Resources.getLocale().getDisplayName();
     }
+    else if (GAME_FILENAME_PROPERTY.equals(key)) {
+      return gameFile;
+    }
     else if (DRAWING_MOUSEOVER_PROPERTY.equals(key)) {
       return CounterDetailViewer.isDrawingMouseOver();
     }
@@ -2540,7 +2542,7 @@ public class GameModule extends AbstractConfigurable
   }
 
   /**
-   * @return a cumulative CRC from all of our files
+   * A cumulative CRC from all of our files
    */
   private void buildCrc() {
     final List<File> files = new ArrayList<>();

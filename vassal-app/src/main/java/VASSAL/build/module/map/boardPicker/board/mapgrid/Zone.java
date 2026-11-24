@@ -444,6 +444,15 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
     return snapTo(p, false, false);
   }
 
+  /**
+   * @return a center point for the zone
+   */
+  public Point getCenter() {
+    final Rectangle r = getBounds();
+    final Rectangle r2 = getBoard().bounds();
+    return new Point(r2.x + r.x + r.width / 2, r2.y + r.y + r.height / 2);
+  }
+
   @Override
   public Dimension getSize() {
     return myPolygon.getBounds().getSize();
@@ -612,7 +621,9 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
   @Override
   public String getMutablePropertiesContainerId() {
-    return (getMap() == null ? "" : getMap().getMapName()) + ":" + getConfigureName();
+    return ((getMap() == null ? "" : getMap().getMapName()) + ":" +
+            (getBoard() == null ? "" : getBoard().getName()) + ":" +
+            getConfigureName());
   }
 
   /*

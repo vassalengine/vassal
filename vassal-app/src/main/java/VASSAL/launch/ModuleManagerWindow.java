@@ -61,6 +61,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdesktop.swingx.JXTreeTable;
+import org.jdesktop.swingx.search.SearchFactory;
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode;
 import org.jdesktop.swingx.treetable.DefaultTreeTableModel;
 import org.slf4j.Logger;
@@ -290,6 +291,10 @@ public class ModuleManagerWindow extends JFrame {
 
     toolsMenu.add(mm.addKey("Main.import_module"));
 
+    // Add search 
+    toolsMenu.addSeparator();
+    toolsMenu.add(mm.addKey("Main.find"));
+
     toolsMenu.addSeparator();
     final ClearTileCacheAction ctca = new ClearTileCacheAction();
     AbstractLaunchAction.getUseTracker().addPropertyChangeListener(e -> {
@@ -409,33 +414,53 @@ public class ModuleManagerWindow extends JFrame {
     final JScrollPane scroll = new JScrollPane(tree);
     moduleView.add(scroll, "modules"); //NON-NLS
 
-    final JEditorPane l = new JEditorPane("text/html",
-      Resources.getString("ModuleManager.quickstart"));
-    l.setEditable(false);
-
-    // Try to get background color and font from LookAndFeel;
-    // otherwise, use dummy JLabel to get color and font.
     Color bg = UIManager.getColor("control");
+    Color fg = UIManager.getColor("controlText");
     Font font = UIManager.getFont("Label.font");
 
-    if (bg == null || font == null) {
+    if (bg == null || font == null || fg == null) {
       final JLabel dummy = new JLabel();
       if (bg == null) bg = dummy.getBackground();
+      if (fg == null) fg = dummy.getForeground();
       if (font == null) font = dummy.getFont();
     }
 
-    l.setBackground(bg);
-    ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule(
-      "body { font: " + font.getFamily() + " " + font.getSize() + "pt }");
+    final JEditorPane l =
+      new JEditorPane("text/html",
+                      Resources.getString("ModuleManager.quickstart"));
 
+    final String strBg = String.format("%02x%02x%02x",
+                                       fg.getRed(),
+                                       fg.getGreen(),
+                                       fg.getBlue());
+    final String strFg = String.format("%02x%02x%02x",
+                                       bg.getRed(),
+                                       bg.getGreen(),
+                                       bg.getBlue());
+    ((HTMLEditorKit) l.getEditorKit()).getStyleSheet().addRule(
+      "body {\n" + 
+      "  color: #" + strBg + ";\n" +
+      "  background: #" + strFg + ";\n" +
+      "  font: " + font.getFamily() + " " + font.getSize() + "pt;\n" +
+      "  margin: 0px;\n" +
+      "  padding: 0px;\n" +
+      "}");
+    
+    l.setCaretColor(bg);
+    l.getCaret().setVisible(false);
+    l.setOpaque(false);
+    l.setEditable(false);
+    l.setBorder(null);
     l.addHyperlinkListener(BrowserSupport.getListener());
 
 // FIXME: use MigLayout for this!
     // this is necessary to get proper vertical alignment
     final JPanel p = new JPanel(new GridBagLayout());
     final GridBagConstraints c = new GridBagConstraints();
-    c.fill = GridBagConstraints.HORIZONTAL;
+    c.fill   = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.CENTER;
+    c.ipadx  = 0;
+    c.ipady  = 0;
     p.add(l, c);
 
     moduleView.add(p, "quickStart"); //NON-NLS
@@ -862,6 +887,17 @@ public class ModuleManagerWindow extends JFrame {
       columns[i] = tree.getColumnModel().getColumn(i);
     }
 
+    // Search through tree
+    final MenuManager mm = MenuManager.getInstance();    
+    mm.addAction("Main.find",
+      new AbstractAction(Resources.getString("Main.find")) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          SearchFactory.getInstance().showFindDialog(tree,
+                                                     tree.getSearchable());
+        }
+      });
+    
     // Show/hide the developer columns
     updateColumnDisplay();
   }

@@ -2490,13 +2490,12 @@ public class ADC2Module extends Importer {
 
   protected void writePlayersToArchive(GameModule gameModule) {
     final PlayerRoster roster = gameModule.getAllDescendantComponentsOf(PlayerRoster.class).iterator().next();
-    final SequenceEncoder se = new SequenceEncoder(',');
+    final List<String> sides = new ArrayList<>();
     for (final Player player : players) {
       if (player.allies.first() == player) // only write out if it's the first in an alliance
-        se.append(player.getName());
+        sides.add(player.getName());
     }
-    for (int i = 0; i < 2; ++i)
-      roster.setAttribute(PlayerRoster.SIDES, se.getValue());
+    roster.setAttribute(PlayerRoster.SIDES, sides.toArray(new String[0]));
   }
 
   // TODO make a select all cards in hand option

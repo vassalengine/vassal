@@ -229,8 +229,11 @@ public class KeyBufferer extends MouseAdapter implements Buildable, MouseMotionL
 
         // Don't "eat" band-selects if the piece we start the mouse event on
         // is non-movable
-        if (SwingUtils.isMainMouseButtonDown(e) && Boolean.TRUE.equals(p.getProperty(Properties.NON_MOVABLE))) {
-          bandSelect = BandSelectType.SPECIAL;
+        if (SwingUtils.isMainMouseButtonDown(e)) {
+          final Object cannotMove = p.getProperty(Properties.NON_MOVABLE);
+          if (Boolean.TRUE.equals(cannotMove) || "true".equals(cannotMove)) {
+            bandSelect = BandSelectType.SPECIAL;
+          }
         }
       }
     }

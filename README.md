@@ -12,7 +12,7 @@ VASSAL is a game engine for building and playing online adaptations of board gam
 
 ### Minimum Requirements
 
-VASSAL 3.7.25 requires Java 17 or later.
+VASSAL 3.8 requires Java 17 or later.
 
 The Windows and Mac packages have an appropriate version of Java bundled with
 them, so there is no need to install Java separately on those operating
@@ -20,10 +20,9 @@ systems. Mac users on Catalina (macOS 10.13) or earlier, see
 [here](https://forum.vassalengine.org/t/84048).
 On Linux, use your package manager to install Java 17 or later.
 
-
 ### Releases
 
-Get the [current release](https://github.com/vassalengine/vassal/releases/latest). Read the [release notes](https://vassalengine.org/wiki/Release_Notes) to see what's new.
+Get the [current release](https://github.com/vassalengine/vassal/releases/latest). Read the [release notes](https://forum.vassalengine.org/t/vassal-3-8-release-notes/90445) to see what's new.
 
 ## Contributing
 
@@ -39,12 +38,3 @@ Read the [Developer's guide](developers-guide/developers-guide.adoc)
 
 This project is licensed under the terms of the [LGPLv2 license](LICENSE).
 
-## Acknowledgments
-YourKit supports open source projects with innovative and intelligent tools
-for monitoring and profiling Java and .NET applications.
-YourKit is the creator of
-[YourKit Java Profiler](https://www.yourkit.com/java/profiler/),
-[YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/),
-and [YourKit YouMonitor](https://www.yourkit.com/youmonitor/).
-
-![YourKit-Logo](https://www.yourkit.com/images/yklogo.png)

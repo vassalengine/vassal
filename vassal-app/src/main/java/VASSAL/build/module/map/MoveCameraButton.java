@@ -113,7 +113,7 @@ public class MoveCameraButton extends AbstractToolbarItem {
   }
 
   private Point getDestination() {
-    final SendToLocation.Destination dest = SendToLocation.getSendLocation(map, this, moveCameraMode, null, board, zone, region, gridLocation, x, y, propertyFilter, map, map.getCenter());
+    final SendToLocation.Destination dest = SendToLocation.getSendLocation(map, this, moveCameraMode, null, board, zone, region, gridLocation, x, y, propertyFilter, map, map.getPreferredCenter());
 
     if (dest.point != null) {
       offsetDest(dest.point);

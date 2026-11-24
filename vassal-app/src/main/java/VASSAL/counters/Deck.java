@@ -450,6 +450,12 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   @Override
   protected void insertPieceAt(GamePiece p, int index, boolean suppressDeckCounts) {
     super.insertPieceAt(p, index, suppressDeckCounts);
+    // A selected piece entering a Deck must lose its selection, otherwise
+    // it can be tracked through a shuffle (e.g., when stepping through a log)
+    final KeyBuffer kb = KeyBuffer.getBuffer();
+    if (kb.contains(p)) {
+      kb.remove(p);
+    }
     if (!suppressDeckCounts) {
       updateCounts(p, true);
       fireNumCardsProperty();
@@ -1694,7 +1700,7 @@ public class Deck extends Stack implements PlayerRoster.SideChangeListener {
   protected Command reportCommand(FormattedString reportFormat, String commandName) {
     reportFormat.setProperty(DrawPile.DECK_NAME, getLocalizedDeckName());
     reportFormat.setProperty(DrawPile.COMMAND_NAME, commandName);
-    final String rep = reportFormat.getLocalizedText(this, commandName);
+    final String rep = reportFormat.getLocalizedText(this, "Editor.report_format");
     Command c = null;
     if (rep.length() > 0) {
       c = new Chatter.DisplayText(gameModule.getChatter(), "* " + rep); //$NON-NLS-1$

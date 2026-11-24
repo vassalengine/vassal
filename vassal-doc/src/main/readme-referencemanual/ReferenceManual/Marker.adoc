@@ -15,7 +15,7 @@ It is also possible to set values into existing <<DynamicProperty.adoc#top,Dynam
 
 The new piece placed by this trait will have the <<Properties.adoc#parentId,ParentID>> property set to the value of the <<Properties.adoc#uniqueId,UniqueID>> property from the piece that placed it. This allows the placed marker to use the <<GlobalKeyCommand.adoc#top, Global Key Command>> trait or the <<SetPieceProperty.adoc#top,Set Piece Property>> trait to communicate with the parent piece by including the following in the <<PropertyMatchExpression.adoc#top,_Additional matching expression_>>: +
 
-`{UniqueID=="$ParentID$"}` +
+`{ParentID == “$UniqueID$”}` +
 
 
 

@@ -102,10 +102,17 @@ NOTE:  as of Vassal 3.3.3 these reports can include HTML tags, including _<img>_
 
 *Background color:*::  The background color to be used when displaying results graphically.
 
+*Number of animation steps before result:*:: Only for animated symbolic dice. Number of animated die roll steps before the result is shown.  The images will be chosen at random between the possible die-roll outcomes and rotated to give the illusion of rolling dice.
+
+*Frames per second:*:: Only for animated symbolic dice. How many frames (or steps) to show per second.
+
+*Scale of button icon:*:: Only for animated symbolic dice. If *Show result in button* is true, then scale the icons (dice faces) by this scaling factor when displaying the result in the toolbar. 
 
 |image:images/SpecialDiceToolbar.png[]
 
 image:images/SpecialDiceButton.png[]
+
+image:images/AnimatedDiceButton.gif[]
 
 |===
 

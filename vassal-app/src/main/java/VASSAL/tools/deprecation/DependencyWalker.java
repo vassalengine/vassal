@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ConstantDynamic;
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
@@ -461,7 +462,41 @@ public class DependencyWalker implements Walker {
     else if (cst instanceof Handle) {
       final Handle h = (Handle) cst;
       addInternalName(h.getOwner());
+      addHandleDesc(h);
+    }
+    else if (cst instanceof ConstantDynamic) {
+      final ConstantDynamic cd = (ConstantDynamic) cst;
+      addDesc(cd.getDescriptor());
+      addConstant(cd.getBootstrapMethod());
+      for (int i = 0; i < cd.getBootstrapMethodArgumentCount(); ++i) {
+        addConstant(cd.getBootstrapMethodArgument(i));
+      }
+    }
+  }
+
+  /**
+   * Adds the type the given method handle refers to.
+   *
+   * <p>A method handle's descriptor is a <i>method</i> descriptor only when the handle refers to a method
+   * or a constructor. The four field-access kinds carry a <i>field</i> descriptor instead, and handing one
+   * of those to {@link Type#getReturnType} sends it off the end of the string looking for a {@code ')'}.
+   * The compiler emits exactly such handles as the trailing bootstrap arguments of the
+   * {@code invokedynamic} behind a record's {@code equals}, {@code hashCode} and {@code toString}, one per
+   * component, so any module carrying a record used to fail to load at all.
+   *
+   * @param h method handle whose descriptor is to be added
+   */
+  private void addHandleDesc(Handle h) {
+    switch (h.getTag()) {
+    case Opcodes.H_GETFIELD:
+    case Opcodes.H_GETSTATIC:
+    case Opcodes.H_PUTFIELD:
+    case Opcodes.H_PUTSTATIC:
+      addDesc(h.getDesc());
+      break;
+    default:
       addMethodDesc(h.getDesc());
+      break;
     }
   }
 

@@ -436,9 +436,7 @@ public class SendToLocation extends Decorator implements TranslatablePiece {
             }
           }
           else {
-            final Rectangle r = z.getBounds();
-            final Rectangle r2 = z.getBoard().bounds();
-            dest = new Point(r2.x + r.x + r.width / 2, r2.y + r.y + r.height / 2);
+            dest = z.getCenter();
           }
           break;
 

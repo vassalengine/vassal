@@ -237,6 +237,17 @@ public class PrivateMap extends Map {
     super.setup(show);
     if (!show) {
       ((View) theMap).disableListeners();
+
+      // When a game or log is loaded over a running game, Map.setup(false) leaves map windows open
+      // (to avoid flicker), and the player's side in the new game is never re-checked against them.
+      // A private window must not carry over: the player's side in the new game may not be allowed
+      // to see it (#12903). Maps visible to all sides hide nothing, so they may stay open.
+      if (!visibleToAll && GameModule.getGameModule().isLoadOverSemaphore()) {
+        final Container tla = theMap.getTopLevelAncestor();
+        if ((tla != null) && tla.isVisible()) {
+          tla.setVisible(false);
+        }
+      }
     }
     else if (isAccessibleTo(PlayerRoster.getMySide())) {
       ((View) theMap).enableListeners();
