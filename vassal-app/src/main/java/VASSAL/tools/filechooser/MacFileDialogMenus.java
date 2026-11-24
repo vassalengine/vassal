@@ -19,16 +19,23 @@ package VASSAL.tools.filechooser;
 
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+
+import VASSAL.i18n.Resources;
 
 /**
  * Keeps VASSAL's menu shortcuts away from a native macOS file dialog while
@@ -49,10 +56,35 @@ import javax.swing.KeyStroke;
  * not, so they can be put back exactly as they were. The menus themselves
  * are greyed out as well, because the JDK leaves them usable behind a
  * modal dialog, unlike a native app.</p>
+ *
+ * <p>That alone leaves Cmd+X, Cmd+C, Cmd+V and Cmd+A beeping, because a
+ * Cocoa text field gets them only from Edit menu items, and VASSAL's menus
+ * have none that Cocoa recognises. So while the dialog is open each menu
+ * bar also gets an Edit menu of its own, in place of any Edit menu it
+ * already has. {@link MacTextCommands} points its native items straight at
+ * Cocoa's {@code cut:}, {@code copy:}, {@code paste:} and {@code selectAll:},
+ * so they behave exactly like a native app's.</p>
+ *
+ * <p>An Edit menu already there is taken off the bar rather than hidden:
+ * the JDK stops listening for a menu being hidden once its frame's menu
+ * bar has been swapped out, as happens whenever the Player and Editor
+ * windows take turns in front.</p>
  */
 final class MacFileDialogMenus {
+  private static final String[][] COMMANDS = {
+    // label key, key, Cocoa action
+    { "General.cut", "X", "cut:" },               //NON-NLS
+    { "General.copy", "C", "copy:" },             //NON-NLS
+    { "General.paste", "V", "paste:" },           //NON-NLS
+    { "General.select_all", "A", "selectAll:" },  //NON-NLS
+  };
+
   private final Map<JMenuItem, KeyStroke> stripped = new IdentityHashMap<>();
+  private final Map<JMenuBar, JMenu> added = new IdentityHashMap<>();
   private final List<JMenu> disabled = new ArrayList<>();
+  private final List<JMenuBar> removedFrom = new ArrayList<>();
+  private final List<JMenu> removed = new ArrayList<>();
+  private final List<Integer> removedAt = new ArrayList<>();
 
   private MacFileDialogMenus() {
   }
@@ -64,11 +96,19 @@ final class MacFileDialogMenus {
    */
   static MacFileDialogMenus suspend() {
     final MacFileDialogMenus m = new MacFileDialogMenus();
+    final boolean edit = MacTextCommands.isAvailable();
     for (final JMenuBar bar : menuBars()) {
       for (int i = 0; i < bar.getMenuCount(); ++i) {
         m.strip(bar.getMenu(i));
         m.disable(bar.getMenu(i));
       }
+      if (edit) {
+        m.addEditMenu(bar);
+      }
+    }
+    if (edit) {
+      // If this fails, the items' Swing actions still pass the commands on
+      wireEditMenu();
     }
     return m;
   }
@@ -77,8 +117,23 @@ final class MacFileDialogMenus {
    * Puts back the shortcuts taken off by {@link #suspend()}.
    */
   void restore() {
+    added.forEach((bar, menu) -> {
+      bar.remove(menu);
+      bar.revalidate();
+    });
+    added.clear();
     disabled.forEach(menu -> menu.setEnabled(true));
     disabled.clear();
+
+    // Put back in the reverse order of removal, so the indices hold
+    for (int i = removed.size() - 1; i >= 0; --i) {
+      final JMenuBar bar = removedFrom.get(i);
+      bar.add(removed.get(i), (int) removedAt.get(i));
+      bar.revalidate();
+    }
+    removedFrom.clear();
+    removed.clear();
+    removedAt.clear();
 
     stripped.forEach((item, ks) -> {
       // Leave alone an item someone gave a new shortcut in the meantime
@@ -100,6 +155,61 @@ final class MacFileDialogMenus {
       }
     }
     return bars;
+  }
+
+  private void addEditMenu(JMenuBar bar) {
+    final String title = Resources.getString("General.edit"); //NON-NLS
+
+    // Stand in for the Editor's Edit menu, if there is one
+    int index = -1;
+    for (int i = bar.getMenuCount() - 1; i >= 0; --i) {
+      final JMenu menu = bar.getMenu(i);
+      if (menu != null && title.equals(menu.getText())) {
+        bar.remove(i);
+        removedFrom.add(bar);
+        removed.add(menu);
+        removedAt.add(i);
+        index = i;
+      }
+    }
+    if (index < 0) {
+      // After File, as on every Mac
+      index = Math.min(1, bar.getMenuCount());
+    }
+
+    final JMenu menu = new JMenu(title);
+    final int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+    for (final String[] c : COMMANDS) {
+      final Action a = new AbstractAction(Resources.getString(c[0])) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          MacTextCommands.send(c[2]);
+        }
+      };
+      a.putValue(Action.ACCELERATOR_KEY,
+        KeyStroke.getKeyStroke(KeyEvent.getExtendedKeyCodeForChar(c[1].charAt(0)), mask));
+      menu.add(a);
+    }
+
+    bar.add(menu, index);
+    bar.revalidate();
+    added.put(bar, menu);
+  }
+
+  /**
+   * Points the native items of the Edit menu now on the screen menu bar at
+   * Cocoa's own editing actions.
+   */
+  private static void wireEditMenu() {
+    final String[] titles = new String[COMMANDS.length];
+    final String[] actions = new String[COMMANDS.length];
+    for (int i = 0; i < COMMANDS.length; ++i) {
+      titles[i] = Resources.getString(COMMANDS[i][0]);
+      actions[i] = COMMANDS[i][2];
+    }
+    MacTextCommands.wireToFirstResponder(titles, actions);
   }
 
   /**

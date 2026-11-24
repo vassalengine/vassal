@@ -587,6 +587,10 @@ public abstract class AbstractLaunchAction extends AbstractAction {
         result.add("-Xdock:name=" + d_name); //NON-NLS
         result.add("-Xdock:icon=" + d_icon); //NON-NLS
 
+        // Let FileChooser reach the Cocoa runtime without a warning, so that
+        // cut, copy and paste work in file dialogs
+        result.add("--enable-native-access=ALL-UNNAMED"); //NON-NLS
+
         // Apple Silicon Macs need FBOs disabled in OpenGL, at least until
         // Metal in Java 17
         final Boolean disableOGLFBO =
