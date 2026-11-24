@@ -126,9 +126,6 @@ public abstract class EditorWindow extends JFrame {
     }
     else {
       final MenuProxy fileMenu = new MenuProxy(Resources.getString("General.file"));
-
-      // FIMXE: setting nmemonic from first letter could cause collisions in
-      // some languages
       fileMenu.setMnemonic(Resources.getString("General.file.shortcut").charAt(0));
 
       fileMenu.add(mm.addKey("Editor.save"));
@@ -182,8 +179,6 @@ public abstract class EditorWindow extends JFrame {
     else {
       final MenuProxy helpMenu = new MenuProxy(Resources.getString("General.help"));
 
-      // FIMXE: setting nmemonic from first letter could cause collisions in
-      // some languages
       helpMenu.setMnemonic(Resources.getString("General.help.shortcut").charAt(0));
 
       //BR// So here I "think"  I'm just adding my happy little help entries.
@@ -233,18 +228,21 @@ public abstract class EditorWindow extends JFrame {
     saveAsAction.setEnabled(false);
 
     if (!SystemUtils.IS_OS_MAC) {
-      saveAsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, mask));
+      saveAsAction.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S,
+              mask | java.awt.event.InputEvent.SHIFT_DOWN_MASK));
     }
 
     mm.addAction("Editor.save_as", saveAsAction);
     toolBar.add(saveAsAction);
 
-    mm.addAction("General.quit", new ShutDownAction());
-// FXIME: mnemonics should be language-dependant
-//    mm.getAction("General.quit").setMnemonic('Q');
+    mm.addAction("General.quit", new ShutDownAction()); //NON-NLS
 
     mm.addAction("Editor.UnusedImages.remove_unused_images", new AbstractAction("Remove Unused Images") {  //NON-NLS
       private static final long serialVersionUID = 1L;
+
+      {
+        putValue(MNEMONIC_KEY, (int) Resources.getString("Editor.UnusedImages.remove_unused_images.shortcut").charAt(0)); //NON-NLS
+      }
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -254,6 +252,10 @@ public abstract class EditorWindow extends JFrame {
 
     mm.addAction("Editor.ListKeyCommands.list_key_commands", new AbstractAction("List Key Commands") {  //NON-NLS
       private static final long serialVersionUID = 1L;
+
+      {
+        putValue(MNEMONIC_KEY, (int) Resources.getString("Editor.ListKeyCommands.list_key_commands.shortcut").charAt(0)); //NON-NLS
+      }
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -288,6 +290,10 @@ public abstract class EditorWindow extends JFrame {
     mm.addAction("Editor.ModuleEditor.refresh_predefined", new AbstractAction(Resources.getString(
       "Editor.ModuleEditor.refresh_predefined")) { //$NON-NLS-1$
       private static final long serialVersionUID = 1L;
+
+      {
+        putValue(MNEMONIC_KEY, (int) Resources.getString("Editor.ModuleEditor.refresh_predefined.shortcut").charAt(0)); //NON-NLS
+      }
 
       @Override
       public void actionPerformed(ActionEvent e) {
