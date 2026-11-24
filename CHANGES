@@ -1,5 +1,6 @@
 3.8.3 - ???
 
+* 15399: Add missing hashCode() to Parameter
 * 15398: Upgraded apache-maven to 3.10.2
 * 15397: Upgraded maven-artifact to 3.10.2
 * 15396: Upgraded logback-classic to 1.6.8
