@@ -69,7 +69,6 @@ import VASSAL.tools.swing.SwingUtils;
 import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -126,7 +125,6 @@ import java.awt.dnd.InvalidDnDOperationException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -266,13 +264,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     cutKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, mask);
     copyKey = KeyStroke.getKeyStroke(KeyEvent.VK_C, mask);
     pasteKey = KeyStroke.getKeyStroke(KeyEvent.VK_V, mask);
-
-    // Workaround to https://github.com/vassalengine/vassal/issues/11559
-    // - make the Edit Delete shortcut a modified key on Mac.
-    // FIXME: A neater solution would be if the Delete key could be directed to what should be the active, foreground window - i.e. the File Dialog (if open)
-    // That is the expected behaviour, as seen on Windows but not on MacOS, where the Editor intercepts deleteKey (and others) regardless
-    deleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, SystemUtils.IS_OS_MAC ? InputEvent.META_DOWN_MASK : 0);
-
+    deleteKey = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
     moveKey = KeyStroke.getKeyStroke(KeyEvent.VK_M, mask);
     searchKey = KeyStroke.getKeyStroke(KeyEvent.VK_F, mask);
     propertiesKey = KeyStroke.getKeyStroke(KeyEvent.VK_P, mask);
