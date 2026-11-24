@@ -43,6 +43,7 @@ import org.xml.sax.SAXException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import VASSAL.i18n.Resources;
 import VASSAL.tools.DataArchive;
 import VASSAL.tools.ErrorDialog;
 import VASSAL.tools.ThrowableUtils;
@@ -83,6 +84,20 @@ public class Builder {
             parent.add(b);
           }
         }
+        catch (ComponentClassNotFoundException ex) {
+          // The buildFile names a class which is in neither the module nor
+          // VASSAL. That is bad data in the module --- VASSAL cannot build a
+          // component whose class does not exist, and no version of it could
+          // --- so report it as such, naming the class, instead of raising a
+          // bug report against VASSAL. The component is dropped and the rest
+          // of the build carries on, exactly as before.
+          // See vassalengine/vassal#15393.
+          ErrorDialog.dataWarning(new BadDataReport(
+            Resources.getString("Error.component_class_not_found", ex.getClassName()), //NON-NLS
+            ex.getClassName(),
+            ex
+          ));
+        }
         catch (IllegalBuildException ex) {
           ErrorDialog.bug(ex);
         }
@@ -121,7 +136,7 @@ public class Builder {
         Class.forName(name) : mod.getDataArchive().loadClass(name);
     }
     catch (Throwable t) {
-      throw failure("failed to load class " + name, t);
+      throw failure("failed to load class " + name, t, name);
     }
 
     final Buildable b;
@@ -171,8 +186,26 @@ public class Builder {
    * @return the exception the caller should throw
    */
   private static RuntimeException failure(String message, Throwable t) {
+    return failure(message, t, null);
+  }
+
+  /**
+   * As {@link #failure(String, Throwable)}, for the one step which can name
+   * the class it failed to find.
+   *
+   * @param missingClass the class the load step was looking for, or null when
+   * the failure came from a later step
+   */
+  private static RuntimeException failure(String message, Throwable t, String missingClass) {
     // find and rethrow causes which are not bugs
     ThrowableUtils.throwRecent(OutOfMemoryError.class, t);
+
+    if (missingClass != null && t instanceof ClassNotFoundException) {
+      // The class is not in the module archive and not on the classpath.
+      // Unlike the other build failures this one cannot be VASSAL's fault,
+      // so it is given a type of its own for Builder.build() to recognise.
+      return new ComponentClassNotFoundException(message, missingClass, t);
+    }
 
     if (t instanceof ClassCastException ||
         t instanceof ClassNotFoundException ||
