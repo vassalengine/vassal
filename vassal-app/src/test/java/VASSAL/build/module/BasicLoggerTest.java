@@ -304,4 +304,68 @@ public class BasicLoggerTest {
       verify(gs, never()).setModified(true);
     }
   }
+
+  /**
+   * A Command which cannot be undone can still change the saved game, so
+   * undoability is not the test. BoardPicker.SetBoards, ObscurableOptions,
+   * PlayerRoster.Add, Deck's own commands and all three note commands return
+   * null from myUndoCommand() and every one of them is saved with the game --
+   * setting the boards on a map is the whole layout of that map. Deciding this
+   * from the undo command would leave all of them looking like no change at
+   * all.
+   */
+  @Test
+  public void aChangeWhichCannotBeUndoneIsStillAChange() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new NotUndoableChange());
+
+      verify(gs, atLeastOnce()).setModified(true);
+    }
+  }
+
+  /**
+   * Translate returns an anonymous NullCommand whose isNull() is false, with a
+   * comment saying it is there "to indicate that a change actually happened".
+   * So a move arrives as something which is a NullCommand by class and a real
+   * change by behaviour, and the class must not be what decides it.
+   */
+  @Test
+  public void aNullCommandWhichSaysItIsNotNullIsAChange() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new NullCommand() {
+        @Override
+        public boolean isNull() {
+          return false;
+        }
+      });
+
+      verify(gs, atLeastOnce()).setModified(true);
+    }
+  }
+
+  /**
+   * A change to the game which offers no way back, as several real ones do.
+   */
+  private static class NotUndoableChange extends Command {
+    @Override
+    protected void executeCommand() {
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
+    }
+  }
 }

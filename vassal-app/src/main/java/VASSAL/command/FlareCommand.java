@@ -54,6 +54,16 @@ public class FlareCommand extends Command {
   }
 
   /**
+   * @return false - a flare is an animation on someone's screen. Flare is a
+   * GameComponent whose getRestoreCommand() returns null, so a saved game
+   * records no flares and taking one changes nothing a save would keep.
+   */
+  @Override
+  protected boolean myChangesSavedGame() {
+    return false;
+  }
+
+  /**
    * @return 0
    */
   public int getValue() {

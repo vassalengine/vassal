@@ -26,8 +26,6 @@ import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.command.Command;
 import VASSAL.command.CommandEncoder;
-import VASSAL.command.FlareCommand;
-import VASSAL.command.PlayAudioClipCommand;
 import VASSAL.command.Logger;
 import VASSAL.configure.BooleanConfigurer;
 import VASSAL.configure.IconConfigurer;
@@ -619,65 +617,14 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     // this, undoing a move after a save left the game looking clean and closing
     // it threw the undo away with no prompt. An undo received from another
     // player arrives through CommandDecoder and log(), so only the local one
-    // needs this. Undoing something which was never a change to the saved game
-    // -- a chat message, a flare -- is not one either, which is why this asks
-    // the same question log() does rather than marking unconditionally.
-    if (changesSavedGame(undo)) {
+    // needs this. The test is not redundant: a command can be undoable and
+    // still change nothing a save records -- undoing a line of chat only
+    // reports the undo to chat -- so this asks the same question log() does
+    // rather than marking unconditionally.
+    if (undo.changesSavedGame()) {
       markModified();
     }
     GameModule.getGameModule().refreshVisibleMaps();
-  }
-
-  /**
-   * Commands which are logged, and so travel to the other players and into the
-   * logfile, but change nothing that saving the game would record. A chain made
-   * only of these leaves the game as saveable -- or as already saved -- as it
-   * was.
-   *
-   * <p>The test is what the component behind the command contributes to
-   * {@link GameState#getRestoreCommand()}: {@link Chatter} is not a
-   * {@link GameComponent} at all, and {@link VASSAL.build.module.map.Flare} is
-   * one whose {@code getRestoreCommand()} returns null, saying in its own
-   * comment that a flare does not need restoring. {@link PlayAudioClipCommand}
-   * plays a sound and is gone. {@link UndoCommand} is the marker wrapped
-   * around an undo rather than the undo itself, and a
-   * {@link VASSAL.command.NullCommand} does nothing by definition.</p>
-   *
-   * <p>{@code FinishedStartupGlobalKeyCommands} is the other marker: {@link
-   * GameState#doStartupGlobalKeyCommands} sends it after any Startup Global
-   * Key Command has fired, to block undo past that point. It is sent on its
-   * own, so whatever the commands themselves did is judged on its own merits
-   * -- and it is sent from an {@code invokeLater} after {@code setup()} has
-   * already cleared the flag, so without this a module with a startup command
-   * which only reports to chat asked the player to save a game they had just
-   * loaded and not touched.</p>
-   */
-  private static boolean isNotAChange(Command c) {
-    return c.isNull() ||
-           c instanceof Chatter.DisplayText ||
-           c instanceof FlareCommand ||
-           c instanceof PlayAudioClipCommand ||
-           c instanceof UndoCommand ||
-           c instanceof GameState.FinishedStartupGlobalKeyCommands;
-  }
-
-  /**
-   * @param c a command, possibly a chain
-   * @return whether any part of it changes something a save would record
-   */
-  private static boolean changesSavedGame(Command c) {
-    if (c == null) {
-      return false;
-    }
-    if (!isNotAChange(c)) {
-      return true;
-    }
-    for (final Command sub : c.getSubCommands()) {
-      if (changesSavedGame(sub)) {
-        return true;
-      }
-    }
-    return false;
   }
 
   /**
@@ -724,7 +671,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       // SetupCommand(true) has run setup(), which has just decided what the flag
       // should be. Marking it here would overrule that and leave a player who
       // joined, synchronised and touched nothing being asked whether to save.
-      if (!(c instanceof GameState.SetupCommand) && changesSavedGame(c)) {
+      if (!(c instanceof GameState.SetupCommand) && c.changesSavedGame()) {
         markModified();
       }
     }
@@ -919,6 +866,16 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     @Override
     protected Command myUndoCommand() {
       return null;
+    }
+
+    /**
+     * @return false - this is the marker wrapped around an undo to say that one
+     * is in progress. Whether the undo itself changes the saved game is for the
+     * undo command inside the wrapper to answer.
+     */
+    @Override
+    protected boolean myChangesSavedGame() {
+      return false;
     }
   }
 }

@@ -52,6 +52,14 @@ public class PlayAudioClipCommand extends Command {
     return null;
   }
 
+  /**
+   * @return false - the clip is played and gone; nothing of it is saved
+   */
+  @Override
+  protected boolean myChangesSavedGame() {
+    return false;
+  }
+
   public static PlayAudioClipCommand decode(String s) {
     if (s.startsWith(COMMAND_PREFIX)) {
       return new PlayAudioClipCommand(s.substring(COMMAND_PREFIX.length()));

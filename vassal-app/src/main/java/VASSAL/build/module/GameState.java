@@ -471,8 +471,9 @@ public class GameState implements CommandEncoder {
   }
 
   /**
-   * Package-private rather than private so that {@link BasicLogger} can tell
-   * this marker apart from a command which actually changes the game.
+   * Package-private rather than private so that BasicLoggerTest can construct
+   * one. BasicLogger itself no longer needs to recognise it: the marker says
+   * for itself that it changes nothing (see {@link Command#myChangesSavedGame}).
    */
   static class FinishedStartupGlobalKeyCommands extends Command {
     @Override
@@ -488,6 +489,16 @@ public class GameState implements CommandEncoder {
     @Override
     protected Command myUndoCommand() {
       return null;
+    }
+
+    /**
+     * @return false - this marker is sent on its own after any Startup Global
+     * Key Command has fired, only to block undo past that point. Whatever those
+     * commands did is judged on its own merits.
+     */
+    @Override
+    protected boolean myChangesSavedGame() {
+      return false;
     }
   }
 
