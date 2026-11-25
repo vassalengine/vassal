@@ -665,13 +665,10 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       // executes the restore command directly -- so a freshly loaded game is
       // correctly left unmodified.
       //
-      // A restore command is the exception the chain-walk cannot see. It is how
-      // a joining client is sent the host's game, its head is a SetupCommand,
-      // and it arrives here immediately after its own trailing
-      // SetupCommand(true) has run setup(), which has just decided what the flag
-      // should be. Marking it here would overrule that and leave a player who
-      // joined, synchronised and touched nothing being asked whether to save.
-      if (!(c instanceof GameState.SetupCommand) && c.changesSavedGame()) {
+      // A restore command answers false for its whole chain, pieces and all, so
+      // a joining client which has synchronised and touched nothing is not
+      // asked whether to save. See GameState.SetupCommand.changesSavedGame().
+      if (c.changesSavedGame()) {
         markModified();
       }
     }

@@ -1301,6 +1301,24 @@ public class GameState implements CommandEncoder {
     protected Command myUndoCommand() {
       return null;
     }
+
+    /**
+     * @return false, for this Command and everything hanging off it. A
+     * SetupCommand heads the chain {@link #getRestoreCommand} builds, which is
+     * the game itself rather than a change to it -- it is how a joining client
+     * is sent the host's game, and its own trailing {@code SetupCommand(true)}
+     * has just run {@link #setup}, which decides the flag. Saying so for the
+     * whole chain is the point: the pieces inside it would each answer true,
+     * and counting them would ask a player who has synchronised and touched
+     * nothing whether to save.
+     *
+     * <p>Hence the override is here and not on {@link #myChangesSavedGame},
+     * which would still let the chain be walked.</p>
+     */
+    @Override
+    public boolean changesSavedGame() {
+      return false;
+    }
   }
 
   public static final String SAVEFILE_ZIP_ENTRY = "savedGame";  //$NON-NLS-1$
