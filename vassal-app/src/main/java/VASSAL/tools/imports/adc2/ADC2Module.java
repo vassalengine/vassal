@@ -2829,22 +2829,61 @@ public class ADC2Module extends Importer {
       stack.setAttribute(SetupStack.X_POSITION, Integer.toString(p.x));
       stack.setAttribute(SetupStack.Y_POSITION, Integer.toString(p.y));
       if (z != null) {
-        try {
-          if (mg.getLocation(location) != null) {
-            if ((!mg.locationName(mg.getLocation(location)).equals(location))) {
-              throw new AssertionError("Bad location");
-            }
-            stack.setAttribute(SetupStack.USE_GRID_LOCATION, true);
-            stack.setAttribute(SetupStack.LOCATION, location);
-          }
-        }
-        catch (BadCoords e) {
-          log.error("Error while writing setup stacks", e);
+        final String gridLocation = gridLocationOf(mg, location);
+        if (gridLocation != null) {
+          stack.setAttribute(SetupStack.USE_GRID_LOCATION, true);
+          stack.setAttribute(SetupStack.LOCATION, gridLocation);
         }
       }
       for (final Piece pc : en.getValue()) {
         pc.writeToArchive(stack);
       }
+    }
+  }
+
+  /**
+   * The name to record as a stack's grid location, or null when the grid
+   * cannot express this one.
+   *
+   * <p>The name comes from {@link VASSAL.build.module.Map#locationName}, and a
+   * SetupStack can only record it if the grid reads it back as the same place.
+   * That is a genuine question, not an invariant, and there are several
+   * ordinary reasons for the answer to be no:</p>
+   *
+   * <ul>
+   * <li>{@code Map.locationName()} returns a deck's name for a point over a
+   * deck, and "offboard" for a point on no board. No grid parses either.</li>
+   * <li>It asks the board in board coordinates, having subtracted the board's
+   * bounds, while the zone here was found with the untranslated map point --
+   * so a board which is not at the origin disagrees with itself.</li>
+   * <li>{@link ZonedGrid#getLocation} returns the first zone which can parse
+   * the name and contains the result, so where several zones share a grid
+   * numbering a name resolves to the wrong zone and is renamed from there.</li>
+   * </ul>
+   *
+   * <p>None of those is the importer's doing and none of them costs anything:
+   * the stack's absolute X and Y have already been set, so it is placed
+   * either way, and only the grid location is given up. This used to throw an
+   * AssertionError, which abandoned the whole import -- see
+   * vassalengine/vassal#13711.</p>
+   */
+  static String gridLocationOf(MapGrid mg, String location) {
+    try {
+      final Point gridPoint = mg.getLocation(location);
+      if (gridPoint == null) {
+        return null;
+      }
+
+      if (!location.equals(mg.locationName(gridPoint))) {
+        log.info("Setup stack location {} is not a grid location; placing it by position", location); //NON-NLS
+        return null;
+      }
+
+      return location;
+    }
+    catch (BadCoords e) {
+      log.error("Error while writing setup stacks", e);
+      return null;
     }
   }
 
