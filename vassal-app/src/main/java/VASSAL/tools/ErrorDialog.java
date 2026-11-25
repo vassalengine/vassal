@@ -23,9 +23,11 @@ import VASSAL.build.BadDataReport;
 import VASSAL.build.GameModule;
 import VASSAL.i18n.Resources;
 import VASSAL.tools.bug.BugHandler;
+import VASSAL.tools.bug.OldVASLBugHandler;
 import VASSAL.tools.concurrent.FutureUtils;
 import VASSAL.tools.image.tilecache.TileNotFoundException;
 import VASSAL.tools.version.VersionUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +55,9 @@ public class ErrorDialog {
     LoggerFactory.getLogger(ErrorDialog.class);
 
   private static final List<BugHandler> BUG_HANDLERS =
-    Collections.synchronizedList(new ArrayList<>());
+    Collections.synchronizedList(new ArrayList<>(
+      Collections.singletonList(new OldVASLBugHandler())
+    ));
 
   public static void addBugHandler(BugHandler bh) {
     BUG_HANDLERS.add(bh);
