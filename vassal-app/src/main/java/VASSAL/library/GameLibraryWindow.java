@@ -136,7 +136,7 @@ public class GameLibraryWindow extends JFrame {
   protected       JProgressBar          progressBar;
   protected       JButton               downloadButton;
   protected       Map<String, Project>  projectsMap;
-  protected       GameLibrary.AbstractProjectsComparator comparator = GameLibrary.getSortComparator(true);
+  protected       GameLibrary.ProjectsComparator comparator = GameLibrary.getSortComparator(true);
 
   // For future upgrade
   // public static SemVer              vassalVersion;
@@ -357,7 +357,9 @@ public class GameLibraryWindow extends JFrame {
   
   // -----------------------------------------------------------------
   /**
-   * How to render dates - horizontally centred
+   * How to render URLs - override default to show tooltip. Also meant
+   * to override the cursor when hovering, though it does not seem to
+   * work everywhere.
    */
   static class URLRenderer extends DefaultTableCellRenderer.UIResource {
     private static final long serialVersionUID = 1L;
@@ -707,11 +709,8 @@ public class GameLibraryWindow extends JFrame {
     // --- Mutually exclusive group ---
     final ButtonGroup group = new ButtonGroup();
     final Map<Pair<String, Boolean>,
-      GameLibrary.AbstractProjectsComparator> sorts =
+      GameLibrary.ProjectsComparator> sorts =
       new LinkedHashMap<>();
-    /* sorts.put(Pair.of("slug", true), comparator);     //NON-NLS
-       sorts.put(Pair.of("slug", false),                //NON-NLS
-                 GameLibrary.getSlugComparator(false)); */
     sorts.put(Pair.of("sort", true),                //NON-NLS
               comparator); // GameLibrary.getTitleComparator(true); 
     sorts.put(Pair.of("sort", false),               //NON-NLS
@@ -725,9 +724,9 @@ public class GameLibraryWindow extends JFrame {
     sorts.put(Pair.of("last_update", false),         //NON-NLS
               GameLibrary.getDateComparator(false)); 
 
-    // --- Add sort entrie ---
+    // --- Add sort entries ---
     for (final Entry<Pair<String, Boolean>,
-           GameLibrary.AbstractProjectsComparator> sort
+           GameLibrary.ProjectsComparator> sort
            : sorts.entrySet()) {
       final String title =
         "<html>" + //NON-NLS
@@ -1040,7 +1039,7 @@ public class GameLibraryWindow extends JFrame {
   /**
    * Common interface assumed for all nodes
    */
-  interface TreeNode {
+  private interface TreeNode {
     TreeNode getParent();
 
     /** Get type */
@@ -1087,8 +1086,8 @@ public class GameLibraryWindow extends JFrame {
   /**
    * Implement most things for common node interface
    */
-  public abstract static class AbstractNode implements TreeNode {
-    protected TreeNode parent = null;
+  private abstract static class AbstractNode implements TreeNode {
+    protected final TreeNode parent;
     protected static boolean allowUpdate = false;
     /**
      * Whether we allow updating known modules
@@ -1102,6 +1101,13 @@ public class GameLibraryWindow extends JFrame {
      */
     public static boolean getAllowUpdate() {
       return allowUpdate;
+    }
+
+    /**
+     * Construct
+     */
+    public AbstractNode() {
+      this(null);
     }
 
     /**
@@ -1228,7 +1234,7 @@ public class GameLibraryWindow extends JFrame {
   /**
    * The root of the hierarchy
    */
-  public static class RootNode extends AbstractNode {
+  private static class RootNode extends AbstractNode {
     private final List<ProjectNode> children = new ArrayList<>();
 
     public RootNode() {
@@ -1271,7 +1277,7 @@ public class GameLibraryWindow extends JFrame {
    * A node corresponding to a project.  Note, we do lazy loading of
    * the details of a project.
    */
-  public static class ProjectNode extends AbstractNode {
+  private static class ProjectNode extends AbstractNode {
     private final String slug;
     private final Project project;
     private final List<Object> dummyChildren = Collections.singletonList(Resources.getString("LibraryBrowser.dummy_children")); //NON-NLS
@@ -1365,7 +1371,7 @@ public class GameLibraryWindow extends JFrame {
   /**
    * A node corresponding to a package
    */
-  public static class PackageNode extends AbstractNode {
+  private static class PackageNode extends AbstractNode {
     private final Package pkg;
     private final List<ReleaseNode> children = new ArrayList<>();
 
@@ -1408,7 +1414,7 @@ public class GameLibraryWindow extends JFrame {
   /**
    * A node corresponding to a release
    */
-  public static class ReleaseNode extends AbstractNode {
+  private static class ReleaseNode extends AbstractNode {
     private       Boolean selected;
     private final Release release;
     private final List<FileNode> children = new ArrayList<>();
@@ -1501,7 +1507,7 @@ public class GameLibraryWindow extends JFrame {
   /**
    * A node (leaf) corresponding to a file
    */
-  public static class FileNode extends AbstractNode {
+  private static class FileNode extends AbstractNode {
     private       Boolean selected;
     private final LibraryFile file;
     
@@ -1629,7 +1635,7 @@ public class GameLibraryWindow extends JFrame {
    * Model used by the tree table.  Note, the column names are defined
    * at the top.
    */
-  public static class LibraryTreeTableModel extends AbstractTreeTableModel {
+  private static class LibraryTreeTableModel extends AbstractTreeTableModel {
     
     public LibraryTreeTableModel(RootNode root) {
       super(root);

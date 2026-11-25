@@ -117,7 +117,7 @@ public class GameLibrary {
   /**
    * For files - may contain spaces etc.
    */
-  protected URL encodeURL(URL url)
+  protected static URL encodeURL(URL url)
     throws URISyntaxException, MalformedURLException {
     return new URL(new URI(url.getProtocol(),
                            url.getHost(),
@@ -171,7 +171,7 @@ public class GameLibrary {
    * @param accept Mime-type to accept
    * @return Stream to read response from 
    */
-  protected InputStream getRequest(URL url, String accept)
+  protected static InputStream getRequest(URL url, String accept)
     throws IOException, URISyntaxException {
     
     final HttpGet               get      = new HttpGet(url.toURI());
@@ -205,7 +205,8 @@ public class GameLibrary {
    * @param url Query URL
    * @return JSON as a string
    */
-  protected String getJSON(URL url)  throws IOException, URISyntaxException {
+  protected static String getJSON(URL url)
+    throws IOException, URISyntaxException {
     try (InputStream input = getRequest(url, "application/json")) {
       return new String(input.readAllBytes(), //NON-NLS
                         StandardCharsets.UTF_8);
@@ -223,7 +224,10 @@ public class GameLibrary {
    * @param sha256 Check-sum to compare against
    * @param size Expected size of file
    */
-  protected void getFile(URL url, File outname, String sha256, long size)
+  protected static void getFile(URL    url,
+                                File   outname,
+                                String sha256,
+                                long   size)
     throws IOException, URISyntaxException {
     MessageDigest digest = null;
     try {
@@ -560,9 +564,32 @@ public class GameLibrary {
   /**
    * Compare projects for sorting.
    */
-  public abstract static class AbstractProjectsComparator
-    implements Comparator<Entry<String, Project>> {
+  public interface ProjectsComparator
+    extends Comparator<Entry<String, Project>> {
 
+    /** Compare left and right */
+    @Override
+    int compare(Entry<String, Project> lhs,
+                Entry<String, Project> rhs);
+  }
+  
+  // -------------------------------------------------------------------
+  public abstract static class AbstractDescendingProjectsComparator
+    implements  ProjectsComparator {
+    /** Compare left and right */
+    @Override
+    public int compare(Entry<String, Project> lhs,
+                       Entry<String, Project> rhs) {
+      return compareTo(rhs.getValue(), lhs.getValue());
+    }
+
+    /** Compare left and right */
+    protected abstract int compareTo(Project p1, Project p2);
+  }
+  
+  // -------------------------------------------------------------------
+  public abstract static class AbstractAscendingProjectsComparator
+    implements  ProjectsComparator {
     /** Compare left and right */
     @Override
     public int compare(Entry<String, Project> lhs,
@@ -571,28 +598,30 @@ public class GameLibrary {
     }
 
     /** Compare left and right */
-    protected abstract int compareTo(Project lhs, Project rhs);
+    protected abstract int compareTo(Project p1, Project p2);
   }
   
   // -------------------------------------------------------------------
   /**
    * Compare projects based on the slug
    */
-  public static AbstractProjectsComparator getSlugComparator(boolean asc) {
-    return new AbstractProjectsComparator() {
-      /** Compare left and right */
-      @Override
-      public int compare(Entry<String, Project> lhs,
-                         Entry<String, Project> rhs) {
-        if (asc) 
+  public static ProjectsComparator getSlugComparator(boolean asc) {
+    if (asc) 
+      return new ProjectsComparator() {
+        /** Compare left and right */
+        @Override
+        public int compare(Entry<String, Project> lhs,
+                           Entry<String, Project> rhs) {
           return lhs.getKey().compareTo(rhs.getKey());
-        return rhs.getKey().compareTo(lhs.getKey());
-      }
+        }
+      };
 
-      /** Compare left and right */
+    return new ProjectsComparator() {
+        /** Compare left and right */
       @Override
-      protected int compareTo(Project lhs, Project rhs) {
-        return 0;
+        public int compare(Entry<String, Project> lhs,
+                           Entry<String, Project> rhs) {
+        return rhs.getKey().compareTo(lhs.getKey());
       }
     };
   }
@@ -601,14 +630,20 @@ public class GameLibrary {
   /**
    * Compare projects based on the game sort
    */
-  public static AbstractProjectsComparator getSortComparator(boolean asc) {
-    return new AbstractProjectsComparator() {
+  public static ProjectsComparator getSortComparator(boolean asc) {
+    if (asc)
+      return new AbstractAscendingProjectsComparator() {
+        /** Compare left and right */
+        @Override
+        protected int compareTo(Project lhs, Project rhs) {
+          return lhs.getSort().compareTo(rhs.getSort());
+        }
+      };
+    return new AbstractDescendingProjectsComparator() {
       /** Compare left and right */
       @Override
       protected int compareTo(Project lhs, Project rhs) {
-        if (asc)
-          return lhs.getSort().compareTo(rhs.getSort());
-        return rhs.getSort().compareTo(lhs.getSort());
+        return lhs.getSort().compareTo(rhs.getSort());
       }
     };
   }
@@ -617,14 +652,20 @@ public class GameLibrary {
   /**
    * Compare projects based on the game title
    */
-  public static AbstractProjectsComparator getTitleComparator(boolean asc) {
-    return new AbstractProjectsComparator() {
+  public static ProjectsComparator getTitleComparator(boolean asc) {
+    if (asc) 
+      return new AbstractAscendingProjectsComparator() {
+        /** Compare left and right */
+        @Override
+        protected int compareTo(Project lhs, Project rhs) {
+          return lhs.getTitle().compareTo(rhs.getTitle());
+        }
+      };
+    return new AbstractDescendingProjectsComparator() {
       /** Compare left and right */
       @Override
       protected int compareTo(Project lhs, Project rhs) {
-        if (asc)
-          return lhs.getTitle().compareTo(rhs.getTitle());
-        return rhs.getTitle().compareTo(lhs.getTitle());
+        return lhs.getTitle().compareTo(rhs.getTitle());
       }
     };
   }
@@ -633,21 +674,27 @@ public class GameLibrary {
   /**
    * Compare projects based on the last modified date
    */
-  public static AbstractProjectsComparator getDateComparator(boolean asc) {
-    return new AbstractProjectsComparator() {
+  public static ProjectsComparator getDateComparator(boolean asc) {
+    if (asc) 
+      return new AbstractAscendingProjectsComparator() {
+        /** Compare left and right */
+        @Override
+        protected int compareTo(Project lhs, Project rhs) {
+          return lhs.getDate().compareTo(rhs.getDate());
+        }
+      };
+    return new AbstractDescendingProjectsComparator() {
       /** Compare left and right */
       @Override
       protected int compareTo(Project lhs, Project rhs) {
-        if (asc)
-          return lhs.getDate().compareTo(rhs.getDate());
-        return rhs.getDate().compareTo(lhs.getDate());
+        return lhs.getDate().compareTo(rhs.getDate());
       }
     };
   }
   
   // -------------------------------------------------------------------
   public static Map<String, Project> sortProjects(Map<String, Project> map,
-                                                  AbstractProjectsComparator comparator) {
+                                                  ProjectsComparator comparator) {
     final List<Entry<String, Project>> list = new LinkedList<>(map.entrySet());
 
     Collections.sort(list, comparator);
