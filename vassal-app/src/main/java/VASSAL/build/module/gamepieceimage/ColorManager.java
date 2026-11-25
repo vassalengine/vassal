@@ -41,8 +41,24 @@ public class ColorManager extends AbstractConfigurable {
    */
   protected static ColorManager instance;
 
+  /**
+   * The module's own ColorManager, or a stand-in while there is none.
+   *
+   * <p>{@link #instance} is set by {@link #addTo}, so it is null until the
+   * ColorManager component itself has been built -- and
+   * {@link GamePieceImageDefinitions#build} builds every GamePieceImage in the
+   * buildFile before it creates a fallback. Reading one is enough to come
+   * here, through {@code ColorSwatch.decode}, so a buildFile which declares no
+   * ColorManager, or declares it after its images, did not open at all.</p>
+   *
+   * <p>A ColorManager with no swatches of its own still answers for every
+   * standard colour, since those are held statically, and falls back to
+   * {@link #DEFAULT_COLOR} for anything else.</p>
+   *
+   * @return never null
+   */
   public static ColorManager getColorManager() {
-    return instance;
+    return instance == null ? DEFAULT_MANAGER : instance;
   }
 
   public static final Color DEFAULT_COLOR = Color.WHITE;
@@ -116,6 +132,13 @@ public class ColorManager extends AbstractConfigurable {
     }
     return null;
   }
+
+  /**
+   * Declared below every static it could read, because it is built during this
+   * class's own initialisation. Holds no user colours, so every lookup falls
+   * through to the standard colours above.
+   */
+  private static final ColorManager DEFAULT_MANAGER = new ColorManager();
 
   /**
    * User defined Colors
