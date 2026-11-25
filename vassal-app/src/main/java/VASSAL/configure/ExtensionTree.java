@@ -305,6 +305,11 @@ public class ExtensionTree extends ConfigureTree {
       super.isValidParent(target, (Configurable) sourceNode.getUserObject());
   }
 
+  @Override
+  protected boolean isValidPasteTarget(Configurable target, DefaultMutableTreeNode sourceNode, boolean isCut) {
+    return isValidPasteTarget(target, sourceNode);
+  }
+
   /**
    * Allocate new PieceSlot Id's to any PieceSlot sub-components
    *
