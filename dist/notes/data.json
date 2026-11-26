@@ -64,6 +64,7 @@
         { "num": 15312, "desc": "Build the Module Manager window on request, not during class init" }
       ],
       "other": [
+        { "num": 15411, "desc": "Upgraded license-maven-plugin to 2.10.0" },
         { "num": 15398, "desc": "Upgraded apache-maven to 3.10.2" },
         { "num": 15397, "desc": "Upgraded maven-artifact to 3.10.2" },
         { "num": 15396, "desc": "Upgraded logback-classic to 1.6.8" }
