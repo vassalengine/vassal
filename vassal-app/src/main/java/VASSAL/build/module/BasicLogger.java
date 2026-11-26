@@ -38,7 +38,6 @@ import VASSAL.tools.NamedKeyStrokeListener;
 import VASSAL.tools.WriteErrorDialog;
 import VASSAL.tools.filechooser.FileChooser;
 import VASSAL.tools.filechooser.LogFileFilter;
-import VASSAL.tools.io.ZipWriter;
 import VASSAL.tools.menu.MenuManager;
 import VASSAL.tools.swing.Dialogs;
 import VASSAL.tools.version.VersionUtils;
@@ -57,12 +56,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,6 +104,9 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   private NamedHotKeyConfigurer endLogKeyConfig;
 
   private boolean undoInProgress = false;
+
+  /** Every command added to the output log this session, undos included; {@link GameState#isModified()} compares it with its value at the last save. */
+  private long loggedCommands = 0;
 
   public BasicLogger() {
     super();
@@ -474,15 +473,8 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
         log.append(new LogCommand(c, logInput, stepAction));
       }
 
-// FIXME: Extremely inefficient! Make encode write to an OutputStream
-      final String logString = GameModule.getGameModule().encode(log);
-
-      try (ZipWriter zw = new ZipWriter(outputFile)) {
-        try (OutputStream out = GameState.compressSavedGame(new BufferedOutputStream(zw.write(GameState.SAVEFILE_ZIP_ENTRY)))) {
-          out.write(logString.getBytes(StandardCharsets.UTF_8));
-        }
-        metadata.save(zw);
-      }
+      // Encoded straight into the file, never as a String; the log begins with the whole game state.
+      GameModule.getGameModule().getGameState().writeGameFile(outputFile, log, metadata);
 
       GameModule.getGameModule().getGameState().setModified(false);
       undoAction.setEnabled(false);
@@ -612,6 +604,7 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undo.execute();
     GameModule.getGameModule().getServer().sendToOthers(undo);
     logOutput.add(undo);
+    ++loggedCommands;
     GameModule.getGameModule().refreshVisibleMaps();
   }
 
@@ -631,11 +624,17 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
   public void log(Command c) {
     if (c != null && c.isLoggable()) {
       logOutput.add(c);
+      ++loggedCommands;
       if (c.getUndoCommand() != null && !c.getUndoCommand().isNull()) {
         nextUndo = logOutput.size() - 1;
       }
     }
     undoAction.setEnabled(nextUndo >= dontUndoPast);
+  }
+
+  /** @return how many commands have been added to the output log this session, undos included */
+  public long getLoggedCommandCount() {
+    return loggedCommands;
   }
 
   /**
