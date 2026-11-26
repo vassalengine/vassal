@@ -18,8 +18,6 @@ package VASSAL.library;
 
 import java.io.File;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -56,9 +54,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.io.HttpClientResponseHandler;
+import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+//import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 // import org.apache.commons.lang3.time.StopWatch;
 
@@ -163,26 +164,26 @@ public class GameLibrary {
   protected static String formatDate(Date d) throws ParseException {
     return (new SimpleDateFormat(DATE_FORMAT)).format(d); 
   }
-  
-    
-  /**
-   * Do a GET request
-   *
-   * @param url Query
-   * @param accept Mime-type to accept
-   * @return Stream to read response from 
-   */
-  protected static InputStream getRequest(URL url, String accept)
-    throws IOException, URISyntaxException {
-    
-    final HttpGet               get      = new HttpGet(url.toURI());
-    get.setHeader(HttpHeaders.USER_AGENT, "VASSAL"); //NON-NLS
-    if (accept != null && !accept.isBlank()) 
-      get.setHeader(HttpHeaders.ACCEPT, accept);
 
-    try (
-         CloseableHttpClient   client   = HttpClients.createDefault();
-         CloseableHttpResponse response = client.execute(get)) {
+  private abstract static class AbstractResponseHandler<T> implements HttpClientResponseHandler<T> {
+    private final URL url;
+
+    /**
+     * Handler of reponses.
+     *
+     * @param url Request URL
+     */
+    public AbstractResponseHandler(URL url) {
+      this.url = url;
+    }
+
+    /**
+     * Investigate the reponse, and then handle it
+     */
+    @Override
+    public T handleResponse(ClassicHttpResponse response)
+      throws HttpException, IOException {
+      
       final int code = response.getCode();
       
       if (code == 404) {
@@ -193,10 +194,40 @@ public class GameLibrary {
         throw new IOException(Resources.getString("LibraryBrowser.bad_code",
                                                   url, code)); //NON-NLS
       }
-      final InputStream           content = response.getEntity().getContent();
-      final ByteArrayOutputStream obytes  = new ByteArrayOutputStream();
-      content.transferTo(obytes);
-      return new ByteArrayInputStream(obytes.toByteArray());
+
+      return processContent(response.getEntity().getContent());
+    }
+
+    /**
+     * Handle the returned data content, and return the value
+     */
+    public abstract T processContent(InputStream input) throws IOException;
+  }
+    
+  /**
+   * Do a GET request
+   *
+   * @param url Query
+   * @param accept Mime-type to accept
+   * @return Stream to read response from 
+   */
+  protected static <T> T getRequest(URL url, String accept,
+                                  AbstractResponseHandler handler)
+    throws IOException, URISyntaxException {
+    
+    final HttpGet               get      = new HttpGet(url.toURI());
+    get.setHeader(HttpHeaders.USER_AGENT, "VASSAL"); //NON-NLS
+    if (accept != null && !accept.isBlank()) 
+      get.setHeader(HttpHeaders.ACCEPT, accept);
+
+    try (
+         CloseableHttpClient   client   = HttpClients.createDefault()) {
+      return (T)client.execute(get, handler);
+      // final InputStream           content = response.getEntity().getContent();
+      // final ByteArrayOutputStream obytes  = new ByteArrayOutputStream();
+      // content.transferTo(obytes);
+      // return new ByteArrayInputStream(obytes.toByteArray());
+      // return response;
     }
   }
 
@@ -208,10 +239,14 @@ public class GameLibrary {
    */
   protected static String getJSON(URL url)
     throws IOException, URISyntaxException {
-    try (InputStream input = getRequest(url, "application/json")) {
-      return new String(input.readAllBytes(), //NON-NLS
-                        StandardCharsets.UTF_8);
-    }
+    return getRequest(url, "application/json", new AbstractResponseHandler<String>(url) {                         
+      @Override
+      public String processContent(InputStream input)
+        throws IOException {
+        return new String(input.readAllBytes(), //NON-NLS
+                          StandardCharsets.UTF_8);
+      }
+    });
   }
 
   /**
@@ -230,37 +265,44 @@ public class GameLibrary {
                                 String sha256,
                                 long   size)
     throws IOException, URISyntaxException {
-    MessageDigest digest = null;
-    try {
-      digest = MessageDigest.getInstance("SHA-256"); //NON-NLS
-    }
-    catch (NoSuchAlgorithmException e) {
-      throw new IOException(Resources.getString("LibraryBrowser.missing_sha256_algorithm"));
-    }
     if (sha256 == null || sha256.isBlank())
       throw new IOException(Resources.getString("LibraryBrowser.missing_sha256")); //NON-NLS
-
-    try (InputStream in = new DigestInputStream(getRequest(url, null),
-                                                digest);
-         OutputStream out  = Files.newOutputStream(outname.toPath())) {
-      final long read = in.transferTo(out);
+    
+    getRequest(url, null, new AbstractResponseHandler<>(url) {
+        @Override
+        public Object processContent(InputStream input)
+          throws IOException {
+          MessageDigest digest = null;
+          try {
+            digest = MessageDigest.getInstance("SHA-256"); //NON-NLS
+          }
+          catch (NoSuchAlgorithmException e) {
+            throw new IOException(Resources.getString("LibraryBrowser.missing_sha256_algorithm"));
+          }
+          
+          try (InputStream in = new DigestInputStream(input, digest);
+               OutputStream out  = Files.newOutputStream(outname.toPath())) {
+            final long read = in.transferTo(out);
       
-      if (read != size)  {
-        throw new IOException(Resources.getString("LibraryBrowser.inconsistent_read", //NON-NLS
-                                                    read, size));
-      }
-    }
+            if (read != size)  {
+              throw new IOException(Resources.getString("LibraryBrowser.inconsistent_read", //NON-NLS
+                                                        read, size));
+            }
+          }
       
-    // Check sha-256 against message digest
-    final byte[] expect = HexFormat.of().parseHex(sha256);
-    final byte[] got    = digest.digest();
-    if (!MessageDigest.isEqual(expect, got)) {
-      throw new IOException(Resources.getString("LibraryBrowser.inconsistent_checksum", //NON-NLS
-                                                sha256,
-                                                HexFormat.of().formatHex(got)));
-    }
+          // Check sha-256 against message digest
+          final byte[] expect = HexFormat.of().parseHex(sha256);
+          final byte[] got    = digest.digest();
+          if (!MessageDigest.isEqual(expect, got)) {
+            throw new IOException(Resources.getString("LibraryBrowser.inconsistent_checksum", //NON-NLS
+                                                      sha256,
+                                                      HexFormat.of().formatHex(got)));
+          }
+          return null;
+        }
+      });
   }
-
+  
   /**
    * Read in cached projects.  Try first to read from a file in the
    * VASSAL configuration directory.  If that does not exist, try to
@@ -289,7 +331,7 @@ public class GameLibrary {
     }
     
     // If not in the configuration directory, try from resources
-    try (InputStream in = GameLibrary.class.getResourceAsStream(RESOURCE_FILE)) {
+    try (InputStream in = new BufferedInputStream(GameLibrary.class.getResourceAsStream(RESOURCE_FILE))) {
       return readCachedProjects(in, ret);
     }
     catch (ParseException e) {
