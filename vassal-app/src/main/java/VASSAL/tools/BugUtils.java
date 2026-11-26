@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.ParseException;
@@ -41,25 +40,27 @@ public class BugUtils {
 
     // send the POST
     try (CloseableHttpClient client = HttpClients.createDefault()) {
-      try (CloseableHttpResponse response = client.execute(httpPost)) {
+      client.execute(httpPost, response -> {
         final int responseCode = response.getCode();
         // GitHub documents 201 as the expected success code, but starting
         // in May 2026 we observed that 200 is sometimes returned, contra
         // the documentation, so we check for both.
-        if (responseCode != 200 && responseCode != 201) {
-          final String msg = "Bug report failed: " + response.getCode();
-
-          String responseText = null;
-          try {
-            responseText = EntityUtils.toString(response.getEntity());
-          }
-          catch (ParseException e) {
-            throw new IOException(msg, e);
-          }
-
-          throw new IOException(msg + ": " + responseText);
+        if (responseCode == 200 || responseCode == 201) {
+          return null;
         }
-      }
+
+        final String msg = "Bug report failed: " + response.getCode();
+
+        String responseText = null;
+        try {
+          responseText = EntityUtils.toString(response.getEntity());
+        }
+        catch (ParseException e) {
+          throw new IOException(msg, e);
+        }
+
+        throw new IOException(msg + ": " + responseText);
+      });
     }
   }
 
