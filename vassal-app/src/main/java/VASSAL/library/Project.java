@@ -44,7 +44,7 @@ public class Project {
    * @param s Sort game title
    * @param d Date
    */
-  Project(String n, String t, String s, Date d) {
+  public Project(String n, String t, String s, Date d) {
     name  = n;
     title = t;
     date  = d;

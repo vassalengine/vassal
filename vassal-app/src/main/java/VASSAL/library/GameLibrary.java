@@ -17,6 +17,7 @@
 package VASSAL.library;
 
 import java.io.File;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -195,7 +196,7 @@ public class GameLibrary {
       final InputStream           content = response.getEntity().getContent();
       final ByteArrayOutputStream obytes  = new ByteArrayOutputStream();
       content.transferTo(obytes);
-      return new ByteArrayInputStream(obytes.toByteArray());       
+      return new ByteArrayInputStream(obytes.toByteArray());
     }
   }
 
@@ -275,27 +276,31 @@ public class GameLibrary {
     final File         confDir = Info.getConfDir();
     final Path         path    = Path.of(confDir.getPath(),
                                          "projects.json"); //NON-NLS
-    InputStream        in      = null;
+    //InputStream        in      = null;
 
     // Try opening file in the configuration directory
-    try {
-      in = Files.newInputStream(path);
+    try (InputStream in = new BufferedInputStream(Files.newInputStream(path))) {
+      return readCachedProjects(in, ret);
     }
-    catch (IOException ignored) {
-      in = null;
+    catch (ParseException e) {
+      throw e;
     }
-
+    catch (Exception ignored) {
+    }
+    
     // If not in the configuration directory, try from resources
-    if (in == null) 
-      in = GameLibrary.class.getResourceAsStream(RESOURCE_FILE);
-
+    try (InputStream in = GameLibrary.class.getResourceAsStream(RESOURCE_FILE)) {
+      return readCachedProjects(in, ret);
+    }
+    catch (ParseException e) {
+      throw e;
+    }
+    catch (Exception ignored) {
+    }
+    
     // If no data found, update all projects updated after Epoch (1st
     // of January 1970, UTC).
-    if (in == null)
-      return new Date(0); // Epoch
-
-    // Read in the cached projects 
-    return readCachedProjects(in, ret);
+    return new Date(0); // Epoch
   }
   
     
