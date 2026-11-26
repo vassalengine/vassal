@@ -119,7 +119,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Toolkit;
+import java.awt.GraphicsEnvironment;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -263,7 +263,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     translateCmd = Resources.getString("Editor.ModuleEditor.translate"); //$NON-NLS-1$
     helpCmd = Resources.getString("Editor.ModuleEditor.component_help"); //$NON-NLS-1$
     duplicateCmd = Resources.getString("Editor.duplicate");
-    final int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+    final int mask = SwingUtils.getMenuShortcutKeyMask();
     cutKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, mask);
     copyKey = KeyStroke.getKeyStroke(KeyEvent.VK_C, mask);
     pasteKey = KeyStroke.getKeyStroke(KeyEvent.VK_V, mask);
@@ -317,7 +317,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     createKeyBindings();
 
     if (!disableDragAndDrop) {
-      setDragEnabled(true);
+      if (!GraphicsEnvironment.isHeadless()) {
+        setDragEnabled(true);
+      }
       setDropMode(DropMode.ON_OR_INSERT);
       setTransferHandler(new TreeTransferHandler());
     }
