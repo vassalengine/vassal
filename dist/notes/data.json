@@ -60,6 +60,7 @@
         { "num": 15286, "desc": "Don't open saves and logs written by newer major or minor versions, via LaunchRequest" }
       ],
       "improvements": [
+        { "num": 15412, "desc": "Don't use deprecated CloseableHttpClient.execute method" },
         { "num": 15353, "desc": "Let preferences be saved when the file on disk is corrupt" },
         { "num": 15312, "desc": "Build the Module Manager window on request, not during class init" }
       ],

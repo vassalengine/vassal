@@ -4,6 +4,7 @@
 
 3.8.3 - ???
 
+* 15412: Don't use deprecated CloseableHttpClient.execute method
 * 15411: Upgraded license-maven-plugin to 2.10.0
 * 15402: Don't report bugs for versions of VASL < 6.7.4
 * 15399: Add missing hashCode() to Parameter
