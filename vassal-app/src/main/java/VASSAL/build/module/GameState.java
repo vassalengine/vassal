@@ -688,7 +688,26 @@ public class GameState implements CommandEncoder {
         log.info(message);
       }
 
-      if (!saveVassalVersion.equals(vassalVersion)) {
+      if (Info.isModuleTooNew(saveData.getVassalVersion())) {
+        // A save from a newer VASSAL line may use features this one lacks,
+        // so ask before loading it rather than only noting it in chat.
+        final String m = Resources.getString("GameState.load_vassal_too_new", saveData.getVassalVersion(), Info.getVersion());
+        g.warn("!<b>" + m);
+        log.info(m);
+        final String message = Resources.getString("GameState.load_vassal_too_new_header", file.getName()) +
+          "\n\n" + m + "\n\n" +
+          Resources.getString("GameState.load_mismatch_trailer") + '\n';
+
+        if (JOptionPane.showConfirmDialog(
+          null,
+          message,
+          Resources.getString("GameState.load_vassal_too_new_title"),
+          JOptionPane.YES_NO_OPTION,
+          JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
+          return false;
+        }
+      }
+      else if (!saveVassalVersion.equals(vassalVersion)) {
         final String message = Resources.getString("GameState.load_vassal_mismatch", saveVassalVersion, vassalVersion);
         g.warn("?<b>" + message);
         log.info(message);

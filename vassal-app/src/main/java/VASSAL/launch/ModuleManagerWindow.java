@@ -1055,6 +1055,107 @@ public class ModuleManagerWindow extends JFrame {
     return null;
   }
 
+  /**
+   * Finds the installed module to open a saved game or log with.
+   *
+   * @param name    the module name recorded in the save
+   * @param version the module version recorded in the save
+   * @return the module with that name and version if installed, else the
+   *         newest newer patch release of the same major.minor version,
+   *         else null. Versions which need a newer VASSAL than this one are
+   *         skipped.
+   * @see ModuleVersionMatcher
+   */
+  public File getModuleForSave(String name, String version) {
+    final ModuleInfo chosen = findModuleForSave(name, version, false);
+    return chosen == null ? null : chosen.getFile();
+  }
+
+  /**
+   * @param includeTooNew whether to consider module versions which need a
+   *                      newer VASSAL than this one
+   * @return the module chosen as for {@link #getModuleForSave}, or null
+   */
+  ModuleInfo findModuleForSave(String name, String version,
+                               boolean includeTooNew) {
+    if (name == null) return null;
+
+    final List<ModuleInfo> named = new ArrayList<>();
+    for (int i = 0; i < rootNode.getChildCount(); i++) {
+      final ModuleInfo module =
+        (ModuleInfo) rootNode.getChild(i).getNodeInfo();
+
+      if (name.equals(module.getModuleName()) &&
+          (includeTooNew || !module.isModuleTooNew())) {
+        named.add(module);
+      }
+    }
+
+    return ModuleVersionMatcher.choose(
+      version, named, m -> "?".equals(m.getVersion()) ? null : m.getVersion()
+    );
+  }
+
+  /**
+   * Compares the extensions a save records with those the module will load:
+   * the module's own active extensions and the active global ones.
+   *
+   * @param module the module file chosen for the save
+   * @param needed the extensions recorded in the save
+   * @return the needed extensions which are missing, inactive or older
+   */
+  List<SaveExtensions.Shortfall> checkSaveExtensions(
+      File module, List<SaveExtensions.Extension> needed) {
+    final List<SaveExtensions.Extension> active = new ArrayList<>();
+    final List<SaveExtensions.Extension> installed = new ArrayList<>();
+
+    final MyTreeNode node = rootNode.findNode(module);
+    if (node != null && node.getNodeInfo() instanceof ModuleInfo) {
+      for (final ExtensionInfo ext :
+           ((ModuleInfo) node.getNodeInfo()).getExtensions()) {
+        final SaveExtensions.Extension e = new SaveExtensions.Extension(
+          SaveExtensions.nameOf(ext.getFile()), ext.getVersion());
+        installed.add(e);
+        if (ext.isActive()) active.add(e);
+      }
+    }
+
+    final ExtensionsManager global = new ExtensionsManager("ext"); //NON-NLS
+    for (final File f : global.getActiveExtensions()) {
+      final SaveExtensions.Extension e = globalExtension(f);
+      installed.add(e);
+      active.add(e);
+    }
+    for (final File f : global.getInactiveExtensions()) {
+      installed.add(globalExtension(f));
+    }
+
+    return SaveExtensions.compare(needed, active, installed);
+  }
+
+  private static SaveExtensions.Extension globalExtension(File f) {
+    final AbstractMetaData md = MetaDataFactory.buildMetaData(f);
+    return new SaveExtensions.Extension(
+      SaveExtensions.nameOf(f), md == null ? "" : md.getVersion());
+  }
+
+  /**
+   * @param name the module name recorded in a save
+   * @return the versions of that module which are installed
+   */
+  public List<String> getModuleVersions(String name) {
+    final List<String> versions = new ArrayList<>();
+    if (name == null) return versions;
+
+    for (int i = 0; i < rootNode.getChildCount(); i++) {
+      final ModuleInfo module =
+        (ModuleInfo) rootNode.getChild(i).getNodeInfo();
+
+      if (name.equals(module.getModuleName())) versions.add(module.getVersion());
+    }
+    return versions;
+  }
+
   public void refreshModuleList() {
     refreshModuleList(false);
   }
@@ -1895,18 +1996,7 @@ public class ModuleManagerWindow extends JFrame {
       if (metadata == null)
         return "?";
 
-      final String version = metadata.getVersion();
-      final String extra1 = metadata.getExtra1();
-      final String extra2 = metadata.getExtra2();
-      if (!extra1.isEmpty() && (extra1.charAt(0) >= '0') && (extra1.charAt(0) <= '9')) {
-        if (!extra2.isEmpty() && (extra2.charAt(0) >= '0') && (extra2.charAt(0) <= '9')) {
-          return version + "." + extra1 + "." + extra2;
-        }
-        else {
-          return version + "." + extra1;
-        }
-      }
-      return version;
+      return ModuleVersionMatcher.fullVersion(metadata);
     }
 
     public String getLocalizedDescription() {

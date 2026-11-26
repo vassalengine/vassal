@@ -16,9 +16,17 @@
  */
 package VASSAL.launch;
 
+import VASSAL.Info;
 import VASSAL.build.module.metadata.AbstractMetaData;
 import VASSAL.build.module.metadata.MetaDataFactory;
 import VASSAL.build.module.metadata.SaveMetaData;
+import VASSAL.i18n.Resources;
+import VASSAL.tools.ErrorDialog;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.swing.JOptionPane;
 
 public final class LaunchRequestHandler implements Runnable {
   private final LaunchRequest lr;
@@ -54,10 +62,46 @@ public final class LaunchRequestHandler implements Runnable {
         final AbstractMetaData data = MetaDataFactory.buildMetaData(lr.game);
         if (data instanceof SaveMetaData) {
           // we found save metadata
-          final String moduleName = ((SaveMetaData) data).getModuleName();
+          final SaveMetaData saveData = (SaveMetaData) data;
+          final String moduleName = saveData.getModuleName();
           if (moduleName != null && moduleName.length() > 0) {
-            // get the module file by module name
-            lr.module = window.getModuleByName(moduleName);
+            // get the module file by module name and version
+            final String moduleVersion =
+              ModuleVersionMatcher.fullVersion(saveData.getModuleData());
+            lr.module = window.getModuleForSave(moduleName, moduleVersion);
+            if (lr.module == null) {
+              final List<String> installed =
+                window.getModuleVersions(moduleName);
+              final ModuleManagerWindow.ModuleInfo tooNew =
+                window.findModuleForSave(moduleName, moduleVersion, true);
+              if (tooNew != null) {
+                // the version which fits needs a newer VASSAL
+                ErrorDialog.show(
+                  "Error.module_too_new", //NON-NLS
+                  tooNew.getFile().getPath(),
+                  tooNew.getVassalVersion(),
+                  Info.getVersion()
+                );
+              }
+              else if (installed.isEmpty()) {
+                ErrorDialog.show(
+                  "Error.save_module_not_installed", //NON-NLS
+                  lr.game.getName(), moduleName
+                );
+              }
+              else {
+                ErrorDialog.show(
+                  "Error.save_module_version_not_installed", //NON-NLS
+                  lr.game.getName(), moduleName, moduleVersion,
+                  String.join(", ", installed)
+                );
+              }
+              return "cannot find module"; //NON-NLS
+            }
+
+            if (!extensionsOk(window)) {
+              return "cancelled"; //NON-NLS
+            }
           }
           else {
             // this is a pre 3.1 save file, can't tell the module name
@@ -113,5 +157,58 @@ public final class LaunchRequestHandler implements Runnable {
     }
 
     return null;
+  }
+
+  /**
+   * Warns if the save needs extensions which the chosen module will not
+   * load, or will load only in an older version.
+   *
+   * @return true to go ahead with the launch
+   */
+  private boolean extensionsOk(ModuleManagerWindow window) {
+    final List<SaveExtensions.Extension> needed;
+    try {
+      needed = SaveExtensions.read(lr.game);
+    }
+    catch (IOException e) {
+      // loading the save reports a file it cannot read
+      return true;
+    }
+
+    final List<SaveExtensions.Shortfall> shortfalls =
+      window.checkSaveExtensions(lr.module, needed);
+    if (shortfalls.isEmpty()) {
+      return true;
+    }
+
+    final StringBuilder message = new StringBuilder(
+      Resources.getString("ModuleManager.save_extensions_header", lr.game.getName())
+    ).append("\n\n");
+    for (final SaveExtensions.Shortfall s : shortfalls) {
+      final String key;
+      switch (s.problem) {
+      case INACTIVE:
+        key = "ModuleManager.save_extension_inactive"; //NON-NLS
+        break;
+      case OLDER:
+        key = "ModuleManager.save_extension_older"; //NON-NLS
+        break;
+      default:
+        key = "ModuleManager.save_extension_missing"; //NON-NLS
+        break;
+      }
+      message.append("\u2022 ")
+        .append(Resources.getString(key, s.needed.toString(), s.installedVersion))
+        .append('\n');
+    }
+    message.append('\n')
+      .append(Resources.getString("ModuleManager.save_extensions_trailer"));
+
+    return JOptionPane.showConfirmDialog(
+      window,
+      message.toString(),
+      Resources.getString("ModuleManager.save_extensions_title"),
+      JOptionPane.YES_NO_OPTION,
+      JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION;
   }
 }
