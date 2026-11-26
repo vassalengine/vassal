@@ -215,7 +215,7 @@ public class GameLibrary {
                                   AbstractResponseHandler handler)
     throws IOException, URISyntaxException {
     
-    final HttpGet               get      = new HttpGet(url.toURI());
+    final HttpGet get = new HttpGet(url.toURI());
     get.setHeader(HttpHeaders.USER_AGENT, "VASSAL"); //NON-NLS
     if (accept != null && !accept.isBlank()) 
       get.setHeader(HttpHeaders.ACCEPT, accept);
@@ -223,11 +223,6 @@ public class GameLibrary {
     try (
          CloseableHttpClient   client   = HttpClients.createDefault()) {
       return (T)client.execute(get, handler);
-      // final InputStream           content = response.getEntity().getContent();
-      // final ByteArrayOutputStream obytes  = new ByteArrayOutputStream();
-      // content.transferTo(obytes);
-      // return new ByteArrayInputStream(obytes.toByteArray());
-      // return response;
     }
   }
 
