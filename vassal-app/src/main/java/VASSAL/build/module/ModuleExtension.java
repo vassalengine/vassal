@@ -155,6 +155,12 @@ public class ModuleExtension extends AbstractBuildable implements GameComponent,
 
     g.add(this);
 
+    // The extension is a child of the module so it can take part in the game,
+    // but it is not part of the module: without this the module's buildString
+    // would contain every ExtensionElement and every component inside it, and an
+    // editor that loaded extensions would absorb them all on the next save.
+    g.addExtensionComponent(this);
+
     // If a dockable PieceWindow got registered, dock it now (since we're
     // sure the Chatter will already be safely docked by this point)
     if (!alreadyHadDockingPieceWindow) {
