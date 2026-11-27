@@ -721,7 +721,14 @@ public class Zone extends AbstractConfigurable implements GridContainer, Mutable
 
     private void pasteCoords() {
       final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-      final Transferable t = clipboard.getContents(this);
+      final Transferable t;
+      try {
+        t = clipboard.getContents(this);
+      }
+      catch (IllegalStateException e) {
+        // another program has the system clipboard open right now
+        return;
+      }
       if (t != null) {
         try {
           final String pasteShape = (String) t.getTransferData(DataFlavor.stringFlavor);
