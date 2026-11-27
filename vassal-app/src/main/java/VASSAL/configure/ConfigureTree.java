@@ -19,6 +19,7 @@ package VASSAL.configure;
 
 import VASSAL.build.AbstractBuildable;
 import VASSAL.build.AbstractConfigurable;
+import VASSAL.build.AbstractFolder;
 import VASSAL.build.Buildable;
 import VASSAL.build.Builder;
 import VASSAL.build.Configurable;
@@ -118,7 +119,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Toolkit;
+import java.awt.GraphicsEnvironment;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -262,7 +263,7 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     translateCmd = Resources.getString("Editor.ModuleEditor.translate"); //$NON-NLS-1$
     helpCmd = Resources.getString("Editor.ModuleEditor.component_help"); //$NON-NLS-1$
     duplicateCmd = Resources.getString("Editor.duplicate");
-    final int mask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+    final int mask = SwingUtils.getMenuShortcutKeyMask();
     cutKey = KeyStroke.getKeyStroke(KeyEvent.VK_X, mask);
     copyKey = KeyStroke.getKeyStroke(KeyEvent.VK_C, mask);
     pasteKey = KeyStroke.getKeyStroke(KeyEvent.VK_V, mask);
@@ -316,7 +317,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
     createKeyBindings();
 
     if (!disableDragAndDrop) {
-      setDragEnabled(true);
+      if (!GraphicsEnvironment.isHeadless()) {
+        setDragEnabled(true);
+      }
       setDropMode(DropMode.ON_OR_INSERT);
       setTransferHandler(new TreeTransferHandler());
     }
@@ -915,33 +918,77 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
   }
 
 
-  protected boolean isValidPasteTarget(Configurable target, DefaultMutableTreeNode sourceNode) {
-    if (sourceNode == null) {
+  protected boolean isValidPasteTarget(Configurable target, DefaultMutableTreeNode sourceNode, boolean isCut) {
+    if (sourceNode == null || target == null) {
       return false;
     }
 
     final Configurable pasteComponent = (Configurable) sourceNode.getUserObject();
 
-    // Do not allow Immobile components to be moved
+    // 1. An Immobile component can never be pasted anywhere.
     if (!pasteComponent.isMovable()) {
       return false;
     }
 
-    // Do not allow a Unique component to be pasted into a node that already has an instance of that component
-    if (pasteComponent.isUnique() && target instanceof AbstractBuildable) {
-      if (!((AbstractBuildable) target).getComponentsOf(pasteComponent.getClass()).isEmpty()) {
-        return false;
+    final Configurable sourceParent = getNonFolderParent(sourceNode);
+    final Configurable targetParent = getNonFolderTarget(target);
+    final boolean sameParent = Objects.equals(sourceParent, targetParent);
+
+    // 2. A Mandatory component cannot be cut from a parent and pasted into a different parent
+    //    (it may be copied and pasted to a different parent).
+    if (isCut && pasteComponent.isMandatory() && !sameParent) {
+      return false;
+    }
+
+    // 3.1 A Unique component cannot be cut from a parent UNLESS it is being pasted into the same parent
+    if (isCut && pasteComponent.isUnique() && !sameParent) {
+      return false;
+    }
+
+    // 3.2 A Unique component cannot be pasted into a parent that already has an instance of that same component
+    //     UNLESS it is being cut and pasted within the same parent and that parent contains only 1 of that type of component.
+    if (pasteComponent.isUnique() && targetParent instanceof AbstractBuildable) {
+      final int count = ((AbstractBuildable) targetParent).getComponentsOf(pasteComponent.getClass()).size();
+      if (count > 0) {
+        if (!(isCut && sameParent && count <= 1)) {
+          return false;
+        }
       }
     }
 
-    // We can always be dragged/pasted onto our own parent.
+    // 4. Any target component must be an allowed child of the parent it is being pasted into
     final DefaultMutableTreeNode parent = (DefaultMutableTreeNode) sourceNode.getParent();
     return (parent != null && parent.getUserObject().equals(target)) ||
-      isValidParent(target, (Configurable) sourceNode.getUserObject());
+      isValidParent(target, pasteComponent);
+  }
+
+  protected Configurable getNonFolderParent(DefaultMutableTreeNode node) {
+    if (node == null) {
+      return null;
+    }
+    DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+    while (parent != null && parent.getUserObject() instanceof AbstractFolder) {
+      parent = (DefaultMutableTreeNode) parent.getParent();
+    }
+    return parent != null ? (Configurable) parent.getUserObject() : null;
+  }
+
+  protected Configurable getNonFolderTarget(Configurable target) {
+    if (target instanceof AbstractFolder) {
+      final Buildable ancestor = ((AbstractFolder) target).getNonFolderAncestor();
+      if (ancestor instanceof Configurable) {
+        return (Configurable) ancestor;
+      }
+    }
+    return target;
+  }
+
+  protected boolean isValidPasteTarget(Configurable target, DefaultMutableTreeNode sourceNode) {
+    return isValidPasteTarget(target, sourceNode, sourceNode == cutData);
   }
 
   protected boolean isValidPasteTarget(Configurable target) {
-    return isValidPasteTarget(target, cutData) || isValidPasteTarget(target, copyData);
+    return isValidPasteTarget(target, cutData, true) || isValidPasteTarget(target, copyData, false);
   }
 
   /**
@@ -3548,7 +3595,9 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
       final TreePath path = tree.getPathForRow(selRows[0]);
       final DefaultMutableTreeNode firstNode = (DefaultMutableTreeNode)path.getLastPathComponent();
       final Configurable target = (Configurable)targetNode.getUserObject();
-      if (!isValidPasteTarget(target, firstNode)) {
+      final int action = support.getDropAction();
+      final boolean isCut = action == MOVE;
+      if (!isValidPasteTarget(target, firstNode, isCut)) {
         return false;
       }
 
@@ -3560,7 +3609,6 @@ public class ConfigureTree extends JTree implements PropertyChangeListener, Mous
         }
       }
 
-      final int action = support.getDropAction();
       // Don't allow move (cut) to our own descendant
       return action != MOVE || !targetNode.isNodeAncestor(firstNode);
     }
