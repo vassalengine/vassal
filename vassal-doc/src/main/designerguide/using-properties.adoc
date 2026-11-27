@@ -140,8 +140,6 @@ Less Than Or Equal To
 
 a|
 The value on the left side is smaller than or equal to the value on the right. Applies to Numerical Properties only.
-
-|
 |=======================================================================================
 
 === Types of Expressions

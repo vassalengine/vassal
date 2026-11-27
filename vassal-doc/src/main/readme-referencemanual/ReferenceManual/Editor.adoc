@@ -25,6 +25,7 @@ The Configuration Window is used to edit either a <<GameModule.adoc#top,Module>>
 [width="100%",cols="50%a,^50%a",]
 |===
 a|
+==== Editing
 All modifications to a module are done through the Configuration Window, which is a familiar file/folder type browser in which each file/folder represents a module <<GameModule.adoc#top,Component>>. Right-click on any Component to get a context menu with options for that Component.
 Use the _Cut_, _Copy_, _Paste_, and _Move_ commands to move Components around within the module, and use the _Search_ command from the _Edit_ menu if you need to find one.
 
@@ -87,15 +88,15 @@ Adds a sub-component to this component. The different types of sub-components th
 
 ===== Insert ->
 
-Provides a sub-menu of sub-components that can be inserted into the containg component at this point. This command is only valid on the sub-components within a component. It is a short-cut to Adding a component, then Moving it from the bottom up to where you need it.
+Provides a sub-menu of sub-components that can be inserted into the containing component at this point. This command is only valid on the sub-components within a component. It is a short-cut to Adding a component, then Moving it from the bottom up to where you need it.
 
 ===== Add multiple pieces
 
-When configuring a component that can hold Game Pieces or Cards, this option opens the <<MassPieceLoader.adoc#top,Mass Piece Loader>> that allows your to create multiple similar pieces at once based on a template and using a folder of images.
+When configuring a component that can hold Game Pieces or Cards, this option opens the <<MassPieceLoader.adoc#top,Mass Piece Loader>> that allows you to create multiple similar pieces at once based on a template and a folder of images.
 
 ===== Add imported class
 
-Allows you to import an appropriate custom java class at this point in the module hierachy.
+Allows you to import an appropriate custom java class at this point in the module hierarchy.
 
 ===== Import Deck File
 
@@ -117,7 +118,7 @@ See the <<GameModule.adoc#top,Module>> page for a list of Components that can be
 
 |image:images/configuration_window.png[]
 
-_Main Vassal coniguration window._
+_Main Vassal configuration window._
 
 image:images/configuration_window2.png[]
 

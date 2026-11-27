@@ -5,9 +5,9 @@
 
 = Concepts
 
-A brief overwiew of some of the main concepts you need to know to get started creating a VASSAL module.
+A brief overview of some of the main concepts you need to know to get started creating a VASSAL module.
 
-* <<#Module,Module>> +
+* <<#module,Module>> +
 * <<#extension,Extension>> +
 * <<#componentsandpieces,Components and Pieces>> +
 ** <<#components,Components>> +
