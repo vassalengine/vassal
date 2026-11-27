@@ -806,3 +806,13 @@ Sleep(Object ms) {
   _source = this.caller.namespace.getVariable("_source");
   return unwrap(_interp.sleep(ms, _source));
 }
+
+/**
+ * Callbacks to Vassal to convert Strings to Integers or Floats
+ */
+
+ToNumber(Object stringToConvert) {
+  _interp = this.caller.namespace.getVariable("_interp");
+  _source = this.caller.namespace.getVariable("_source");
+  return unwrap(_interp.toNumber(_source, stringToConvert));
+}
