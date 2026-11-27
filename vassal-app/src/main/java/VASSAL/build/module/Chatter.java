@@ -614,7 +614,10 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     final FontConfigurer chatFont = new FontConfigurer("ChatFont", //NON-NLS
       Resources.getString("Chatter.chat_font_preference"));
 
-    chatFont.addPropertyChangeListener(evt -> setFont((Font) evt.getNewValue()));
+    chatFont.addPropertyChangeListener(evt -> {
+      setFont((Font) evt.getNewValue());
+      revalidate();
+    });
 
     mod.getPlayerWindow().addChatter(this);
 
