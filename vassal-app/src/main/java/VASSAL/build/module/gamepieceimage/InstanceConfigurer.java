@@ -146,6 +146,7 @@ public class InstanceConfigurer extends Configurer {
     return props;
   }
 
+  @Override
   public void refresh() {
     if (symbolPanel != null) {
       symbolPanel.refresh();
