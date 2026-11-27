@@ -95,7 +95,6 @@ public class SetGlobalPropertyTest extends DecoratorTest {
     DynamicProperty.DynamicKeyCommand command = new DynamicProperty.DynamicKeyCommand("test", NamedKeyStroke.of("plover"), piece, piece, changer);
     List<DynamicProperty.DynamicKeyCommand> commands = new ArrayList<>();
     commands.add(command);
-    trait.keyCommandListConfig.setValue (commands);
     trait.keyCommands = commands.toArray(new DynamicProperty.DynamicKeyCommand[0]);
 
     serializeTest("Complex trait", trait); // NON-NLS

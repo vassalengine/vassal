@@ -95,6 +95,7 @@ import VASSAL.configure.ValidationReport;
 import VASSAL.configure.password.ToggleablePasswordConfigurer;
 import VASSAL.counters.DeckManager;
 import VASSAL.counters.GamePiece;
+import VASSAL.counters.TraitTypeCache;
 import VASSAL.counters.KeyCommand;
 import VASSAL.i18n.ComponentI18nData;
 import VASSAL.i18n.I18nResourcePathFinder;
@@ -401,6 +402,7 @@ public class GameModule extends AbstractConfigurable
    * Reads/writes full game state; starts/stops gameplay.
    */
   private GameState theState;
+  private final TraitTypeCache traitTypeCache = new TraitTypeCache();
 
   /**
    * Our "zip" archive with a .vmod file extension
@@ -2161,6 +2163,14 @@ public class GameModule extends AbstractConfigurable
    */
   public GameState getGameState() {
     return theState;
+  }
+
+  /**
+   * @return the cache through which traits share the parsed, immutable part of their type
+   * between every instance built from the same type string
+   */
+  public TraitTypeCache getTraitTypeCache() {
+    return traitTypeCache;
   }
 
   /**
