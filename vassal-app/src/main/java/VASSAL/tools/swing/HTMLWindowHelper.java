@@ -21,7 +21,6 @@ package VASSAL.tools.swing;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.Toolkit;
 import java.awt.Window;
 import java.io.IOException;
 import java.net.URL;
@@ -82,12 +81,14 @@ public class HTMLWindowHelper implements HyperlinkListener {
     update(contents);
     w.pack();
 
-    final Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-    int width = Math.max(d.width / 2, w.getSize().width);
-    int height = Math.max(d.height / 2, w.getSize().height);
-    width = Math.min(width, d.width * 2 / 3);
-    height = Math.min(height, d.height * 2 / 3);
-    w.setSize(width, height);
-    w.setLocation(d.width / 2 - width / 2, 0);
+    // Suggest a reasonable initial size based on current screen bounds without forcing location.
+    // Let the common window layout engine (PositionOption) perform clamping and final placement.
+    final java.awt.Rectangle screen = SwingUtils.getScreenBounds(w);
+    int width = Math.max(screen.width / 2, w.getSize().width);
+    int height = Math.max(screen.height / 2, w.getSize().height);
+    width = Math.min(width, (screen.width * 2) / 3);
+    height = Math.min(height, (screen.height * 2) / 3);
+    w.setSize(new Dimension(width, height));
+    // Do not set explicit location here to avoid fighting with PositionOption
   }
 }
