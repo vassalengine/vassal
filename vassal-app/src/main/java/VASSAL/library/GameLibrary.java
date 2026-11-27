@@ -54,14 +54,10 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import org.apache.hc.core5.http.HttpHeaders;
-import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
-import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-//import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-// import org.apache.commons.lang3.time.StopWatch;
 
 import VASSAL.Info;
 import VASSAL.i18n.Resources;
@@ -165,54 +161,16 @@ public class GameLibrary {
     return (new SimpleDateFormat(DATE_FORMAT)).format(d); 
   }
 
-  private abstract static class AbstractResponseHandler<T> implements HttpClientResponseHandler<T> {
-    private final URL url;
-
-    /**
-     * Handler of reponses.
-     *
-     * @param url Request URL
-     */
-    public AbstractResponseHandler(URL url) {
-      this.url = url;
-    }
-
-    /**
-     * Investigate the reponse, and then handle it
-     */
-    @Override
-    public T handleResponse(ClassicHttpResponse response)
-      throws HttpException, IOException {
-      
-      final int code = response.getCode();
-      
-      if (code == 404) {
-        throw new IOException(Resources.getString("LibraryBrowser.404", url)); //NON-NLS
-      }
-      
-      if (code / 100 != 2)  {
-        throw new IOException(Resources.getString("LibraryBrowser.bad_code",
-                                                  url, code)); //NON-NLS
-      }
-
-      return processContent(response.getEntity().getContent());
-    }
-
-    /**
-     * Handle the returned data content, and return the value
-     */
-    public abstract T processContent(InputStream input) throws IOException;
-  }
-    
   /**
    * Do a GET request
    *
    * @param url Query
    * @param accept Mime-type to accept
+   * @param handler Handler of the response.  Should return an object of type T 
    * @return Stream to read response from 
    */
   protected static <T> T getRequest(URL url, String accept,
-                                  AbstractResponseHandler handler)
+                                  HttpClientResponseHandler<T> handler)
     throws IOException, URISyntaxException {
     
     final HttpGet get = new HttpGet(url.toURI());
@@ -222,7 +180,20 @@ public class GameLibrary {
 
     try (
          CloseableHttpClient   client   = HttpClients.createDefault()) {
-      return (T)client.execute(get, handler);
+      return (T)client.execute(get, response -> {
+        final int code = response.getCode();
+      
+        if (code == 404) {
+          throw new IOException(Resources.getString("LibraryBrowser.404", url)); //NON-NLS
+        }
+      
+        if (code / 100 != 2)  {
+          throw new IOException(Resources.getString("LibraryBrowser.bad_code",
+                                                    url, code)); //NON-NLS
+        }
+
+        return handler.handleResponse(response);
+      });
     }
   }
 
@@ -234,13 +205,9 @@ public class GameLibrary {
    */
   protected static String getJSON(URL url)
     throws IOException, URISyntaxException {
-    return getRequest(url, "application/json", new AbstractResponseHandler<String>(url) {                         
-      @Override
-      public String processContent(InputStream input)
-        throws IOException {
-        return new String(input.readAllBytes(), //NON-NLS
-                          StandardCharsets.UTF_8);
-      }
+    return getRequest(url, "application/json", response -> { //NON-NLS
+      return new String(response.getEntity().getContent().readAllBytes(), 
+                        StandardCharsets.UTF_8);
     });
   }
 
@@ -263,39 +230,35 @@ public class GameLibrary {
     if (sha256 == null || sha256.isBlank())
       throw new IOException(Resources.getString("LibraryBrowser.missing_sha256")); //NON-NLS
     
-    getRequest(url, null, new AbstractResponseHandler<>(url) {
-        @Override
-        public Object processContent(InputStream input)
-          throws IOException {
-          MessageDigest digest = null;
-          try {
-            digest = MessageDigest.getInstance("SHA-256"); //NON-NLS
-          }
-          catch (NoSuchAlgorithmException e) {
-            throw new IOException(Resources.getString("LibraryBrowser.missing_sha256_algorithm"));
-          }
+    getRequest(url, null, response -> {
+      MessageDigest digest = null;
+      try {
+        digest = MessageDigest.getInstance("SHA-256"); //NON-NLS
+      }
+      catch (NoSuchAlgorithmException e) {
+        throw new IOException(Resources.getString("LibraryBrowser.missing_sha256_algorithm"));
+      }
           
-          try (InputStream in = new DigestInputStream(input, digest);
-               OutputStream out  = Files.newOutputStream(outname.toPath())) {
-            final long read = in.transferTo(out);
+      try (InputStream  in  = new DigestInputStream(response.getEntity().getContent(), digest);
+           OutputStream out = Files.newOutputStream(outname.toPath())) {
+        final long read = in.transferTo(out);
       
-            if (read != size)  {
-              throw new IOException(Resources.getString("LibraryBrowser.inconsistent_read", //NON-NLS
-                                                        read, size));
-            }
-          }
-      
-          // Check sha-256 against message digest
-          final byte[] expect = HexFormat.of().parseHex(sha256);
-          final byte[] got    = digest.digest();
-          if (!MessageDigest.isEqual(expect, got)) {
-            throw new IOException(Resources.getString("LibraryBrowser.inconsistent_checksum", //NON-NLS
-                                                      sha256,
-                                                      HexFormat.of().formatHex(got)));
-          }
-          return null;
+        if (read != size)  {
+          throw new IOException(Resources.getString("LibraryBrowser.inconsistent_read", //NON-NLS
+                                                    read, size));
         }
-      });
+      }
+      
+      // Check sha-256 against message digest
+      final byte[] expect = HexFormat.of().parseHex(sha256);
+      final byte[] got    = digest.digest();
+      if (!MessageDigest.isEqual(expect, got)) {
+        throw new IOException(Resources.getString("LibraryBrowser.inconsistent_checksum", //NON-NLS
+                                                  sha256,
+                                                      HexFormat.of().formatHex(got)));
+      }
+      return null;
+    });
   }
   
   /**
