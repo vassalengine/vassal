@@ -186,7 +186,7 @@ public class EventLog extends AbstractBuildable
     }
 
     @Override
-    public Command myUndoCommand() {
+    protected Command myUndoCommand() {
       return null;
     }
   }

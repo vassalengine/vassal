@@ -31,5 +31,17 @@
         <to>javax.swing.Timer</to>
         <justification>Simplification and future proof</justification>
     </difference>
-   
+    <difference>
+        <className>VASSAL/build/module/Chatter$DisplayText</className>
+        <differenceType>7009</differenceType>
+        <method>VASSAL.command.Command myUndoCommand()</method>
+        <justification>Accessibility reduced to match superclass</justification>
+    </difference>
+    <difference>
+        <className>VASSAL/build/module/EventLog$StoreEvents</className>
+        <differenceType>7009</differenceType>
+        <method>VASSAL.command.Command myUndoCommand()</method>
+        <justification>Accessibility reduced to match superclass</justification>
+    </difference>
+
 </differences>
