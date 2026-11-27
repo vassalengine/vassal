@@ -47,7 +47,9 @@ NOTE: If you later need to do arithimetic on this value in a Beanshell expressio
 [#minimumheap]
 *Minimum JVM maximum heap (in MB):*:: The module designer can specify a minimum setting for the user preference <<Preferences.adoc#JVMmaxheap, JVM maximum heap>> here. When the module starts up, the JVM setting is checked against this value. If the Global Options value is higher, the user preference will be overwritten and a warning message will advise that a restart is required.
 
-*Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons, the button that shows/hides the server controls, a button to display the Debug Window and a button to show the <<ScenarioProperties.adoc#top,Scenario Properties>> windows if you have defined any.
+*Icons and hotkeys:*:: You can specify your own button icons and keyboard shortcuts for the logfile step/undo buttons, a checkpoint hotkey, the button that shows/hides the server controls, a button to display the Debug Window and a button to show the <<ScenarioProperties.adoc#top,Scenario Properties>> windows if you have defined any.
+
+NOTE: A *Checkpoint Hotkey*, if set, allows the module designer to prevent undo following a key action, such as after a card draw. This is achieved by issuing the specified hotkey as the _very last end_ action in the sequence. If this is done correctly, the Undo button will grey out immediately. To prevent accidental player use, use a Named Command, not Keystroke.
 
 |image:images/GlobalOptions.png[]
 |===
