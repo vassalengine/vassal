@@ -20,6 +20,9 @@ package VASSAL.launch;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
 import VASSAL.tools.DataArchive;
@@ -30,15 +33,24 @@ import VASSAL.tools.lang.Pair;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 public class TilingHandlerTest {
+  @TempDir
+  Path dir;
+
 
   private static final Dimension TILE = new Dimension(256, 256);
 
@@ -57,7 +69,11 @@ public class TilingHandlerTest {
     private final Set<String> fresh;
 
     FixtureHandler(Map<String, Object> images, Set<String> fresh) {
-      super("module.vmod", new File("cache"), TILE, 1024); //NON-NLS
+      this("module.vmod", new File("cache"), images, fresh); //NON-NLS
+    }
+
+    FixtureHandler(String aname, File cdir, Map<String, Object> images, Set<String> fresh) {
+      super(aname, cdir, TILE, 1024);
       this.images = images;
       this.fresh = fresh;
     }
@@ -128,5 +144,90 @@ public class TilingHandlerTest {
     // the unreadable image is reported; the SVG and the directory are not
     assertThat(failed.size(), is(1));
     assertThat(failed.get(0).first, is("images/broken.png")); //NON-NLS
+  }
+
+  /**
+   * A handler which gets past measuring the images (one big one in a real,
+   * empty archive) so that the tile directories are made and the slicer runs.
+   */
+  private static class SlicingHandler extends FixtureHandler {
+    private final IOException cleanupFailure;
+
+    SlicingHandler(String aname, File cdir, IOException cleanupFailure) {
+      super(aname, cdir, Map.of("images/big.png", BIG), Set.of()); //NON-NLS
+      this.cleanupFailure = cleanupFailure;
+    }
+
+    @Override
+    protected StateMachineHandler createStateMachineHandler(int tcount, Future<Integer> fut) {
+      return new StateMachineHandler() {
+        @Override
+        public void handleStart() {}
+        @Override
+        public void handleStartingImageState(String in) {}
+        @Override
+        public void handleTileWrittenState() {}
+        @Override
+        public void handleTilingFinishedState() {}
+        @Override
+        public void handleSuccess() {}
+        @Override
+        public void handleFailure() {}
+      };
+    }
+
+    @Override
+    protected Pair<Integer, Integer> runSlicer(List<String> multi, int maxheap, StateMachineHandler h) {
+      // the slicer failed and there is nothing left to retry
+      return Pair.of(2, SLICER_GAVE_UP);
+    }
+
+    @Override
+    protected void cleanup() throws IOException {
+      if (cleanupFailure != null) {
+        throw cleanupFailure;
+      }
+      super.cleanup();
+    }
+  }
+
+  private File emptyArchive() throws IOException {
+    final File f = dir.resolve("module.vmod").toFile(); //NON-NLS
+    try (ZipOutputStream zout = new ZipOutputStream(Files.newOutputStream(f.toPath()))) {
+      zout.putNextEntry(new ZipEntry("buildFile.xml")); //NON-NLS
+      zout.closeEntry();
+    }
+    return f;
+  }
+
+  /**
+   * When the slicer fails and the tile directory cannot then be removed, the
+   * exception from the slicer is the one to report; the failed cleanup used
+   * to replace it.
+   */
+  @Test
+  public void aFailedCleanupDoesNotHideTheSlicerFailure() throws IOException {
+    final File cdir = dir.resolve("tiles").toFile(); //NON-NLS
+    final IOException locked = new IOException("Cannot delete file: " + cdir); //NON-NLS
+    final TilingHandler th = new SlicingHandler(emptyArchive().getPath(), cdir, locked);
+
+    final IOException e = assertThrows(IOException.class, th::sliceTiles);
+    assertThat(e.getMessage(), containsString("ran out of memory")); //NON-NLS
+    assertThat(e.getSuppressed(), is(arrayContaining(locked)));
+  }
+
+  /**
+   * Failing to create the tile directories is a problem with the cache
+   * folder, not a bug, so it is reported as such.
+   */
+  @Test
+  public void anUnwritableCacheFolderIsReportedAsATileCacheProblem() throws IOException {
+    // a plain file where the cache directory should be
+    final File blocker = Files.createFile(dir.resolve("tiles")).toFile(); //NON-NLS
+    final File cdir = new File(blocker, "0123456789abcdef"); //NON-NLS
+    final TilingHandler th = new SlicingHandler(emptyArchive().getPath(), cdir, null);
+
+    final TileCacheException e = assertThrows(TileCacheException.class, th::sliceTiles);
+    assertThat(e.getDirectory(), is(cdir));
   }
 }
