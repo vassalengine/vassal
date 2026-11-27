@@ -20,6 +20,7 @@ package VASSAL.build.module;
 import VASSAL.Info;
 import VASSAL.build.AbstractConfigurable;
 import VASSAL.build.Buildable;
+import VASSAL.build.Configurable;
 import VASSAL.build.GameModule;
 import VASSAL.build.module.documentation.AboutScreen;
 import VASSAL.build.module.documentation.BrowserHelpFile;
@@ -36,6 +37,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.Arrays;
 
 /**
  * Represents the <code>Help</code> menu of the controls window
@@ -55,13 +57,6 @@ public class Documentation extends AbstractConfigurable {
   @Override
   public void build(Element el) {
     if (el == null) {
-      final AboutScreen about = new AboutScreen();
-      about.setAttribute(AboutScreen.TITLE,
-        Resources.getString("Documentation.about_module")); //$NON-NLS-1$
-      about.setAttribute(AboutScreen.FILE, "/images/Splash.png"); //$NON-NLS-1$
-      about.addTo(this);
-      add(about);
-
       final HelpFile intro = new HelpFile();
       intro.setAttribute(HelpFile.TITLE,
         Resources.getString("Documentation.quick_start")); //$NON-NLS-1$
@@ -74,6 +69,18 @@ public class Documentation extends AbstractConfigurable {
     else {
       super.build(el);
     }
+  }
+
+  /**
+   * Legacy {@link AboutScreen}s are hidden in the Editor: they are written
+   * from the Module's About screen image and name (interim for 3.8.x, to be
+   * removed in 3.9).
+   */
+  @Override
+  public Configurable[] getConfigureComponents() {
+    return Arrays.stream(super.getConfigureComponents())
+      .filter(c -> !(c instanceof AboutScreen))
+      .toArray(Configurable[]::new);
   }
 
   public static File getDocumentationBaseDir() {
@@ -110,7 +117,6 @@ public class Documentation extends AbstractConfigurable {
       BrowserPDFFile.class,
       BrowserHelpFile.class,
       HelpFile.class,
-      AboutScreen.class,
       Tutorial.class,
     };
   }
