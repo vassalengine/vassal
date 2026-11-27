@@ -44,7 +44,7 @@ public class FontConfigurer extends Configurer {
   }
 
   public FontConfigurer(String key, String name, Font val) {
-    this(key, name, val, new int[]{9, 10, 11, 12, 15, 18});
+    this(key, name, val, new int[]{9, 10, 11, 12, 15, 18, 20, 22, 24, 26, 28, 36, 48});
   }
 
   public FontConfigurer(String key, String name, Font val, int[] sizes) {
