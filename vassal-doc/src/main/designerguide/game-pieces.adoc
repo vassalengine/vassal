@@ -186,6 +186,7 @@ The following Traits are available for use with Game Pieces.
 |Text Label
 |Moved Fixed Distance
 |Trigger Action
+||
 |===========================================================
 
 == Action Button

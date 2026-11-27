@@ -11,7 +11,7 @@ image:images/Toolbar.png[]
 
 The <<Toolbar.adoc#top,Toolbar>> of the main <<GameModule.adoc#top,Module>> window contains buttons for basic functions such as <<#Undo,Undo>>, <<#StepForward,Step Forward>>, and <<#ServerControls,Server Controls>>, but you can also configure buttons to <<SpecialDiceButton.adoc#top,roll dice>>, <<PieceWindow.adoc#top,add pieces to the map>>, display <<ChartWindow.adoc#top,charts>> and <<Map.adoc#top,maps>>, keep <<PlayerHand.adoc#top,player hands>> and <<PrivateWindow.adoc#top,reinforcement pools>> private, and more.
 
-Buttons for basic functions are created by configuring the existing basic components of the module, such as <<GlobalOptions.adoc#top,Global Options>> and the <<#Definition_of_Player_Sides,Definition of Player Sides>>.
+Buttons for basic functions are created by configuring the existing basic components of the module, such as <<GlobalOptions.adoc#top,Global Options>> and the <<GameModule.adoc#Definition_of_Player_Sides,Definition of Player Sides>>.
 
 Buttons for Maps, Charts, Dice, and other additional buttons are created by adding new <<GameModule.adoc#SubComponents,Sub-Components>> to the Module.
 In some cases, Toolbar buttons can also be created by adding sub-components to a Map window.

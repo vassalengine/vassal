@@ -86,7 +86,7 @@ Any of them can be added by right-clicking on the _[Module]_ component in the Mo
 |<<Map.adoc#GlobalKeyCommand,Global Key Command>>|<<GlobalOptions.adoc#top,Global Options>>|<<GlobalProperties.adoc#top,Global Properties>>|<<GlobalTranslatableMessages.adoc#top, Global Translatable Messages>>|<<HelpMenu.adoc#top,Help Menu>>
 |<<Map.adoc#top,Map Window>>|<<MultiActionButton.adoc#top,Multi-Action Button>>|<<#NotesWindow,Notes Window>>|<<PlayerHand.adoc#top,Player Hand>>|<<#PredefinedSetup,Predefined Setup>>
 |<<PrivateWindow.adoc#top,Private Window>>|<<#RandomTextButton,Random Text Button>>|<<#StartupGlobalKeyCommand,Startup Global Key Command>>|<<ScenarioProperties.adoc#top,Scenario Options>>|<<SpecialDiceButton.adoc#top,Symbolic Dice Button>>|<<Toolbar.adoc#top,Toolbar>>
-|<<ToolbarMenu.adoc#top,Toolbar Menu>>|<<TurnTracker.adoc#top,Turn Counter>>|||
+|<<ToolbarMenu.adoc#top,Toolbar Menu>>|<<TurnTracker.adoc#top,Turn Counter>>||
 |===
 
 
@@ -276,10 +276,10 @@ Can print a welcome message, or perform some other task that needs to be done wh
 
 image:images/StartupGlobalKeyCommand.png[]
 
-An extension of <<#GlobalKeyCommand,Global Key Command>> that fires automatically upon completion of module load, once all the key listeners are started up.
-All fields behave identically to the corresponding ones in <<#GlobalKeyCommand,Global Key Command>>, except that those pertaining to the physical representation of a Toolbar button are suppressed as being inapplicable.
+An extension of <<GlobalKeyCommands.adoc#top,Global Key Command>> that fires automatically upon completion of module load, once all the key listeners are started up.
+All fields behave identically to the corresponding ones in <<GlobalKeyCommand.adoc#top,Global Key Command>>, except that those pertaining to the physical representation of a Toolbar button are suppressed as being inapplicable.
 
-See the <<GlobalKeyCommands.adoc#startup,Global Key Commands>> page for more details.
+See the <<GlobalKeyCommands.adoc#startup,Startup Global Key Commands>> page for more details.
 
 ==== <<Inventory.adoc#top,Game Piece Inventory Window>>
 [width="100%",cols="40%,60%",]
