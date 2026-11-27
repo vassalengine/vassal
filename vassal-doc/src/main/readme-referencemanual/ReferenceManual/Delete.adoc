@@ -12,7 +12,7 @@ Adds the ability for a piece to be deleted by players during a game.
 When this trait's Key Command or menu item is activated, the piece is deleted from the game.
 
 NOTE:  When this trait is activated the piece is deleted and therefore does not do any further processing on the Key Command.
-This can prevent Report Action traits from reporting the deletion, because of the <<#TraitOrder,order>> traits are processed.
+This can prevent Report Action traits from reporting the deletion, because of the <<GamePiece.adoc#TraitOrder,order>> traits are processed.
 Such a situation can be worked around by using a Trigger Action trait to first send a Key Command to cause a Report Action and then send a second Key Command to process the delete.
 [width="100%",cols="50%a,50%a",]
 |===
