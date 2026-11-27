@@ -160,8 +160,14 @@ public abstract class Launcher {
         );
         System.exit(1);
       }
+      else if (t instanceof RuntimeException) {
+        throw (RuntimeException) t;
+      }
+      else if (t instanceof Error) {
+        throw (Error) t;
+      }
       else {
-        throw new RuntimeException(e);
+        throw new RuntimeException(t);
       }
     }
   }
