@@ -31,6 +31,11 @@ Double-clicking the [Module] component in the editor (or right-clicking and sele
 
 Any of these properties is visible to the module itself as a <<GlobalProperties.adoc#top, Global Property>>, so for example you could refer to the module version number in a <<MessageFormat.adoc#top,Message Format>> as _$ModuleVersion$_.
 
+*About screen image:* An image shown on the module's About screen, above the module, extension and VASSAL version numbers.
+The same image is shown, faded, down the left-hand side of the Welcome Wizard (if enabled in Preferences) and the game setup wizard. It is not a splash screen.
+The About screen is "About _module name_", at the top of the application menu on macOS and the last item of the Help menu on Windows and Linux.
+If no image is set, the VASSAL splash image is shown.
+
 image:images/GameModule.png[]
 
 === Editor Window
