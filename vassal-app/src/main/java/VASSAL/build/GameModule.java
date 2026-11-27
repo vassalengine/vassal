@@ -52,6 +52,7 @@ import VASSAL.build.module.SpecialDiceButton;
 import VASSAL.build.module.StartupGlobalKeyCommand;
 import VASSAL.build.module.ToolbarMenu;
 import VASSAL.build.module.WizardSupport;
+import VASSAL.build.module.documentation.AboutScreen;
 import VASSAL.build.module.documentation.HelpFile;
 import VASSAL.build.module.folder.ModuleSubFolder;
 import VASSAL.build.module.gamepieceimage.GamePieceImageDefinitions;
@@ -101,7 +102,10 @@ import VASSAL.i18n.I18nResourcePathFinder;
 import VASSAL.i18n.Language;
 import VASSAL.i18n.Localization;
 import VASSAL.i18n.Resources;
+import VASSAL.launch.AboutVASSALAction;
 import VASSAL.launch.PlayerWindow;
+import VASSAL.tools.imageop.ImageOp;
+import VASSAL.tools.imageop.Op;
 import VASSAL.preferences.PositionOption;
 import VASSAL.preferences.Prefs;
 import VASSAL.script.expression.Expression;
@@ -152,7 +156,9 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
+import java.awt.Image;
 import java.io.File;
+import java.util.Collection;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -216,6 +222,8 @@ public class GameModule extends AbstractConfigurable
   public static final String MODULE_DESCRIPTION_PROPERTY = "ModuleDescription"; //NON-NLS
   public static final String MODULE_OTHER1_PROPERTY = "ModuleOther1"; //NON-NLS
   public static final String MODULE_OTHER2_PROPERTY = "ModuleOther2"; //NON-NLS
+  /** buildFile attribute: image shown on the module's About screen and as the setup wizard background */
+  public static final String ABOUT_IMAGE = "aboutImage"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_CREATED_PROPERTY = "VassalVersionCreated"; //NON-NLS
   public static final String MODULE_VASSAL_VERSION_RUNNING_PROPERTY = "VassalVersionRunning"; //NON-NLS
   public static final String MODULE_CURRENT_LOCALE = "CurrentLanguage"; //NON-NLS
@@ -270,6 +278,8 @@ public class GameModule extends AbstractConfigurable
   private String vassalVersionCreated = "0.0";  //$NON-NLS-1$
   private String moduleOther1 = "";
   private String moduleOther2 = "";
+  private String aboutImageFile;
+  private ImageOp aboutImageOp;
   private String gameName = DEFAULT_NAME;
   private String localizedGameName = null;
   private String description = "";
@@ -742,6 +752,13 @@ public class GameModule extends AbstractConfigurable
       getPrefs().getEditor().getEditAction()
     );
 
+    // The About entry (application menu on macOS, end of Help elsewhere),
+    // registered now so that it can take the module's name and AboutScreen
+    MenuManager.getInstance().addAction(
+      "AboutScreen.about_vassal", //NON-NLS
+      new AboutVASSALAction(frame)
+    );
+
     // Our counter refresher
     final GameRefresher gameRefresher = new GameRefresher(this);
     gameRefresher.addTo(this);
@@ -1059,6 +1076,34 @@ public class GameModule extends AbstractConfigurable
     else if (MODULE_OTHER2_PROPERTY.equals(name)) {
       moduleOther2 = (String) value;
     }
+    else if (ABOUT_IMAGE.equals(name)) {
+      if (value instanceof File) {
+        value = ((File) value).getName();
+      }
+      aboutImageFile = value == null ? null : ((String) value).trim();
+      aboutImageOp = null;
+      if (aboutImageFile != null && !aboutImageFile.isEmpty()) {
+        final ImageOp op = Op.load(aboutImageFile);
+        if (op.getImage() != null) {
+          aboutImageOp = op;
+          getWizardSupport().setBackgroundImage(op.getImage());
+        }
+      }
+    }
+  }
+
+  /**
+   * @return the module's About screen image, or null if none is set on the module
+   */
+  public ImageOp getAboutImageOp() {
+    return aboutImageOp;
+  }
+
+  @Override
+  public void addLocalImageNames(Collection<String> s) {
+    if (aboutImageFile != null && !aboutImageFile.isEmpty()) {
+      s.add(aboutImageFile);
+    }
   }
 
   /**
@@ -1090,6 +1135,9 @@ public class GameModule extends AbstractConfigurable
     }
     else if (MODULE_OTHER2_PROPERTY.equals(name)) {
       return moduleOther2;
+    }
+    else if (ABOUT_IMAGE.equals(name)) {
+      return aboutImageFile;
     }
     return null;
   }
@@ -1142,6 +1190,7 @@ public class GameModule extends AbstractConfigurable
       DESCRIPTION,
       MODULE_OTHER1_PROPERTY,
       MODULE_OTHER2_PROPERTY,
+      ABOUT_IMAGE,
       VASSAL_VERSION_CREATED,
       NEXT_PIECESLOT_ID,
     };
@@ -1160,7 +1209,8 @@ public class GameModule extends AbstractConfigurable
       Resources.getString("Editor.GameModule.version_label"), //$NON-NLS-1$
       Resources.getString("Editor.GameModule.description_label"),    //NON-NLS
       Resources.getString("Editor.GameModule.module_other_1_label"), //NON-NLS
-      Resources.getString("Editor.GameModule.module_other_2_label") //NON-NLS
+      Resources.getString("Editor.GameModule.module_other_2_label"), //NON-NLS
+      Resources.getString("Editor.GameModule.about_image_label") //NON-NLS
     };
   }
 
@@ -1179,7 +1229,8 @@ public class GameModule extends AbstractConfigurable
       String.class,
       String.class,
       String.class,
-      String.class
+      String.class,
+      Image.class
     };
   }
 
@@ -2005,6 +2056,7 @@ public class GameModule extends AbstractConfigurable
      */
     if (theModule.getDataArchive() instanceof ArchiveWriter) {
       theModule.checkGpIds();
+      theModule.migrateAboutScreens();
     }
 
     /*
@@ -2084,6 +2136,71 @@ public class GameModule extends AbstractConfigurable
     }
 
     checker.fixErrors();
+  }
+
+  /**
+   * When editing a module made before 3.8.3: if the Module has no About
+   * screen image, copy the first legacy {@link AboutScreen} image onto it.
+   * Legacy AboutScreens are then kept in step with the Module, see
+   * {@link #syncLegacyAboutScreens}.
+   */
+  private void migrateAboutScreens() {
+    final List<AboutScreen> legacy = getAllDescendantComponentsOf(AboutScreen.class);
+    if (legacy.isEmpty()) return;
+
+    if (aboutImageFile == null || aboutImageFile.isEmpty()) {
+      for (final AboutScreen about : legacy) {
+        final String file = about.getAttributeValueString(AboutScreen.FILE);
+        if (file != null && !file.isBlank()) {
+          setAttribute(ABOUT_IMAGE, file);
+          break;
+        }
+      }
+    }
+
+    if (syncLegacyAboutScreens()) {
+      setDirty(true);
+    }
+  }
+
+  /**
+   * Interim for 3.8.x (legacy AboutScreen is to be removed in 3.9): legacy
+   * AboutScreens are kept in the module, and one is created if the Module has
+   * an About image but no AboutScreen, so that players on 3.8.0 to 3.8.2
+   * still see the About image. They are hidden in the Editor and always
+   * written from the Module's About screen image and name.
+   *
+   * @return true if any AboutScreen changed
+   */
+  private boolean syncLegacyAboutScreens() {
+    final String file = aboutImageFile == null ? "" : aboutImageFile;
+    final String title = Resources.getString("AboutScreen.about_module_name", gameName); //NON-NLS
+    boolean changed = false;
+
+    // a module with an About image always carries one hidden AboutScreen,
+    // created here if it has none (e.g. a new module)
+    if (!file.isEmpty() && getAllDescendantComponentsOf(AboutScreen.class).isEmpty()) {
+      final List<Documentation> docs = getComponentsOf(Documentation.class);
+      if (!docs.isEmpty()) {
+        final Documentation doc = docs.get(0);
+        final AboutScreen about = new AboutScreen();
+        about.addTo(doc);
+        doc.add(about);
+        changed = true;
+      }
+    }
+
+    for (final AboutScreen about : getAllDescendantComponentsOf(AboutScreen.class)) {
+      if (!file.equals(about.getAttributeValueString(AboutScreen.FILE))) {
+        about.setAttribute(AboutScreen.FILE, file);
+        changed = true;
+      }
+      if (!title.equals(about.getAttributeValueString(AboutScreen.TITLE))) {
+        about.setAttribute(AboutScreen.TITLE, title);
+        changed = true;
+      }
+    }
+    return changed;
   }
 
   /**
@@ -2194,6 +2311,8 @@ public class GameModule extends AbstractConfigurable
     catch (IOException e) {
       WriteErrorDialog.error(e, writer.getName());
     }
+
+    syncLegacyAboutScreens();
 
     try {
       final String save = buildString();

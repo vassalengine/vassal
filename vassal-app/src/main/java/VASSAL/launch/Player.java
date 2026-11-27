@@ -81,6 +81,7 @@ public class Player extends Launcher {
 
       createExtensionsLoader().addTo(GameModule.getGameModule());
       Localization.getInstance().translate();
+      ModuleDockIcon.install(GameModule.getGameModule());
       showWizardOrPlayerWindow(GameModule.getGameModule());
     }
     else {
@@ -88,6 +89,7 @@ public class Player extends Launcher {
       createExtensionsLoader().addTo(GameModule.getGameModule());
       Localization.getInstance().translate();
       final GameModule m = GameModule.getGameModule();
+      ModuleDockIcon.install(m);
       if (lr.game != null) {
         m.getPlayerWindow().setVisible(true);
 

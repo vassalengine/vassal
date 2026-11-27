@@ -26,7 +26,7 @@ Selecting the menu item opens an external browser on the user's machine with HTM
 [width="100%",cols="50%a,^50%a",]
 |===
 |
-*Menu command:*::  The menu item to be added to the Help menu.
+*Menu command:*::  The text of the About item at the end of the Help menu on Windows and Linux (for example, "About My Game"). If left blank, or left as the default "About Module", "About" followed by the module name is used. On macOS the application menu names the item itself.
 
 *Contents:*::  A folder on your local file system.
 The contents of the folder will be copied into the module and expanded onto the user's machine when the user selects the menu item.
@@ -63,7 +63,7 @@ Selecting the menu displays a new window with the contents of a plain text file.
 |
 [#HelpFile]
 
-*Menu command:*::  The menu item to be added to the Help menu.
+*Menu command:*::  The text of the About item at the end of the Help menu on Windows and Linux (for example, "About My Game"). If left blank, or left as the default "About Module", "About" followed by the module name is used. On macOS the application menu names the item itself.
 
 *Text file:*::  A file containing the contents of the window to be displayed.
 
@@ -71,24 +71,17 @@ Selecting the menu displays a new window with the contents of a plain text file.
 |===
 
 [#AboutScreen]
-==== About Screen
+==== About Screen (legacy)
 
-You may use any image you wish as an 'About' screen for your module.
-Feel free to include text in the image that credits you and any other contributors to the module.
+From VASSAL 3.8.3, the About screen image is set on the <<GameModule.adoc#top,Module>> itself (*About screen image*).
+The About Screen component can no longer be added, and no longer appears in the Editor.
 
-The About Screen will always display the current version of both the VASSAL and engine and your module.
+When you open a module made with an earlier version in the Editor, its About Screen image is copied to the Module automatically.
+The old component is kept, hidden, so that players on VASSAL 3.8.2 or earlier still see the image. If a module has an About screen image but no About Screen component (for example a new module), VASSAL creates a hidden one when you save. Either way, VASSAL keeps its image and title in step with the Module when you save.
+It will be removed in VASSAL 3.9.
 
-The About Screen image is also used as a "Splash Screen" when starting your module.
-
-[width="100%",cols="50%a,^50%a",]
-|===
-|
-*Menu command:*::  The menu item to be added to the Help menu.
-
-*Image:*::  The image to display.
-
-|image:images/AboutScreen.png[]
-|===
+VASSAL shows a single About entry, "About _module name_", at the top of the application menu on macOS and as the last item of the Help menu on Windows and Linux.
+It always shows the current version of the VASSAL engine, your module and any loaded extensions.
 
 
 [#Tutorial]
