@@ -79,7 +79,7 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           body_path: tmp/NOTES-gh
-          files:  |
+          files: |
             tmp/VASSAL-${{ github.ref_name }}-linux.tar.bz2
             tmp/VASSAL-${{ github.ref_name }}-other.zip
 
@@ -136,7 +136,7 @@ jobs:
       - name: Post Windows aarch64 artefact to release
         uses: softprops/action-gh-release@v3
         with:
-          files:  |
+          files: |
             tmp/VASSAL-${{ github.ref_name }}-macos-universal.dmg
 
   # Regular packages. Note, we take the version number from the tag.
@@ -190,7 +190,7 @@ jobs:
       - name: Post Windows aarch64 artefact to release
         uses: softprops/action-gh-release@v3
         with:
-          files:  |
+          files: |
             tmp/VASSAL-${{ github.ref_name }}-windows-aarch64.exe
 
   # Regular packages. Note, we take the version number from the tag.
@@ -245,7 +245,7 @@ jobs:
       - name: Post Windows x86_64 artefact to release
         uses: softprops/action-gh-release@v3
         with:
-          files:  |
+          files: |
             tmp/VASSAL-${{ github.ref_name }}-windows-x86_64.exe
 
   # Regular packages. Note, we take the version number from the tag.
@@ -299,7 +299,7 @@ jobs:
       - name: Post artefacts to release
         uses: softprops/action-gh-release@v3
         with:
-          files:  |
+          files: |
             tmp/VASSAL-${{ github.ref_name }}-windows-x86_32.exe
 
   package_rpm:
