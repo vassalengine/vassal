@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15404, "desc": "Place an ADC2 setup stack by position when the grid cannot name it" },
         { "num": 15403, "desc": "Ensure a Game Piece Image Definitions manager exists during build" },
         { "num": 15380, "desc": "An unreadable piece definition should not prevent opening the module" },
         { "num": 15379, "desc": "Skip an empty slot when looking for an At-Start Stack's top piece" },
