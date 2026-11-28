@@ -6,9 +6,9 @@
 #
 L4J_VERSION=3.50
 LIPO_VERSION=0.8.4
-TEMURIN_RELEASE=26.0.2.1+1
-LIBERICA_RELEASE=26.0.2+13
-LIBERICA_WIN32_RELEASE=21.0.12.1+1
+TEMURIN_RELEASE=27.0.1.1+4
+LIBERICA_RELEASE=27.0.1.1+5
+LIBERICA_WIN32_RELEASE=21.0.13.1+5
 
 # --- Variables used below -------------------------------------------
 #
@@ -206,7 +206,7 @@ get_temurin_jdk() {
     filename=$(basename "$url")
 
     if [ "x$url" = "x" ] ; then
-        echo "Failed get to Temurin download URL for ${release}/${os}/${arch}" > /dev/stderr
+        echo "Failed to get Temurin download URL for ${release}/${os}/${arch}" > /dev/stderr
         exit 1
     fi
 
@@ -284,11 +284,12 @@ for arch in $ARCHS ; do
                 "windows-x86_32"
             ;;
         windows-x86_64|win64)
-            get_temurin_jdk 			\
-                "${TEMURIN_RELEASE}"	 	\
+            get_liberica_jdk 			\
+                "${LIBERICA_RELEASE}"	 	\
                 windows 			\
-                x64				\
-                "windows-x86_64/jmods"
+                x86				\
+                64 \
+                "windows-x86_64"
             ;;
         windows-aarch64|winarm)
             get_liberica_jdk 			\
@@ -299,18 +300,20 @@ for arch in $ARCHS ; do
                 "windows-aarch64"
             ;;
         macos-x86_64|macintel)
-            get_temurin_jdk 			\
-                "${TEMURIN_RELEASE}" 		\
-                mac 				\
-                x64 				\
-                "macos-x86_64/Contents/Home/jmods"
+            get_liberica_jdk 			\
+                "${LIBERICA_RELEASE}" 		\
+                macos 				\
+                x86 				\
+                64 \
+                "macos-x86_64"
             ;;
         macos-aarch64|mac)
-            get_temurin_jdk 			\
-                "${TEMURIN_RELEASE}" 		\
-                mac 				\
-                aarch64 			\
-                "macos-aarch64/Contents/Home/jmods"
+            get_liberica_jdk 			\
+                "${LIBERICA_RELEASE}" 		\
+                macos 				\
+                arm 			\
+                64 \
+                "macos-aarch64"
             ;;
         *)
             echo "Unknown architecture: ${arch} - ignored" > /dev/stderr
