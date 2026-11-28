@@ -276,7 +276,6 @@ public class GameLibrary {
     final File         confDir = Info.getConfDir();
     final Path         path    = Path.of(confDir.getPath(),
                                          "projects.json"); //NON-NLS
-    //InputStream        in      = null;
 
     // Try opening file in the configuration directory
     try (InputStream in = new BufferedInputStream(Files.newInputStream(path))) {
@@ -314,10 +313,11 @@ public class GameLibrary {
   public Date readCachedProjects(InputStream          input,
                                  Map<String, Project> ret)
     throws IOException, ParseException {
-    Date               last    = new Date(0); // Epoch
-    final ObjectMapper mapper  = new ObjectMapper();
-    final JsonNode     data    = mapper.readTree(input);
-    final ArrayNode    array   = (ArrayNode)data;
+    Date                       last    = new Date(0); // Epoch
+    final ObjectMapper         mapper  = new ObjectMapper();
+    final JsonNode             data    = mapper.readTree(input);
+    final ArrayNode            array   = (ArrayNode)data;
+    final Map<String, Project> read    = new LinkedHashMap<>();
 
     for (final JsonNode project : array) {
       final JsonNode slug    = project.get("slug");         //NON-NLS
@@ -325,16 +325,29 @@ public class GameLibrary {
       final JsonNode date    = project.get("modified_at");  //NON-NLS
       final JsonNode title   = project.get("title");        //NON-NLS
       final JsonNode sort    = project.get("sort");         //NON-NLS
+
+      // In case something is missing, fail and force a refresh from server. 
+      if (slug  == null ||
+          name  == null ||
+          date  == null ||
+          title == null ||
+          sort  == null) {
+        return new Date(0); // Epoch
+      }
+      
       final Date     pdate   = parseDate(date.asText());
 
-      ret.put(slug.asText(), new Project(name.asText().strip(),
-                                         title.asText().strip(),
-                                         sort.asText().strip(),
-                                         pdate));
+          
+      read.put(slug.asText(), new Project(name.asText().strip(),
+                                          title.asText().strip(),
+                                          sort.asText().strip(),
+                                          pdate));
       if (pdate.after(last))
         last = pdate;
     }
 
+    ret.putAll(read);
+    
     // Return the last date seen 
     return last;
   }
