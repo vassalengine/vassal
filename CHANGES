@@ -20,6 +20,8 @@
 * 15375: Say which part of creating a component failed, and treat a bad
     attribute value as bad data
 * 15374: Expected response code for updateConnections is now 200, not 201
+* 15373: Updated bundled Java to 27.0.1.1+5 (Windows x86_64, aarch64; MacOS),
+    21.0.13.1+5 (Windows x86_32)
 * 15372: Ensure that HTTP POSTs are in UTF-8
 * 15371: Don't show empty Turn Window after cancelling from SetDialog
 * 15370: Take a Stack off the map before forgetting which map it was on
