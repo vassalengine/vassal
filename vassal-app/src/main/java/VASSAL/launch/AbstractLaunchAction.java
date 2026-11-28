@@ -564,6 +564,9 @@ public abstract class AbstractLaunchAction extends AbstractAction {
       final String userDir = System.getProperty("user.dir");
       if (userDir != null) result.add("-Duser.dir=" + userDir); //NON-NLS
 
+      // pass on VASSAL's base dir, which may differ from the working dir
+      result.add("-DVASSAL.baseDir=" + Info.getBaseDir().getAbsolutePath()); //NON-NLS
+
       // pass on VASSAL's conf dir, if it's set
       final String vConf = System.getProperty("VASSAL.conf");
       if (vConf != null) result.add("-DVASSAL.conf=" + vConf); //NON-NLS

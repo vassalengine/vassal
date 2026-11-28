@@ -6,6 +6,9 @@
 #
 L4J_VERSION=3.50
 LIPO_VERSION=0.8.4
+RCODESIGN_VERSION=0.29.0
+# SHA-256 of apple-codesign-${RCODESIGN_VERSION}-x86_64-unknown-linux-musl.tar.gz
+RCODESIGN_SHA256=dbe85cedd8ee4217b64e9a0e4c2aef92ab8bcaaa41f20bde99781ff02e600002
 TEMURIN_RELEASE=26.0.2.1+1
 LIBERICA_RELEASE=26.0.2+13
 LIBERICA_WIN32_RELEASE=21.0.12.1+1
@@ -32,6 +35,7 @@ DMGDIR=dist/dmg
 L4JDIR=dist/launch4j
 JDKDIR=dist/jdks
 LIPODIR=dist/lipo
+RCODESIGNDIR=dist/rcodesign
 
 
 # --- Message --------------------------------------------------------
@@ -95,6 +99,7 @@ while test $# -gt 0 ; do
         -h|--help) usage ; exit ;;
         -l|--l4j-version)    L4J_VERSION=$2 ; shift ;;
         -i|--lipo-version)   LIPO_VERSION=$2 ; shift ;;
+        --rcodesign-version) RCODESIGN_VERSION=$2 ; shift ;;
         -j|--jre-release)      TEMURIN_RELEASE="$2"
                                LIBERICA_RELEASE="$2"; shift ;;
         -t|--temurin-release)  TEMURIN_RELEASE="$2" ; shift ;;
@@ -333,6 +338,37 @@ if [ "x$LIPO_VERSION" != "x" ] ; then
         $act chmod a+x lipo_linux_amd64
     fi
     
+    popd
+fi
+
+# --- Download rcodesign ---------------------------------------------
+# Used to ad-hoc sign VASSAL.app on Linux. The app's executable is the
+# JDK's signed jpackage launcher; without re-signing the whole bundle,
+# Gatekeeper reports a downloaded copy as having a broken signature.
+if [ "x$RCODESIGN_VERSION" != "x" ] ; then
+    mkdir -p "$RCODESIGNDIR"
+    pushd "$RCODESIGNDIR"
+
+    rcs_name="apple-codesign-${RCODESIGN_VERSION}-x86_64-unknown-linux-musl"
+    rcs_url="https://github.com/indygreg/apple-platform-rs/releases/download/apple-codesign%2F${RCODESIGN_VERSION}/${rcs_name}.tar.gz"
+
+    if [ $CLEAN -gt 0 ] ; then
+        $act rm -rf "${rcs_name}" "${rcs_name}.tar.gz" rcodesign
+    else
+        msg 1 "Downloading ${rcs_url}"
+        $act wget ${WGET_SILENT} "${rcs_url}"
+        if [ $NO_ACTION -eq 0 ] ; then
+            # checked against the pinned hash, not one from the same release
+            have=$(sha256sum "${rcs_name}.tar.gz" | cut -d' ' -f1)
+            if [ "x$RCODESIGN_SHA256" != "x$have" ] ; then
+                echo "Checksum mismatch for ${rcs_name}.tar.gz" >/dev/stderr
+                exit 1
+            fi
+        fi
+        $act tar ${TAR_VERBOSE} -xzf "${rcs_name}.tar.gz"
+        $act ln -sf "${rcs_name}/rcodesign" rcodesign
+    fi
+
     popd
 fi
 

@@ -44,7 +44,10 @@ public class StandardConfig implements Config {
     version = gitProperties.getVersion();
     reportableVersion = version.contains("-") && !version.matches(".*-beta\\d+") ? version.substring(0, version.indexOf('-')) : version;
 
-    baseDir = Path.of(System.getProperty("user.dir"));
+    // VASSAL.baseDir is set by the macOS launcher, which must leave user.dir
+    // alone so that relative paths on the command line still work.
+    final String baseProp = System.getProperty("VASSAL.baseDir");
+    baseDir = Path.of(baseProp != null ? baseProp : System.getProperty("user.dir"));
 
     docDir = baseDir.resolve(
       SystemUtils.IS_OS_MAC ? "Contents/Resources/doc" : "doc"
