@@ -1,4 +1,4 @@
-3.8.3 - ???
+3.8.3 - 28 November 2026
 
 * 15404: Place an ADC2 setup stack by position when the grid cannot name it
 * 15403: Ensure a Game Piece Image Definitions manager exists during build
