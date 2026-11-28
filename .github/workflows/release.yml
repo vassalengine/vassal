@@ -302,7 +302,7 @@ jobs:
     name: RPM
     runs-on: ubuntu-26.04
     needs:
-      - package_generic_linux
+      - package_linux_generic
     steps:
       - name: Update container
         run: |
