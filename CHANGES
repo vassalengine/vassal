@@ -1,5 +1,6 @@
 3.8.3 - ???
 
+* 15403: Ensure a Game Piece Image Definitions manager exists during build
 * 15416: Resolve Asciidoctor warnings
 * 15412: Don't use deprecated CloseableHttpClient.execute method
 * 15411: Upgraded license-maven-plugin to 2.10.0

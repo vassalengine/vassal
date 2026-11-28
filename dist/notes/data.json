@@ -22,6 +22,7 @@
       "new_features": [
       ],
       "bug_fixes": [
+        { "num": 15403, "desc": "Ensure a Game Piece Image Definitions manager exists during build" },
         { "num": 15380, "desc": "An unreadable piece definition should not prevent opening the module" },
         { "num": 15379, "desc": "Skip an empty slot when looking for an At-Start Stack's top piece" },
         { "num": 13578, "desc": "Don't crash the Editor search on a component with an unset field" },
