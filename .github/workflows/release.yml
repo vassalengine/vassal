@@ -148,7 +148,7 @@ jobs:
           fetch-depth: 1
 
       - name: Update container
-         run: sudo apt update
+        run: sudo apt update
 
       - name: Install dependencies
         run: sudo apt-get install dos2unix ghostscript nsis
