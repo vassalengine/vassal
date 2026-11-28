@@ -431,11 +431,31 @@ public abstract class FileChooser {
       return fd;
     }
 
+    /**
+     * Shows the dialog and waits for it to close. On macOS the menu
+     * shortcuts are taken off while it is open, so that the keys typed in
+     * the dialog reach it and not the menus behind it.
+     */
+    private static void showModal(FileDialog fd) {
+      if (!SystemUtils.IS_OS_MAC) {
+        fd.setVisible(true);
+        return;
+      }
+
+      final MacFileDialogMenus menus = MacFileDialogMenus.suspend();
+      try {
+        fd.setVisible(true);
+      }
+      finally {
+        menus.restore();
+      }
+    }
+
     @Override
     public int showOpenDialog(Component parent) {
       final FileDialog fd = awt_file_dialog_init(parent);
       fd.setMode(FileDialog.LOAD);
-      fd.setVisible(true);
+      showModal(fd);
 
       final int value;
       if (fd.getFile() != null) {
@@ -460,7 +480,7 @@ public abstract class FileChooser {
     public int showSaveDialog(Component parent) {
       final FileDialog fd = awt_file_dialog_init(parent);
       fd.setMode(FileDialog.SAVE);
-      fd.setVisible(true);
+      showModal(fd);
 
       final int value;
       if (fd.getFile() != null) {

@@ -7,7 +7,8 @@ path="$(dirname "$0")/../.."
 defs=("-Duser.home=$HOME"
       "-Duser.dir=$path"
       "-Xdock:name=VASSAL"
-      "-Xdock:icon=Contents/Resources/VASSAL.icns")
+      "-Xdock:icon=Contents/Resources/VASSAL.icns"
+      "--enable-native-access=ALL-UNNAMED")
 args=()
 
 # --- Architecture ---------------------------------------------------
