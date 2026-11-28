@@ -856,6 +856,17 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
       return new DisplayText(c, Resources.getString("Chatter.undo_message", msg)); //$NON-NLS-1$
     }
 
+    /**
+     * @return false - Chatter is not a GameComponent and contributes nothing to
+     * a saved game, so a line of chat changes nothing a save would record. Note
+     * that this Command is undoable even so: undoing it reports the undo to
+     * chat, which is another line of chat and no more a change than the first.
+     */
+    @Override
+    protected boolean myChangesSavedGame() {
+      return false;
+    }
+
     public String getMessage() {
       return msg;
     }

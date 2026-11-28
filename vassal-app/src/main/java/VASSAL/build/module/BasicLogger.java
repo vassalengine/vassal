@@ -612,7 +612,30 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     undo.execute();
     GameModule.getGameModule().getServer().sendToOthers(undo);
     logOutput.add(undo);
+    // An undo of a real change is itself a change, but it is added to the log
+    // directly rather than through log(), so it has to say so itself. Without
+    // this, undoing a move after a save left the game looking clean and closing
+    // it threw the undo away with no prompt. An undo received from another
+    // player arrives through CommandDecoder and log(), so only the local one
+    // needs this. The test is not redundant: a command can be undoable and
+    // still change nothing a save records -- undoing a line of chat only
+    // reports the undo to chat -- so this asks the same question log() does
+    // rather than marking unconditionally.
+    if (undo.changesSavedGame()) {
+      markModified();
+    }
     GameModule.getGameModule().refreshVisibleMaps();
+  }
+
+  /**
+   * Records that the game now differs from the last saved copy of it. See
+   * {@link GameState#setModified}.
+   */
+  private void markModified() {
+    final GameModule g = GameModule.getGameModule();
+    if (g != null) {
+      g.getGameState().setModified(true);
+    }
   }
 
   public boolean isUndoInProgress() {
@@ -633,6 +656,20 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
       logOutput.add(c);
       if (c.getUndoCommand() != null && !c.getUndoCommand().isNull()) {
         nextUndo = logOutput.size() - 1;
+      }
+      // Every change to the game passes through here: a local one via
+      // GameModule.sendAndLog, one from another player via CommandDecoder, and a
+      // replayed one via step(). Marking the game modified here is what lets
+      // GameState.isModified() answer without serialising the whole game.
+      // Loading a game does not come through here -- loadGameInForeground
+      // executes the restore command directly -- so a freshly loaded game is
+      // correctly left unmodified.
+      //
+      // A restore command answers false for its whole chain, pieces and all, so
+      // a joining client which has synchronised and touched nothing is not
+      // asked whether to save. See GameState.SetupCommand.changesSavedGame().
+      if (c.changesSavedGame()) {
+        markModified();
       }
     }
     undoAction.setEnabled(nextUndo >= dontUndoPast);
@@ -826,6 +863,16 @@ public class BasicLogger implements Logger, Buildable, GameComponent, CommandEnc
     @Override
     protected Command myUndoCommand() {
       return null;
+    }
+
+    /**
+     * @return false - this is the marker wrapped around an undo to say that one
+     * is in progress. Whether the undo itself changes the saved game is for the
+     * undo command inside the wrapper to answer.
+     */
+    @Override
+    protected boolean myChangesSavedGame() {
+      return false;
     }
   }
 }

@@ -105,6 +105,57 @@ public abstract class Command {
   protected abstract Command myUndoCommand();
 
   /**
+   * Whether this Command, in itself, changes something which saving the game
+   * would record. Almost every Command does, so the default is true and only
+   * the few which do not need override this.
+   *
+   * <p>This is not the same question as whether the Command can be undone.
+   * {@link #myUndoCommand} returning null means only that the Command cannot
+   * be reversed; plenty of Commands which are not undoable -- setting the
+   * boards on a map, joining a side, writing a note, dealing a deck -- change
+   * the saved game. The question here is narrower: does a save taken before
+   * this Command differ from one taken after it?</p>
+   *
+   * @return true unless this Command travels to the other players and into the
+   * logfile but leaves the saved game identical
+   */
+  protected boolean myChangesSavedGame() {
+    return true;
+  }
+
+  /**
+   * Whether this Command or any of its subcommands changes something which
+   * saving the game would record. A chain of Commands none of which does --
+   * chat, a flare, a sound -- leaves the game as saveable, or as already
+   * saved, as it was.
+   *
+   * @return true if any part of this chain changes the saved game
+   * @see #myChangesSavedGame
+   */
+  public boolean changesSavedGame() {
+    if (isNull()) {
+      // A Command which does nothing changes nothing. This belongs here rather
+      // than as an override on NullCommand: Translate builds an anonymous
+      // NullCommand subclass whose isNull() is false on purpose, to say that a
+      // move did happen, and a blanket answer from NullCommand would make that
+      // move invisible here.
+      return false;
+    }
+
+    if (myChangesSavedGame()) {
+      return true;
+    }
+
+    for (final Command c : seq) {
+      if (c.changesSavedGame()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Remove all subcommands.
    */
   public void stripSubCommands() {

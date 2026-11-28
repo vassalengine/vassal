@@ -2,14 +2,22 @@ package VASSAL.build.module;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import VASSAL.build.GameModule;
+import VASSAL.build.module.map.Flare;
 import VASSAL.build.module.metadata.SaveMetaData;
 import VASSAL.command.ChangePiece;
+import VASSAL.command.Command;
+import VASSAL.command.FlareCommand;
 import VASSAL.command.NullCommand;
+import VASSAL.command.PlayAudioClipCommand;
 import VASSAL.preferences.Prefs;
 import VASSAL.tools.filechooser.FileChooser;
+import java.awt.Point;
 import java.io.File;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -49,6 +57,315 @@ public class BasicLoggerTest {
       logger.log(new ChangePiece("c", null, "1"));
 
       assertDoesNotThrow(logger::undo);
+    }
+  }
+
+  /**
+   * Every change to a game -- made locally, received from another player, or
+   * replayed from a logfile -- is logged here, which is how GameState knows the
+   * game has been modified without serialising the whole of it to compare.
+   */
+  @Test
+  public void loggingACommandMarksTheGameModified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new ChangePiece("a", "1", "2"));
+      verify(gs).setModified(true);
+    }
+  }
+
+  /** A command that does nothing is not logged, and must not dirty the game. */
+  @Test
+  public void loggingANullCommandLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new NullCommand());
+      logger.log(null);
+      verify(gs, never()).setModified(true);
+    }
+  }
+
+  /**
+   * An undo is a change to the game like any other, but undo() adds it to the
+   * log directly rather than through log(). Undoing a move after a save used to
+   * leave the game looking clean, so closing it threw the undo away unasked.
+   */
+  @Test
+  public void undoingAMoveMarksTheGameModified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+      when(gm.getServer()).thenReturn(mock(ServerConnection.class));
+
+      final BasicLogger logger = new BasicLogger();
+      when(gm.getBasicLogger()).thenReturn(logger);
+
+      logger.log(new ChangePiece("a", "1", "2"));
+
+      // The game is saved here: everything logged so far is on disk, and the
+      // flag goes back to clean.
+      Mockito.clearInvocations(gs);
+
+      logger.undo();
+      verify(gs).setModified(true);
+    }
+  }
+
+  /**
+   * A restore command is the game, not a change to it: it is how a joining
+   * client is sent the host's game. Its own trailing SetupCommand(true) has just
+   * run setup(), which decides the flag, so logging it must not overrule that
+   * and ask a player who has touched nothing whether to save.
+   */
+  @Test
+  public void loggingARestoreCommandLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      // Shaped as GameState.getRestoreCommand() builds it.
+      final Command restore = new GameState.SetupCommand(false);
+      restore.append(new ChangePiece("a", "1", "2"));
+      restore.append(new GameState.SetupCommand(true));
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(restore);
+      verify(gs, never()).setModified(true);
+    }
+  }
+
+  /**
+   * Chat is in the logfile but not in getRestoreCommand(), so it changes nothing
+   * a save would record. Startup Global Key Commands which report to chat run
+   * after setup() has cleared the flag, so without this a freshly loaded game in
+   * such a module would offer to save itself.
+   */
+  @Test
+  public void loggingChatAloneLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new Chatter.DisplayText(null, "a startup message"));
+      verify(gs, never()).setModified(true);
+    }
+  }
+
+  /** ... but chat alongside a real change must still mark the game modified. */
+  @Test
+  public void loggingChatWithAChangeMarksTheGameModified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final Command c = new Chatter.DisplayText(null, "moving");
+      c.append(new ChangePiece("a", "1", "2"));
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(c);
+      verify(gs).setModified(true);
+    }
+  }
+
+  /**
+   * A flare is a chat line plus a FlareCommand, as Flare.sendAndLog() builds it.
+   * Flare is a GameComponent whose getRestoreCommand() returns null -- it says
+   * in its own comment that a flare does not need restoring -- so pointing at
+   * the map changes nothing a save would record.
+   */
+  @Test
+  public void loggingAFlareLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final Flare flare = mock(Flare.class);
+      when(flare.getClickPoint()).thenReturn(new Point(10, 20));
+
+      final Command c = new Chatter.DisplayText(mock(Chatter.class), "* Player flared");
+      c.append(new FlareCommand(flare));
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(c);
+      verify(gs, never()).setModified(true);
+    }
+  }
+
+  /**
+   * Undoing something which was never a change is not a change either: New Game,
+   * chat, undo, close used to ask whether to save a game nobody had touched.
+   */
+  @Test
+  public void undoingChatLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+      when(gm.getServer()).thenReturn(mock(ServerConnection.class));
+
+      final BasicLogger logger = new BasicLogger();
+      when(gm.getBasicLogger()).thenReturn(logger);
+
+      logger.log(new Chatter.DisplayText(mock(Chatter.class), "hello"));
+      logger.undo();
+      verify(gs, never()).setModified(true);
+    }
+  }
+
+  /**
+   * A Startup Global Key Command which changes nothing must leave the game
+   * unmodified, marker and all.
+   *
+   * <p>When any SGKC fires, GameState.doStartupGlobalKeyCommands() sends a
+   * FinishedStartupGlobalKeyCommands of its own to block undo past that point.
+   * It is sent from an invokeLater which runs after setup() has cleared the
+   * flag, so in a module with a "first launch of session" command -- which
+   * reapplies on every load -- the marker alone was enough to make a freshly
+   * loaded game ask to be saved.</p>
+   */
+  @Test
+  public void loggingTheStartupCommandMarkerLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      // what a startup command which only reports to chat leaves behind
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new Chatter.DisplayText(null, "* Reinforcements have arrived"));
+      logger.log(new GameState.FinishedStartupGlobalKeyCommands());
+
+      verify(gs, never()).setModified(true);
+    }
+  }
+
+  /**
+   * ... but the marker must not cover for the commands it follows. A startup
+   * command which does change something is sent separately from the marker, so
+   * it is judged on its own.
+   */
+  @Test
+  public void aStartupCommandWhichChangesSomethingStillMarksTheGameModified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new ChangePiece("a", "1", "2"));
+      logger.log(new GameState.FinishedStartupGlobalKeyCommands());
+
+      // atLeastOnce, not once: what is being asked is that the real change is
+      // still seen, not how many times the flag was set on the way there
+      verify(gs, atLeastOnce()).setModified(true);
+    }
+  }
+
+  /**
+   * A sound is played and gone: PlayAudioClipCommand contributes nothing to
+   * getRestoreCommand(), and a Do Action Button sends one on its own, so a
+   * button which only makes a noise marked the game modified.
+   */
+  @Test
+  public void loggingAnAudioClipLeavesTheGameUnmodified() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new PlayAudioClipCommand("fanfare.wav"));
+
+      verify(gs, never()).setModified(true);
+    }
+  }
+
+  /**
+   * A Command which cannot be undone can still change the saved game, so
+   * undoability is not the test. BoardPicker.SetBoards, ObscurableOptions,
+   * PlayerRoster.Add, Deck's own commands and all three note commands return
+   * null from myUndoCommand() and every one of them is saved with the game --
+   * setting the boards on a map is the whole layout of that map. Deciding this
+   * from the undo command would leave all of them looking like no change at
+   * all.
+   */
+  @Test
+  public void aChangeWhichCannotBeUndoneIsStillAChange() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new NotUndoableChange());
+
+      verify(gs, atLeastOnce()).setModified(true);
+    }
+  }
+
+  /**
+   * Translate returns an anonymous NullCommand whose isNull() is false, with a
+   * comment saying it is there "to indicate that a change actually happened".
+   * So a move arrives as something which is a NullCommand by class and a real
+   * change by behaviour, and the class must not be what decides it.
+   */
+  @Test
+  public void aNullCommandWhichSaysItIsNotNullIsAChange() {
+    try (MockedStatic<GameModule> staticGm = Mockito.mockStatic(GameModule.class)) {
+      final GameModule gm = mock(GameModule.class);
+      staticGm.when(GameModule::getGameModule).thenReturn(gm);
+      final GameState gs = mock(GameState.class);
+      when(gm.getGameState()).thenReturn(gs);
+
+      final BasicLogger logger = new BasicLogger();
+      logger.log(new NullCommand() {
+        @Override
+        public boolean isNull() {
+          return false;
+        }
+      });
+
+      verify(gs, atLeastOnce()).setModified(true);
+    }
+  }
+
+  /**
+   * A change to the game which offers no way back, as several real ones do.
+   */
+  private static class NotUndoableChange extends Command {
+    @Override
+    protected void executeCommand() {
+    }
+
+    @Override
+    protected Command myUndoCommand() {
+      return null;
     }
   }
 }

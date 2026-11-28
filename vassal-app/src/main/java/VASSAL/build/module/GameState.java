@@ -121,6 +121,23 @@ public class GameState implements CommandEncoder {
   protected List<GameComponent> gameComponents = new ArrayList<>();
   protected List<GameSetupStep> setupSteps = new ArrayList<>();
   protected Action loadGame, saveGame, saveGameAs, newGame, closeGame, loadContinuation, loadAndFastForward, loadAndAppend;
+  /**
+   * Whether the game has changed since it was last saved. Maintained from the
+   * command stream (see {@link #setModified}) rather than by comparing the game
+   * against a serialised copy of itself: on a large module that copy cost seconds
+   * of CPU and tens of megabytes of retained heap every time a game was loaded,
+   * started or synchronised, to answer a yes/no question.
+   */
+  private boolean modified;
+
+  /**
+   * No longer used: the game is no longer compared against a serialised copy of
+   * itself to decide whether it has been modified (see {@link #modified}). Kept,
+   * unset, so that module code which referenced it still links.
+   *
+   * @deprecated use {@link #isModified()} / {@link #setModified(boolean)}
+   */
+  @Deprecated(since = "2026-11-12", forRemoval = true)
   protected String lastSave;
   protected File lastSaveFile = null;
   protected DirectoryConfigurer savedGameDirectoryPreference;
@@ -291,8 +308,9 @@ public class GameState implements CommandEncoder {
    * @return true if the game state is different from when it was last saved
    */
   public boolean isModified() {
-    final String s = saveString();
-    return s != null && !s.equals(lastSave);
+    // saveString() returned null, and so isModified() false, whenever
+    // getRestoreCommand() declined to build one; keep that.
+    return saveGame.isEnabled() && modified;
   }
 
   /**
@@ -452,7 +470,12 @@ public class GameState implements CommandEncoder {
     }
   }
 
-  private static class FinishedStartupGlobalKeyCommands extends Command {
+  /**
+   * Package-private rather than private so that BasicLoggerTest can construct
+   * one. BasicLogger itself no longer needs to recognise it: the marker says
+   * for itself that it changes nothing (see {@link Command#myChangesSavedGame}).
+   */
+  static class FinishedStartupGlobalKeyCommands extends Command {
     @Override
     protected void executeCommand() {
       final Logger l = GameModule.getGameModule().getLogger();
@@ -466,6 +489,16 @@ public class GameState implements CommandEncoder {
     @Override
     protected Command myUndoCommand() {
       return null;
+    }
+
+    /**
+     * @return false - this marker is sent on its own after any Startup Global
+     * Key Command has fired, only to block undo past that point. Whatever those
+     * commands did is judged on its own merits.
+     */
+    @Override
+    protected boolean myChangesSavedGame() {
+      return false;
     }
   }
 
@@ -538,7 +571,7 @@ public class GameState implements CommandEncoder {
     }
 
     gameStarted |= this.gameStarting;
-    lastSave = gameStarting ? saveString() : null;
+    setModified(false);
     lastSaveFile = null;
 
     if (gameStarted) {
@@ -1112,13 +1145,14 @@ public class GameState implements CommandEncoder {
     }
   }
 
+  /**
+   * Records whether the game differs from the last saved copy of it. Called with
+   * {@code true} by {@link BasicLogger#log} for every command that goes into the
+   * logfile — which is every change, local or received from another player — and
+   * with {@code false} when the game is saved or a new one is set up.
+   */
   public void setModified(boolean modified) {
-    if (modified) {
-      lastSave = null;
-    }
-    else {
-      lastSave = saveString();
-    }
+    this.modified = modified;
   }
 
   private File getSaveFile() {
@@ -1267,6 +1301,24 @@ public class GameState implements CommandEncoder {
     protected Command myUndoCommand() {
       return null;
     }
+
+    /**
+     * @return false, for this Command and everything hanging off it. A
+     * SetupCommand heads the chain {@link #getRestoreCommand} builds, which is
+     * the game itself rather than a change to it -- it is how a joining client
+     * is sent the host's game, and its own trailing {@code SetupCommand(true)}
+     * has just run {@link #setup}, which decides the flag. Saying so for the
+     * whole chain is the point: the pieces inside it would each answer true,
+     * and counting them would ask a player who has synchronised and touched
+     * nothing whether to save.
+     *
+     * <p>Hence the override is here and not on {@link #myChangesSavedGame},
+     * which would still let the chain be walked.</p>
+     */
+    @Override
+    public boolean changesSavedGame() {
+      return false;
+    }
   }
 
   public static final String SAVEFILE_ZIP_ENTRY = "savedGame";  //$NON-NLS-1$
@@ -1411,7 +1463,7 @@ public class GameState implements CommandEncoder {
       metaData.save(zw);
     }
 
-    lastSave = save;
+    setModified(false);
     final String msg;
     final String saveComments = metaData.getLocalizedDescription();
     if (!StringUtils.isEmpty(saveComments)) {
