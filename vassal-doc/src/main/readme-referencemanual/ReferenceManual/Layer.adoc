@@ -21,7 +21,7 @@ While editing a layer, several keyboard shortcuts are available, including _Alt+
 
 |
 *Description:*:: A brief description of this trait for your reference.
-*Name:*::  The name of this Layer, used for reference during editing and as the prefix for the name of any <<Properties.adoc#top,Properties>> defined by this Layer.
+*Name:*::  The name of this Layer, used for reference during editing and as the prefix for the name of any <<Properties.adoc#top,Properties>> defined by this Layer. Give each Layer on a piece a unique name so that the <<GameRefresher.adoc#top,Game Refresher>> can match it after changes.
 
 *Always active:*::  If checked, then this layer is always active, i.e.
 the image corresponding to the current level will always be displayed.

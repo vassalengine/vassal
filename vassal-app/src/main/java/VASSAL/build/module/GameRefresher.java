@@ -96,6 +96,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
   public static final String USE_LABELER_NAME = "UseLabelerName";
   public static final String USE_LAYER_NAME = "UseLayerName";
   public static final String USE_ROTATE_NAME = "UseRotateName";
+  public static final String USE_DYNAMICPROPERTY_NAME = "UseDynamicPropertyName";
   public static final String TEST_MODE = "TestMode";
   public static final String DELETE_NO_MAP = "DeleteNoMap";
   public static final String REFRESH_DECKS = "RefreshDecks";
@@ -779,6 +780,7 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
     private JCheckBox labelerNameCheck;
     private JCheckBox layerNameCheck;
     private JCheckBox rotateNameCheck;
+    private JCheckBox dynamicPropertyNameCheck;
     private JCheckBox deletePieceNoMap;
     private JCheckBox refreshDecks;
     private JCheckBox deleteOldDecks;
@@ -852,6 +854,8 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
       panel.add(layerNameCheck, "gapx 10");
       rotateNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_rotate_descr"), true);
       panel.add(rotateNameCheck, "gapx 10");
+      dynamicPropertyNameCheck = new JCheckBox(Resources.getString("GameRefresher.use_dynamicProperty_descr"), true);
+      panel.add(dynamicPropertyNameCheck, "gapx 10");
 
       deletePieceNoMap = new JCheckBox(Resources.getString("GameRefresher.delete_piece_no_map", "gapx 10"), true);
       // Disabling user selection - due to issue https://github.com/vassalengine/vassal/issues/12902
@@ -918,6 +922,9 @@ public final class GameRefresher implements CommandEncoder, GameComponent {
         }
         if (rotateNameCheck.isSelected()) {
           options.add(USE_ROTATE_NAME); //$NON-NLS-1$
+        }
+        if (dynamicPropertyNameCheck.isSelected()) {
+          options.add(USE_DYNAMICPROPERTY_NAME); //$NON-NLS-1$
         }
         if (testModeOn.isSelected()) {
           options.add(TEST_MODE); //$NON-NLS-1$

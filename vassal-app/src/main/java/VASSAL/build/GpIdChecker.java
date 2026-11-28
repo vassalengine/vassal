@@ -23,6 +23,7 @@ import VASSAL.build.module.PrototypeDefinition;
 import VASSAL.build.widget.PieceSlot;
 import VASSAL.counters.BasicPiece;
 import VASSAL.counters.Decorator;
+import VASSAL.counters.DynamicProperty;
 import VASSAL.counters.Embellishment;
 import VASSAL.counters.FreeRotator;
 import VASSAL.counters.GamePiece;
@@ -90,6 +91,10 @@ public class GpIdChecker {
 
   public boolean useRotateName() {
     return refresherOptions.contains(GameRefresher.USE_ROTATE_NAME); //$NON-NLS-1$
+  }
+
+  public boolean useDynamicPropertyName() {
+    return refresherOptions.contains(GameRefresher.USE_DYNAMICPROPERTY_NAME); //$NON-NLS-1$
   }
 
   public boolean useName() {
@@ -356,6 +361,16 @@ public class GpIdChecker {
             if (useRotateName()) {
               final String nameToFind = ((FreeRotator)decoratorNewPc).getRotateName();
               if (((FreeRotator) d).getRotateName().equals(nameToFind)) {
+                return d.myGetState();
+              }
+            }
+          }
+          // Exact class only: Set Global Property and Set Piece Property are subclasses
+          // of Dynamic Property but hold no value of their own to carry across.
+          else if (d.getClass() == DynamicProperty.class) {
+            if (useDynamicPropertyName()) {
+              final String nameToFind = ((DynamicProperty) decoratorNewPc).getKey();
+              if (nameToFind != null && nameToFind.equals(((DynamicProperty) d).getKey())) {
                 return d.myGetState();
               }
             }
