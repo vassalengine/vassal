@@ -852,7 +852,7 @@ public class Chatter extends JPanel implements CommandEncoder, Buildable, DropTa
     }
 
     @Override
-    public Command myUndoCommand() {
+    protected Command myUndoCommand() {
       return new DisplayText(c, Resources.getString("Chatter.undo_message", msg)); //$NON-NLS-1$
     }
 
