@@ -332,7 +332,12 @@ public class GameLibrary {
           date  == null ||
           title == null ||
           sort  == null) {
-        return new Date(0); // Epoch
+        throw new IllegalArgumentException("Missing key in entry " +
+                                           " slug=" + slug +
+                                           " name=" + name +
+                                           " modified_at=" + date +
+                                           " title=" + title +
+                                           " sort=" + sort);
       }
       
       final Date     pdate   = parseDate(date.asText());
