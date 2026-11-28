@@ -147,7 +147,7 @@ jobs:
         with:
           fetch-depth: 1
 
-       - name: Update container
+      - name: Update container
          run: sudo apt update
 
       - name: Install dependencies
