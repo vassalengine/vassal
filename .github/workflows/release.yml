@@ -13,7 +13,6 @@ env:
   LIBERICA_WIN32_VERSION: 21.0.13.1+5
 
 jobs:
-  # Regular packages.  Note, we take the version number from the tag.
   package_linux_generic:
     name: Linux, Generic
     runs-on: ubuntu-26.04
@@ -139,7 +138,6 @@ jobs:
           files: |
             tmp/VASSAL-${{ github.ref_name }}-macos-universal.dmg
 
-  # Regular packages. Note, we take the version number from the tag.
   package_win_aarch64:
     name: Windows aarch64
     runs-on: ubuntu-26.04
@@ -193,7 +191,6 @@ jobs:
           files: |
             tmp/VASSAL-${{ github.ref_name }}-windows-aarch64.exe
 
-  # Regular packages. Note, we take the version number from the tag.
   package_win_x86_64:
     name: Windows x86_64
     runs-on: ubuntu-26.04
@@ -248,7 +245,6 @@ jobs:
           files: |
             tmp/VASSAL-${{ github.ref_name }}-windows-x86_64.exe
 
-  # Regular packages. Note, we take the version number from the tag.
   package_win_x86_32:
     name: Windows x86_32
     runs-on: ubuntu-26.04
