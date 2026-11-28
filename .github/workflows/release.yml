@@ -481,7 +481,7 @@ jobs:
     name: Sha256 digest of packages
     runs-on: ubuntu-26.04
     needs:
-      - package
+      - package_linux_generic
       - package_win32
       - package_aarch64
       - package_debian
