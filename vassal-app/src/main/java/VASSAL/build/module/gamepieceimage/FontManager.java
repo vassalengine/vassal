@@ -39,8 +39,29 @@ public class FontManager extends AbstractConfigurable {
 
   protected static FontManager instance;
 
+  /**
+   * The module's own FontManager, or a stand-in while there is none.
+   *
+   * <p>{@link #instance} is set by {@link #addTo}, so it is null until the
+   * FontManager component itself has been built. That is not only the window
+   * before the module is loaded: {@link GamePieceImageDefinitions#build} calls
+   * {@code super.build()} first, which builds every GamePieceImage in the
+   * buildFile, and building one draws it -- so a buildFile which declares no
+   * FontManager, or declares it after its images, reached here with nothing
+   * set and the module did not open at all. The fallback
+   * GamePieceImageDefinitions creates for exactly that case is appended after
+   * the images, so it arrives too late to help and is written back in the
+   * position which guarantees the same crash next time.</p>
+   *
+   * <p>A FontManager with no styles of its own answers every query with
+   * {@link #DEFAULT_STYLE}, which is what a module that has not defined any
+   * would get in any case, and {@link Visualizer} rebuilds an image when it is
+   * displayed, so nothing stays drawn in the wrong font.</p>
+   *
+   * @return never null
+   */
   public static FontManager getFontManager() {
-    return instance;
+    return instance == null ? DEFAULT_MANAGER : instance;
   }
 
   protected Map<String, FontStyle> fontStyles = new HashMap<>();
@@ -57,6 +78,13 @@ public class FontManager extends AbstractConfigurable {
 
 //  public static final String[] ALLOWABLE_FONTS = new String[] { DIALOG, DIALOG_INPUT, MONOSPACED, SANS_SERIF, SERIF };
   public static final String[] ALLOWABLE_FONTS = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+
+  /**
+   * Declared below every static it could read, because it is built during this
+   * class's own initialisation. Holds no styles, so every lookup falls through
+   * to {@link #DEFAULT_STYLE}.
+   */
+  private static final FontManager DEFAULT_MANAGER = new FontManager();
 
   @Override
   public void build(Element e) {
