@@ -180,7 +180,7 @@ public class GameLibrary {
 
     try (
          CloseableHttpClient   client   = HttpClients.createDefault()) {
-      return (T)client.execute(get, response -> {
+      return client.execute(get, response -> {
         final int code = response.getCode();
       
         if (code == 404) {
@@ -499,7 +499,7 @@ public class GameLibrary {
       for (final JsonNode rel : rels) {
         final JsonNode  vers  = rel.get("version");                 //NON-NLS
         final ArrayNode fs    = (ArrayNode)rel.get("files");        //NON-NLS
-        final Release release = new Release(Version.valueOf(vers.asText()));
+        final Release release = new Release(Version.parse(vers.asText()));
         packge.addRelease(release);
         
         for (final JsonNode f : fs) {
@@ -511,7 +511,7 @@ public class GameLibrary {
           final JsonNode    ul = f.get("url");                     //NON-NLS
           final String      rq = (re.isNull() ? null :
                                   re.asText().replace(">= ", "")); //NON-NLS
-          final Version     rv = rq == null ? null : Version.valueOf(rq);
+          final Version     rv = rq == null ? null : Version.parse(rq);
           final LibraryFile lf = new LibraryFile(fn.asText(),
                                                  new URL(ul.asText()),
                                                  sz.asLong(),
