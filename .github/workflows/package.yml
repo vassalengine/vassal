@@ -100,8 +100,8 @@ jobs:
         uses: actions/setup-java@v6.3.0
         id: setup-java
         with:
-          distribution: 'temurin'
-          java-version: ${{ env.TEMURIN_SEMVER_VERSION }}
+          distribution: 'liberica'
+          java-version: ${{ env.LIBERICA_VERSION }}
           java-package: jdk
 
       - name: Cache Maven packages
@@ -123,7 +123,7 @@ jobs:
 
       - name: Install packaging dependencies
         if: steps.cache-bootstrap.outputs.cache-hit != 'true'
-        run: ./bootstrap.sh -j ${{ env.TEMURIN_REAL_VERSION }} windows-x86_64
+        run: ./bootstrap.sh -j ${{ env.LIBERICA_VERSION }} windows-x86_64
 
       - name: Build Windows x86_64
         run: make release-windows-x86_64

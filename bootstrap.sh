@@ -284,11 +284,12 @@ for arch in $ARCHS ; do
                 "windows-x86_32"
             ;;
         windows-x86_64|win64)
-            get_temurin_jdk 			\
-                "${TEMURIN_RELEASE}"	 	\
+            get_liberica_jdk 			\
+                "${LIBERICA_RELEASE}"	 	\
                 windows 			\
-                x64				\
-                "windows-x86_64/jmods"
+                x86				\
+                64 \
+                "windows-x86_64"
             ;;
         windows-aarch64|winarm)
             get_liberica_jdk 			\
