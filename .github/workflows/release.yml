@@ -27,7 +27,7 @@ jobs:
         run: sudo apt update
 
       - name: Install dependencies
-        run |
+        run: |
           sudo apt-get install ghostscript
           sudo pip install jinja2-cli --break-system-packages
 
